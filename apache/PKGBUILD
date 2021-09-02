@@ -1,0 +1,28 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-apache"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-apache-components"
+  "carbonio-core"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+  install -D opt/zextras/conf/httpd.conf \
+    "${pkgdir}/opt/zextras/conf/httpd.conf"
+  install -D opt/zextras/conf/php.ini \
+    "${pkgdir}/opt/zextras/conf/php.ini"
+}

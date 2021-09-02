@@ -1,0 +1,33 @@
+1617918485: INSTALL SESSION START
+1617918554: INSTALLED carbonio-timezone-data_3.0.0.1604315554-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-conf_9.0.0.1617379858-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-core-libs_9.0.0.1615887345-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-conf-rights_9.0.0.1610620034-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-conf-msgs_9.0.0.1604312801-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-core-jar_9.0.0.1617379858-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-db_9.0.0.1617379858-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-docs_9.0.0.1552677786-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-conf-attrs_9.0.0.1610620034-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-common-mbox-native-lib_9.0.0.1521095672-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-core_9.0.0.ZEXTRAS.2021043.UBUNTU18.64_amd64.deb
+1617918554: INSTALLED carbonio-ldap_9.0.0.ZEXTRAS.2021043.UBUNTU18.64_amd64.deb
+1617918554: INSTALLED carbonio-logger_9.0.0.ZEXTRAS.2021043.UBUNTU18.64_amd64.deb
+1617918554: INSTALLED carbonio-mta_9.0.0.ZEXTRAS.2021043.UBUNTU18.64_amd64.deb
+1617918554: INSTALLED carbonio-mbox-admin-console-war_9.0.0.1617379530-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-mbox-store-libs_9.0.0.1615887345-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-mbox-conf_9.0.0.1610620034-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-mbox-war_9.0.0.1617379858-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-mbox-service_9.0.0.1617379858-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-mbox-webclient-war_9.0.0.1615897257-1.u18_amd64.deb
+1617918554: INSTALLED carbonio-store_9.0.0.ZEXTRAS.2021043.UBUNTU18.64_amd64.deb
+1617918554: INSTALLED carbonio-proxy_9.0.0.ZEXTRAS.2021043.UBUNTU18.64_amd64.deb
+1617918554: INSTALLED carbonio-core-components_3.0.4-1zextras8.8b1.18.04_all.deb
+1617918554: INSTALLED carbonio-ldap-components_1.0.8-1zextras8.8b1.18.04_all.deb
+1617918554: INSTALLED carbonio-mta-components_1.0.11-1zextras8.8b1.18.04_all.deb
+1617918554: INSTALLED carbonio-store-components_1.0.3-1zextras8.7b1.18.04_all.deb
+1617918554: INSTALLED carbonio-jetty-distribution_9.4.18.v20190429-2.u18_amd64.deb
+1617918554: INSTALLED carbonio-memcached_1:1.4.37-2.u18_amd64.deb
+1617918554: INSTALLED carbonio-proxy-components_1.0.8-1zextras8.8b1.18.04_all.deb
+1617918554: INSTALL SESSION COMPLETE
+**** Installing carbonio-patch ****
+1617918564: CONFIGURED patch9.0.0_P17

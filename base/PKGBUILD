@@ -1,0 +1,108 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-base"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Base"
+pkgdesclong=(
+    "Carbonio Base is used as a simple method to allow removing"
+    "all the zimbra specific third party packages."
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends:apt=(
+  "adduser"
+  "passwd"
+)
+depends:yum=(
+  "shadow-utils"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}
+
+postinst:apt() {
+#!/bin/bash
+if [ "$1" = configure ]; then
+  grp_exists() {
+    if [ -x /usr/bin/getent ]
+    then
+      getent group $1 >/dev/null 2>&1
+      FOUND=$?
+    else
+      grep -E -q "^$1:" /etc/group
+      FOUND=$?
+    fi
+    return $FOUND
+  }
+
+  acct_exists() {
+    if [ -x /usr/bin/getent ]
+    then
+      getent passwd $1 >/dev/null 2>&1
+      return $?
+    else
+      grep -E -q "^$1:" /etc/passwd
+      return $?
+    fi
+  }
+
+  grp_exists zimbra
+  if [ $? != 0 ]; then
+          groupadd -r zimbra
+  fi
+
+  acct_exists zimbra
+  if [ $? != 0 ]; then
+          useradd -r -g zimbra -G tty -d /opt/zextras -s /bin/bash zimbra
+  else
+          usermod -g zimbra -d /opt/zextras -s /bin/bash zimbra
+  fi
+fi
+exit 0
+
+}
+
+postinst:yum() {
+  #!/bin/bash
+  grp_exists() {
+    if [ -x /usr/bin/getent ]
+    then
+      getent group $1 >/dev/null 2>&1
+      FOUND=$?
+    else
+      grep -E -q "^$1:" /etc/group
+      FOUND=$?
+    fi
+    return $FOUND
+  }
+
+  acct_exists() {
+    if [ -x /usr/bin/getent ]
+    then
+      getent passwd $1 >/dev/null 2>&1
+      return $?
+    else
+      grep -E -q "^$1:" /etc/passwd
+      return $?
+    fi
+  }
+
+  grp_exists zimbra
+  if [ $? != 0 ]; then
+          groupadd -r zimbra
+  fi
+
+  acct_exists zimbra
+  if [ $? != 0 ]; then
+          useradd -r -g zimbra -G tty -d /opt/zextras -s /bin/bash zimbra
+  else
+          usermod -g zimbra -d /opt/zextras -s /bin/bash zimbra
+  fi
+}

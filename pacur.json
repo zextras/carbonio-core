@@ -1,0 +1,161 @@
+{
+    "name": "An open-source, community-driven email server",
+    "Description": "The test description",
+    "build_dir": "/tmp/",
+    "output": "artifacts",
+    "Projects": [
+        {
+            "name": "apache"
+        },
+        {
+            "name": "apache-base"
+        },
+        {
+            "name": "apache-components"
+        },
+        {
+            "name": "base"
+        },
+        {
+            "name": "common-core-jar"
+        },
+        {
+            "name": "common-core-libs"
+        },
+        {
+            "name": "common-mbox-conf"
+        },
+        {
+            "name": "common-mbox-conf-attrs"
+        },
+        {
+            "name": "common-mbox-conf-msgs"
+        },
+        {
+            "name": "common-mbox-conf-rights"
+        },
+        {
+            "name": "common-mbox-db"
+        },
+        {
+            "name": "common-mbox-docs"
+        },
+        {
+            "name": "common-mbox-native-lib"
+        },
+        {
+            "name": "core"
+        },
+        {
+            "name": "core-components"
+        },
+        {
+            "name": "dnscache"
+        },
+        {
+            "name": "dnscache-base"
+        },
+        {
+            "name": "dnscache-components"
+        },
+        {
+            "name": "imapd"
+        },
+        {
+            "name": "ldap"
+        },
+        {
+            "name": "ldap-base"
+        },
+        {
+            "name": "ldap-components"
+        },
+        {
+            "name": "logger"
+        },
+        {
+            "name": "mbox-admin-console-war"
+        },
+        {
+            "name": "mbox-conf"
+        },
+        {
+            "name": "mbox-service"
+        },
+        {
+            "name": "mbox-store-libs"
+        },
+        {
+            "name": "mbox-war"
+        },
+        {
+            "name": "mbox-webclient-war"
+        },
+        {
+            "name": "memcached-base"
+        },
+        {
+            "name": "mta"
+        },
+        {
+            "name": "mta-base"
+        },
+        {
+            "name": "mta-components"
+        },
+        {
+            "name": "osl"
+        },
+        {
+            "name": "os-requirements"
+        },
+        {
+            "name": "perl"
+        },
+        {
+            "name": "perl-base"
+        },
+        {
+            "name": "proxy"
+        },
+        {
+            "name": "proxy-base"
+        },
+        {
+            "name": "proxy-components"
+        },
+        {
+            "name": "ce"
+        },
+        {
+            "name": "snmp"
+        },
+        {
+            "name": "snmp-base"
+        },
+        {
+            "name": "snmp-components"
+        },
+        {
+            "name": "spell"
+        },
+        {
+            "name": "spell-base"
+        },
+        {
+            "name": "spell-components"
+        },
+        {
+            "name": "store"
+        },
+        {
+            "name": "store-base"
+        },
+        {
+            "name": "store-components"
+        },
+        {
+            "name": "timezone-data"
+        }
+    ]
+}

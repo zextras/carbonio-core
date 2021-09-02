@@ -1,0 +1,195 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-mta"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends=(
+  "carbonio-core"
+  "carbonio-mta-components"
+)
+provides=(
+  "mail-transport-agent"
+)
+conflicts=(
+  "mail-transport-agent"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -D etc/sudoers.d/02_carbonio-mta \
+    "${pkgdir}/etc/sudoers.d/02_carbonio-mta"
+  install -D opt/zextras/common/conf/master.cf.in \
+    "${pkgdir}/opt/zextras/common/conf/master.cf.in"
+  install -D opt/zextras/common/conf/tag_as_foreign.re.in \
+    "${pkgdir}/opt/zextras/common/conf/tag_as_foreign.re.in"
+  install -D opt/zextras/common/conf/tag_as_originating.re.in \
+    "${pkgdir}/opt/zextras/common/conf/tag_as_originating.re.in"
+
+  mkdir -p "${pkgdir}/opt/zextras/data/altermime/"
+  install -D opt/zextras/data/amavisd/mysql/antispamdb.sql \
+    "${pkgdir}/opt/zextras/data/amavisd/mysql/antispamdb.sql"
+  mkdir -p "${pkgdir}/opt/zextras/data/cbpolicyd/"
+  mkdir -p "${pkgdir}/opt/zextras/data/cbpolicyd/db/"
+  mkdir -p "${pkgdir}/opt/zextras/data/clamav/"
+  mkdir -p "${pkgdir}/opt/zextras/data/opendkim/"
+  mkdir -p "${pkgdir}/opt/zextras/data/postfix/"
+
+}
+
+postinst:apt() {
+  #Symlinks
+
+  if [ ! -e "/usr/sbin/sendmail" -o -L "/usr/bin/sendmail" ]; then
+    if [ -L "/usr/bin/sendmail" ]; then
+      if [ -x /bin/readlink ]; then
+        SMPATH=$(/bin/readlink /usr/sbin/sendmail)
+        if [ x$SMPATH = x"/opt/zextras/postfix/sbin/sendmail" -o x$SMPATH = x"/opt/zextras/common/sbin/sendmail" ]; then
+          /bin/rm -f /usr/sbin/sendmail
+          ln -s /opt/zextras/common/sbin/sendmail /usr/sbin/sendmail
+        fi
+      fi
+    else
+      ln -s /opt/zextras/common/sbin/sendmail /usr/sbin/sendmail
+    fi
+  fi
+
+  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  if [ $? = 0 ]; then
+    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
+      echo "Failed to create tmpfile"
+      exit 1
+    }
+    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
+    grep -E -v '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    mv -f $sudotmp /etc/sudoers
+    chmod $SUDOMODE /etc/sudoers
+  fi
+  chmod 440 /etc/sudoers.d/02_carbonio-mta
+  chown root:root /etc/sudoers.d/02_carbonio-mta
+
+  chown zimbra:zimbra /opt/zextras/common/conf/master.cf.in
+  chmod 440 /opt/zextras/common/conf/master.cf.in
+  chown zimbra:zimbra /opt/zextras/common/conf/tag_as_*.re.in
+
+  mkdir -p /opt/zextras/data/amavisd/db
+  mkdir -p /opt/zextras/data/amavisd/tmp
+  mkdir -p /opt/zextras/data/amavisd/var
+  mkdir -p /opt/zextras/data/amavisd/quarantine
+  chown -R zimbra:zimbra /opt/zextras/data/amavisd/*
+
+  mkdir -p /opt/zextras/data/opendkim
+  chown -R zimbra:zimbra /opt/zextras/data/opendkim
+
+  mkdir -p /opt/zextras/data/clamav/db
+  chown -R zimbra:zimbra /opt/zextras/data/clamav/db
+
+  mkdir -p /opt/zextras/data/postfix/spool/pid
+  chown postfix:zimbra /opt/zextras/data/postfix
+  chown root:postfix /opt/zextras/data/postfix/spool
+  chown postfix:root /opt/zextras/data/postfix/spool/pid
+
+  chown zimbra:zimbra /opt/zextras/data
+
+  if [ ! -f /opt/zextras/common/conf/main.cf ]; then
+    touch /opt/zextras/common/conf/main.cf
+    chown zimbra:zimbra /opt/zextras/common/conf/main.cf
+  fi
+
+  if [ ! -e /etc/aliases -o -L /etc/aliases ]; then
+    if [ -L /etc/aliases ]; then
+      if [ -x /bin/readlink ]; then
+        SMPATH=$(/bin/readlink /etc/aliases)
+        if [ x$SMPATH = x"/opt/zextras/postfix/conf/aliases" -o x$SMPATH = x"/opt/zextras/common/conf/aliases" ]; then
+          rm -f /etc/aliases
+          ln -s /opt/zextras/common/conf/aliases /etc/aliases
+        fi
+      fi
+    else
+      ln -s /opt/zextras/common/conf/aliases /etc/aliases
+    fi
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+
+  chgrp zimbra /opt/zextras/common/conf
+  chmod g+w /opt/zextras/common/conf
+}
+
+postinst:yum() {
+  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  if [ $? = 0 ]; then
+    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
+      echo "Failed to create tmpfile"
+      exit 1
+    }
+    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
+    grep -E -v '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    mv -f $sudotmp /etc/sudoers
+    chmod $SUDOMODE /etc/sudoers
+  fi
+  chmod 440 /etc/sudoers.d/02_carbonio-mta
+  chown root:root /etc/sudoers.d/02_carbonio-mta
+
+  chown zimbra:zimbra /opt/zextras/common/conf/master.cf.in
+  chmod 440 /opt/zextras/common/conf/master.cf.in
+  chown zimbra:zimbra /opt/zextras/common/conf/tag_as_*.re.in
+
+  mkdir -p /opt/zextras/data/amavisd/db
+  mkdir -p /opt/zextras/data/amavisd/tmp
+  mkdir -p /opt/zextras/data/amavisd/var
+  mkdir -p /opt/zextras/data/amavisd/quarantine
+  chown -R zimbra:zimbra /opt/zextras/data/amavisd/*
+
+  mkdir -p /opt/zextras/data/opendkim
+  chown -R zimbra:zimbra /opt/zextras/data/opendkim
+
+  mkdir -p /opt/zextras/data/clamav/db
+  chown -R zimbra:zimbra /opt/zextras/data/clamav/db
+
+  mkdir -p /opt/zextras/data/postfix/spool/pid
+  chown postfix:zimbra /opt/zextras/data/postfix
+  chown root:postfix /opt/zextras/data/postfix/spool
+  chown postfix:root /opt/zextras/data/postfix/spool/pid
+
+  chown zimbra:zimbra /opt/zextras/data
+
+  if [ ! -f /opt/zextras/common/conf/main.cf ]; then
+    touch /opt/zextras/common/conf/main.cf
+    chown zimbra:zimbra /opt/zextras/common/conf/main.cf
+  fi
+
+  if [ ! -e /etc/aliases -o -L /etc/aliases ]; then
+    if [ -L /etc/aliases ]; then
+      if [ -x /bin/readlink ]; then
+        SMPATH=$(/bin/readlink /etc/aliases)
+        if [ x$SMPATH = x"/opt/zextras/postfix/conf/aliases" -o x$SMPATH = x"/opt/zextras/common/conf/aliases" ]; then
+          rm -f /etc/aliases
+          ln -s /opt/zextras/common/conf/aliases /etc/aliases
+        fi
+      fi
+    else
+      ln -s /opt/zextras/common/conf/aliases /etc/aliases
+    fi
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+
+  chgrp zimbra /opt/zextras/common/conf
+  chmod g+w /opt/zextras/common/conf
+}
+

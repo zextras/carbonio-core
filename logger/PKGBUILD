@@ -1,0 +1,29 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-logger"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends=(
+  "carbonio-core"
+)
+
+package() {
+  mkdir -p "${pkgdir}/opt/zextras/logger/db/data"
+}
+
+postinst() {
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+}

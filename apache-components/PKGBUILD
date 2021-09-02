@@ -1,0 +1,26 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-apache-components"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Apache Components"
+pkgdesclong=(
+    "Carbonio apache components pulls in all the packages used by"
+    "carbonio-apache"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-apache-base"
+  "carbonio-httpd"
+  "carbonio-php"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

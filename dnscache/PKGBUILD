@@ -1,0 +1,52 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-dnscache"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends=(
+  "carbonio-core"
+  "carbonio-dnscache-components"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -D etc/resolvconf/update.d/zextras-unbound \
+    "${pkgdir}/etc/resolvconf/update.d/zextras-unbound"
+  install -D etc/sudoers.d/02_carbonio-dnscache \
+    "${pkgdir}/etc/sudoers.d/02_carbonio-dnscache"
+  install -d "${pkgdir}"/opt/zextras/data/dns/ca
+  install -d "${pkgdir}"/opt/zextras/data/dns/trust    
+}
+
+postinst() {
+  #Symlinks
+  chown -R zimbra:zimbra /opt/zextras/data/dns
+
+  chown zimbra:zimbra /opt/zextras/data
+
+  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  if [ $? = 0 ]; then
+    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
+      echo "Failed to create tmpfile"
+      exit 1
+    }
+    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
+    grep -E -v '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    mv -f $sudotmp /etc/sudoers
+    chmod $SUDOMODE /etc/sudoers
+  fi
+  chmod 440 /etc/sudoers.d/02_carbonio-dnscache
+  chown root:root /etc/sudoers.d/02_carbonio-dnscache
+
+}

@@ -1,0 +1,5 @@
+pkgs
+start
+build
+*.target
+*.deb

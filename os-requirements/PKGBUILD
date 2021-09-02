@@ -1,0 +1,88 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-os-requirements"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio OS Requirements"
+pkgdesclong=(
+    "Carbonio OS requirements is used as a simple method to pull in all"
+    "OS required core packages"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends:ubuntu-bionic=(
+    "coreutils"
+    "file"
+    "libaio1"
+    "libexpat1"
+    "libgmp10"
+    "libidn11"
+    "libpcre3"
+    "libperl5.26"
+    "libsocket6-perl"
+    "libstdc++6"
+    "lsb-release"
+    "netcat-openbsd"
+    "net-tools"
+    "pax" 
+    "perl"
+    "procps"
+    "resolvconf"
+    "sudo"
+    "sysstat" 
+    "unzip"
+    "carbonio-base"
+)
+depends:ubuntu-focal=(
+    "coreutils"
+    "file"
+    "libaio1"
+    "libexpat1"
+    "libgmp10"
+    "libidn11"
+    "libpcre3"
+    "libperl5.30"
+    "libsocket6-perl"
+    "libstdc++6"
+    "lsb-release"
+    "netcat-openbsd"
+    "net-tools"
+    "pax" 
+    "perl"
+    "procps"
+    "resolvconf"
+    "sudo"
+    "sysstat" 
+    "unzip"
+    "carbonio-base"
+)
+depends:yum=(
+    "coreutils"
+    "expat"
+    "file"
+    "gmp"
+    "libaio"
+    "libidn"
+    "libstdc++"
+    "net-tools"
+    "nmap-cat"
+    "pcre"
+    "perl-core"
+    "perl-Socket6"
+    "perl"
+    "sudo"
+    "sysstat"
+    "unzip"
+    "carbonio-base"
+
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}
+

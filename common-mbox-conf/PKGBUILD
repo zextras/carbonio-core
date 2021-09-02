@@ -1,0 +1,37 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-common-mbox-conf"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox Configuration"
+pkgdesclong=(
+  "Carbonio Core Mailbox Configuration"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-core-components"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+  install -D opt/zextras/conf/datasource.xml \
+    "${pkgdir}/opt/zextras/conf/datasource.xml"
+  install -D opt/zextras/conf/localconfig.xml \
+    "${pkgdir}/opt/zextras/conf/localconfig.xml"
+  install -D opt/zextras/conf/log4j.properties.in \
+    "${pkgdir}/opt/zextras/conf/log4j.properties.in"
+  install -D opt/zextras/conf/milter.log4j.properties \
+    "${pkgdir}/opt/zextras/conf/milter.log4j.properties"
+  install -D opt/zextras/conf/mta_milter_options.in \
+    "${pkgdir}/opt/zextras/conf/mta_milter_options.in"
+  install -D opt/zextras/conf/stats.conf.in \
+    "${pkgdir}/opt/zextras/conf/stats.conf.in"
+  install -D opt/zextras/conf/unbound.conf.in \
+    "${pkgdir}/opt/zextras/conf/unbound.conf.in"   
+}

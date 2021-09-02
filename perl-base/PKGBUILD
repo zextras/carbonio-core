@@ -1,0 +1,30 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-perl-base"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Perl Base"
+pkgdesclong=(
+  "Carbonio Perl Base is used as a simple method to allow removing"
+  "all the zextras-perl specific packages."
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends:apt=(
+  "perl"
+  "carbonio-base"
+)
+depends:yum=(
+  "perl-core"
+  "perl"
+  "carbonio-base"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

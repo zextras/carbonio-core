@@ -1,0 +1,41 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-spell-components"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio components for spell package"
+pkgdesclong=(
+  "Carbonio spell components pulls in all the packages used by"
+  "carbonio-spell"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-spell-base"
+  "carbonio-aspell-ar"
+  "carbonio-aspell-da"
+  "carbonio-aspell-de"
+  "carbonio-aspell-en"
+  "carbonio-aspell-es"
+  "carbonio-aspell-fr"
+  "carbonio-aspell-hi"
+  "carbonio-aspell-hu"
+  "carbonio-aspell-it"
+  "carbonio-aspell-nl"
+  "carbonio-aspell-pl"
+  "carbonio-aspell-pt-br"
+  "carbonio-aspell-ru"
+  "carbonio-aspell-sv"
+  "carbonio-aspell-zimbra"
+  "carbonio-httpd"
+  "carbonio-php"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

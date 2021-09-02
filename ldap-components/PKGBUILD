@@ -1,0 +1,26 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-ldap-components"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio components for ldap package"
+pkgdesclong=(
+  "Carbonio ldap components pulls in all the packages used by"
+  "carbonio-ldap"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-ldap-base"
+  "carbonio-openldap"
+  "carbonio-openssl"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

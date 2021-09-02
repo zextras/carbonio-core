@@ -1,0 +1,24 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-ldap-base"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio LDAP Base"
+pkgdesclong=(
+    "Carbonio LDAP Base is used as a simple method to allow removing"
+    "all the zextras-ldap specific packages"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-base"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

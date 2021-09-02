@@ -1,0 +1,37 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-common-mbox-conf-attrs"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox Attributes Configuration"
+pkgdesclong=(
+  "Carbonio Core Mailbox Attributes Configuration"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+sources=(
+  "zextras-attrs-schema"
+)
+hashsums=(
+  "SKIP"
+)
+depends=(
+  "carbonio-core-components"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+  install -D opt/zextras/conf/attrs/amavisd-new-attrs.xml \
+    "${pkgdir}/opt/zextras/conf/attrs/amavisd-new-attrs.xml"
+  install -D opt/zextras/conf/attrs/zextras-attrs.xml \
+    "${pkgdir}/opt/zextras/conf/attrs/zextras-attrs.xml"
+  install -D opt/zextras/conf/attrs/zextras-ocs.xml \
+    "${pkgdir}/opt/zextras/conf/attrs/zextras-ocs.xml"
+  install -D "${srcdir}"/zextras-attrs-schema \
+    "${pkgdir}/opt/zextras/conf/zextras-attrs-schema"
+}

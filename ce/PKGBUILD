@@ -1,0 +1,42 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-ce"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="The Carbonio Community Edition bootstrap package"
+pkgdesclong=(
+  "The Carbonio Community Edition bootstrap package"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends=(
+  "carbonio-core"
+  "carbonio-ldap"
+  "carbonio-logger"
+  "carbonio-memcached"
+  "carbonio-mta"
+  "carbonio-nginx"
+  "carbonio-proxy"
+  "carbonio-store"
+)
+sources=(
+  "carbonio-bootstrap"
+  "install_history"
+)
+hashsums=(
+  "SKIP"
+  "SKIP"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -Dm755 "${srcdir}"/carbonio-bootstrap \
+    "${pkgdir}/usr/bin/carbonio-bootstrap"
+  install -Dm755 "${srcdir}"/install_history \
+    "${pkgdir}"/opt/zextras/.install_history
+}

@@ -1,0 +1,24 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-proxy-base"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio proxy Base"
+pkgdesclong=(
+  "Carbonio proxy Base is used as a simple method to allow removing"
+  "all the zextras-proxy specific packages."
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-base"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

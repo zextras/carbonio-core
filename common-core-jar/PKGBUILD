@@ -1,0 +1,37 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-common-core-jar"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Jars"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-core-components"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+  install -D opt/zextras/lib/jars/zextras-native.jar \
+    "${pkgdir}/opt/zextras/lib/jars/zextras-native.jar"
+
+  install -D opt/zextras/lib/jars/zimbraclient.jar \
+    "${pkgdir}/opt/zextras/lib/jars/zimbraclient.jar"
+
+  install -D opt/zextras/lib/jars/zimbracommon.jar \
+    "${pkgdir}/opt/zextras/lib/jars/zimbracommon.jar"
+
+  install -D opt/zextras/lib/jars/zimbrasoap.jar \
+    "${pkgdir}/opt/zextras/lib/jars/zimbrasoap.jar"
+
+  install -D opt/zextras/lib/jars/zimbrastore.jar \
+    "${pkgdir}/opt/zextras/lib/jars/zimbrastore.jar"
+}

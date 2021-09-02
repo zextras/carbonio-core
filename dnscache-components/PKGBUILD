@@ -1,0 +1,25 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-dnscache-components"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio components for dnscache package"
+pkgdesclong=(
+    "Carbonio dnscache components pulls in all the packages used by"
+    "carbonio-dnscache"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-dnscache-base"
+  "carbonio-unbound"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

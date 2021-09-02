@@ -1,0 +1,33 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-mbox-service"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Mailbox Service"
+pkgdesclong=(
+  "Carbonio Mailbox Service"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-common-core-jar"
+  "carbonio-common-mbox-conf-attrs"
+  "carbonio-common-mbox-conf-msgs"
+  "carbonio-common-mbox-conf-rights"
+  "carbonio-common-mbox-conf"
+  "carbonio-common-mbox-db"
+  "carbonio-common-mbox-docs"
+  "carbonio-common-mbox-native-lib"
+  "carbonio-mbox-conf"
+  "carbonio-mbox-war"
+  "carbonio-store-components"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

@@ -1,0 +1,24 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-osl"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Opensource Licenses"
+pkgdesclong=(
+  "This file contains the licenses for the open source 3rd party"
+  "software used by Carbonio"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-base"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

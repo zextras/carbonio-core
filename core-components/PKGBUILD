@@ -1,0 +1,39 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-core-components"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Carbonio components for core package"
+pkgdesclong=(
+  "Carbonio core components pulls in all the packages used by"
+  "carbonio-core"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-base"
+  "carbonio-os-requirements"
+  "carbonio-osl"
+  "carbonio-perl"
+  "carbonio-amavis-logwatch"
+  "carbonio-curl"
+  "carbonio-cyrus-sasl"
+  "carbonio-mariadb"
+  "carbonio-openjdk"
+  "carbonio-openldap"
+  "carbonio-openssl"
+  "carbonio-innotop"
+  "carbonio-pflogsumm"
+  "carbonio-postfix-logwatch"
+  "carbonio-prepflog"
+  "carbonio-jemalloc"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

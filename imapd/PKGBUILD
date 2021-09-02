@@ -1,0 +1,29 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-imapd"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends=(
+  "carbonio-core"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -D opt/zextras/bin/zmimapdctl \ 
+  "${pkgdir}/opt/zextras/bin/zmimapdctl"
+  install -D opt/zextras/conf/imapd.log4j.properties \
+    "${pkgdir}/opt/zextras/conf/imapd.log4j.properties"
+  install -D opt/zextras/lib/jars/oauth-1.4.jar \
+    "${pkgdir}/opt/zextras/lib/jars/oauth-1.4.jar"
+}
