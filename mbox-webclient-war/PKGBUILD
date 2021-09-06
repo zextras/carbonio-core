@@ -84,12 +84,5 @@ package() {
 }
 
 postinst() {
-  echo "**** Fixing up the permission ****"
   /opt/zextras/libexec/zmfixperms
-
-  # This is only required in 8.8 patches, for 8.9 this code is already moved to /opt/zextras/libexec/zmfixperms script
-  if [ -d /opt/zextras/conf/templates/ ]; then
-    chmod -R 755 /opt/zextras/conf/templates
-    chown -R zimbra:zimbra /opt/zextras/conf/templates
-  fi
 }
