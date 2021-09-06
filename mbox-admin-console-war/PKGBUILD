@@ -43,6 +43,4 @@ package() {
     --exclude='AjxTimezoneData.js' \
     opt/zextras/jetty_base/webapps/zimbraAdmin/ \
     "${pkgdir}/opt/zextras/jetty_base/webapps/zimbraAdmin"
-
-  rm -rf "${pkgdir}/opt/zextras/jetty_base/webapps/zimbraAdmin/help"
 }

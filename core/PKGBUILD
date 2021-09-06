@@ -365,10 +365,6 @@ package() {
     "${pkgdir}/opt/zextras/db/create_database.sql"
   install -D opt/zextras/db/db.sql \
     "${pkgdir}/opt/zextras/db/db.sql"
-  install -D opt/zextras/docs/YPL.txt \
-    "${pkgdir}/opt/zextras/docs/YPL.txt"
-  install -D opt/zextras/docs/ZPL.txt \
-    "${pkgdir}/opt/zextras/docs/ZPL.txt"
   install -D opt/zextras/docs/zmztozmig.txt \
     "${pkgdir}/opt/zextras/docs/zmztozmig.txt"
 

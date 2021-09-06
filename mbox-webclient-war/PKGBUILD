@@ -72,11 +72,9 @@ package() {
     --exclude='AjxTimezoneData.js' \
     --exclude='bitbucket-pipelines.yml' \
     --exclude='downloads' \
-    --exclude='portals' \
     --exclude='robots.txt' \
     opt/zextras/jetty_base/webapps/zimbra/ \
     "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra"
-  rm -rf "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/help"
 
   install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/work/zimbra/jsp"
   rsync -a opt/zextras/jetty_base/work/zimbra/jsp/ \
