@@ -119,8 +119,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmdedupe"
   install -D opt/zextras/bin/zmdhparam \
     "${pkgdir}/opt/zextras/bin/zmdhparam"
-  install -D opt/zextras/bin/zmdnscachectl \
-    "${pkgdir}/opt/zextras/bin/zmdnscachectl"
   install -D opt/zextras/bin/zmdumpenv \
     "${pkgdir}/opt/zextras/bin/zmdumpenv"
   install -D opt/zextras/bin/zmfixcalendtime \
@@ -459,8 +457,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmdiaglog"
   install -Dm755 opt/zextras/libexec/zmdkimkeyutil \
     "${pkgdir}/opt/zextras/libexec/zmdkimkeyutil"
-  install -Dm755 opt/zextras/libexec/zmdnscachealign \
-    "${pkgdir}/opt/zextras/libexec/zmdnscachealign"
   install -Dm755 opt/zextras/libexec/zmdomaincertmgr \
     "${pkgdir}/opt/zextras/libexec/zmdomaincertmgr"
   install -Dm755 opt/zextras/libexec/zmexplainslow \

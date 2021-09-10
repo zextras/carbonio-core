@@ -50,15 +50,6 @@
             "name": "core-components"
         },
         {
-            "name": "dnscache"
-        },
-        {
-            "name": "dnscache-base"
-        },
-        {
-            "name": "dnscache-components"
-        },
-        {
             "name": "imapd"
         },
         {
