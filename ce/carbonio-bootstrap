@@ -1,3 +1,7 @@
 #!/bin/bash
 
+# Bootstrap and start C services
 /opt/zextras/libexec/zmsetup.pl "${@}"
+
+# Fix permission after services starting
+/opt/zextras/libexec/zmfixperms
