@@ -22,8 +22,8 @@ package() {
   cd "${srcdir}"/../../
   install -D opt/zextras/jetty_base/common/endorsed/jcharset.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/endorsed/jcharset.jar"
-  install -D opt/zextras/jetty_base/common/endorsed/zextras-charset.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/endorsed/zextras-charset.jar"
+  install -D opt/zextras/jetty_base/common/endorsed/charset.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/endorsed/charset.jar"
   install -D opt/zextras/jetty_base/common/lib/UserAgentUtils-1.21.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/UserAgentUtils-1.21.jar"
   install -D opt/zextras/jetty_base/common/lib/activation-1.1.1.jar \

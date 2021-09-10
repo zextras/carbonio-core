@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-ldap-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio LDAP Base"
+pkgdesc="Carbonio LDAP base"
 pkgdesclong=(
-    "Carbonio LDAP Base is used as a simple method to allow removing"
-    "all the zextras-ldap specific packages"
+    "Carbonio LDAP base is used as a simple method to allow removing"
+    "all the LDAP specific packages"
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

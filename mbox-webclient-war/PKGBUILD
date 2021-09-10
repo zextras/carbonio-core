@@ -61,8 +61,8 @@ package() {
   install -D opt/zextras/conf/templates/zimbra/Widgets.template \
     "${pkgdir}/opt/zextras/conf/templates/zimbra/Widgets.template"
 
-  install -D opt/zextras/jetty_base/etc/zextras-jetty-env.xml.in \
-    "${pkgdir}/opt/zextras/jetty_base/etc/zextras-jetty-env.xml.in"
+  install -D opt/zextras/jetty_base/etc/jetty-env.xml.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-env.xml.in"
   install -D opt/zextras/jetty_base/etc/zimbra.web.xml.in \
     "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.web.xml.in"
 

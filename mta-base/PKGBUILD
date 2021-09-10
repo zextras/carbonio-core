@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-mta-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio mta Base"
+pkgdesc="Carbonio mta base"
 pkgdesclong=(
-  "Carbonio mta Base is used as a simple method to allow removing"
-  "all the zextras-mta specific packages."
+  "Carbonio mta base is used as a simple method to allow removing"
+  "all the mta specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

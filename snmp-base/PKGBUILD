@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-snmp-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio snmp Base"
+pkgdesc="Carbonio SNMP base"
 pkgdesclong=(
-  "Carbonio snmp Base is used as a simple method to allow removing"
-  "all the zextras-snmp specific packages."
+  "Carbonio snmp base is used as a simple method to allow removing"
+  "all the SNMP specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

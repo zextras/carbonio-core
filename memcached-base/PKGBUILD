@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-memcached-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio memcached Base"
+pkgdesc="Carbonio memcached base"
 pkgdesclong=(
-    "Carbonio memcached Base is used as a simple method to allow removing"
-    "all the zextras-memcached specific packages."
+    "Carbonio memcached base is used as a simple method to allow removing"
+    "all the memcached specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

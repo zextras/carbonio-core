@@ -13,7 +13,7 @@ arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 sources=(
-  "zextras-attrs-schema"
+  "attrs-schema"
 )
 hashsums=(
   "SKIP"
@@ -28,10 +28,10 @@ package() {
   cd "${srcdir}"/../../
   install -D opt/zextras/conf/attrs/amavisd-new-attrs.xml \
     "${pkgdir}/opt/zextras/conf/attrs/amavisd-new-attrs.xml"
-  install -D opt/zextras/conf/attrs/zextras-attrs.xml \
-    "${pkgdir}/opt/zextras/conf/attrs/zextras-attrs.xml"
-  install -D opt/zextras/conf/attrs/zextras-ocs.xml \
-    "${pkgdir}/opt/zextras/conf/attrs/zextras-ocs.xml"
-  install -D "${srcdir}"/zextras-attrs-schema \
-    "${pkgdir}/opt/zextras/conf/zextras-attrs-schema"
+  install -D opt/zextras/conf/attrs/attrs.xml \
+    "${pkgdir}/opt/zextras/conf/attrs/attrs.xml"
+  install -D opt/zextras/conf/attrs/ocs.xml \
+    "${pkgdir}/opt/zextras/conf/attrs/ocs.xml"
+  install -D "${srcdir}"/attrs-schema \
+    "${pkgdir}/opt/zextras/conf/attrs-schema"
 }

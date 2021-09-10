@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-proxy-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio proxy Base"
+pkgdesc="Carbonio proxy base"
 pkgdesclong=(
-  "Carbonio proxy Base is used as a simple method to allow removing"
-  "all the zextras-proxy specific packages."
+  "Carbonio proxy base is used as a simple method to allow removing"
+  "all the proxy specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

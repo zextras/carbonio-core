@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-store-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio Store Base"
+pkgdesc="Carbonio store base"
 pkgdesclong=(
-    "Carbonio store Base is used as a simple method to allow removing"
-    "all the zextras-store specific packages."
+    "Carbonio store base is used as a simple method to allow removing"
+    "all the store specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

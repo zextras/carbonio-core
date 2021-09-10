@@ -20,8 +20,8 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../
-  install -D opt/zextras/lib/jars/zextras-native.jar \
-    "${pkgdir}/opt/zextras/lib/jars/zextras-native.jar"
+  install -D opt/zextras/lib/jars/native.jar \
+    "${pkgdir}/opt/zextras/lib/jars/native.jar"
 
   install -D opt/zextras/lib/jars/zimbraclient.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbraclient.jar"

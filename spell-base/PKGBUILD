@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-spell-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio spell Base"
+pkgdesc="Carbonio spell base"
 pkgdesclong=(
-  "Carbonio spell Base is used as a simple method to allow removing"
-  "all the zextras-spell specific packages."
+  "Carbonio spell base is used as a simple method to allow removing"
+  "all the spell specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

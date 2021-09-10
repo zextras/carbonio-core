@@ -32,6 +32,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/magic.zimbra"
   install -D opt/zextras/conf/spnego_java_options.in \
     "${pkgdir}/opt/zextras/conf/spnego_java_options.in"
-  install -D opt/zextras/conf/zextras-contact-fields.xml \
-    "${pkgdir}/opt/zextras/conf/zextras-contact-fields.xml"
+  install -D opt/zextras/conf/contact-fields.xml \
+    "${pkgdir}/opt/zextras/conf/contact-fields.xml"
 }

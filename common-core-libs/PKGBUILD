@@ -264,8 +264,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/xmlschema-core-2.0.3.jar"
   install -D opt/zextras/lib/jars/yuicompressor-2.4.2-zimbra.jar \
     "${pkgdir}/opt/zextras/lib/jars/yuicompressor-2.4.2-zimbra.jar"
-  install -D opt/zextras/lib/jars/zextras-charset.jar \
-    "${pkgdir}/opt/zextras/lib/jars/zextras-charset.jar"
+  install -D opt/zextras/lib/jars/charset.jar \
+    "${pkgdir}/opt/zextras/lib/jars/charset.jar"
   install -D opt/zextras/lib/jars/zkclient-0.1.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/zkclient-0.1.0.jar"
   install -D opt/zextras/lib/jars/zm-ews-stub-2.0.jar \

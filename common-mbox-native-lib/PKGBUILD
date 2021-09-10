@@ -26,6 +26,6 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../
-  install -D opt/zextras/lib/libzextras-native.so \
-    "${pkgdir}/opt/zextras/lib/libzextras-native.so"
+  install -D opt/zextras/lib/libnative.so \
+    "${pkgdir}/opt/zextras/lib/libnative.so"
 }

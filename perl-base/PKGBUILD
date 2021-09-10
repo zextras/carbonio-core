@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-perl-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio Perl Base"
+pkgdesc="Carbonio perl base"
 pkgdesclong=(
-  "Carbonio Perl Base is used as a simple method to allow removing"
-  "all the zextras-perl specific packages."
+  "Carbonio perl base is used as a simple method to allow removing"
+  "all the perl specific packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
