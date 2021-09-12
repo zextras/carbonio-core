@@ -36,8 +36,8 @@ package() {
 postinst() {
   mkdir -p /opt/zextras/data/snmp/persist
   mkdir -p /opt/zextras/data/snmp/state
-  chown -R zimbra:zimbra /opt/zextras/data/snmp
-  chown zimbra:zimbra /opt/zextras/data
+  chown -R zextras:zextras /opt/zextras/data/snmp
+  chown zextras:zextras /opt/zextras/data
   chown root:root /opt/zextras/common/share/snmp/mibs/*.mib
   chown root:root /opt/zextras/common/share/snmp/snmp.conf
   chown root:root /opt/zextras/common/conf/snmp.conf

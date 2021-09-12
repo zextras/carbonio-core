@@ -410,8 +410,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/installer/util/modules/postinstall.sh"
   install -Dm755 opt/zextras/libexec/installer/util/utilfunc.sh \
     "${pkgdir}/opt/zextras/libexec/installer/util/utilfunc.sh"
-  install -Dm755 opt/zextras/libexec/libreoffice-installer.sh \
-    "${pkgdir}/opt/zextras/libexec/libreoffice-installer.sh"
   install -Dm755 opt/zextras/libexec/postinstall.pm \
     "${pkgdir}/opt/zextras/libexec/postinstall.pm"
   install -Dm755 opt/zextras/libexec/preinstall.pm \
@@ -423,8 +421,8 @@ package() {
   
   install -Dm755 opt/zextras/libexec/zcs \
     "${pkgdir}/opt/zextras/libexec/zcs"
-  install -Dm755 opt/zextras/libexec/zimbra \
-    "${pkgdir}/opt/zextras/libexec/zimbra"
+  install -Dm755 opt/zextras/libexec/carbonio \
+    "${pkgdir}/opt/zextras/libexec/carbonio"
   install -Dm755 opt/zextras/libexec/zmaltermimeconfig \
     "${pkgdir}/opt/zextras/libexec/zmaltermimeconfig"
   install -Dm755 opt/zextras/libexec/zmantispamdbinit \
@@ -623,33 +621,33 @@ package() {
 
 preinst() {
   if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
-    echo "zimbra soft nproc 278528" >/etc/security/limits.d/10-zimbra.conf
-    echo "zimbra hard nproc 278528" >>/etc/security/limits.d/10-zimbra.conf
-    echo "postfix soft nproc 278528" >>/etc/security/limits.d/10-zimbra.conf
-    echo "postfix hard nproc 278528" >>/etc/security/limits.d/10-zimbra.conf
-    echo "root soft nproc 278528" >>/etc/security/limits.d/10-zimbra.conf
-    echo "root hard nproc 278528" >>/etc/security/limits.d/10-zimbra.conf
+    echo "zextras soft nproc 278528" >/etc/security/limits.d/10-zextras.conf
+    echo "zextras hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+    echo "postfix soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+    echo "postfix hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+    echo "root soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+    echo "root hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
   fi
   if [ -f "/etc/security/limits.conf" ]; then
     limitstmp=$(mktemp -t limitstmp.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
-    grep -E -v -e '^zimbra.*nofile' /etc/security/limits.conf >$limitstmp
-    echo "zimbra soft nofile 524288" >>$limitstmp
-    echo "zimbra hard nofile 524288" >>$limitstmp
+    grep -E -v -e '^zextras.*nofile' /etc/security/limits.conf >$limitstmp
+    echo "zextras soft nofile 524288" >>$limitstmp
+    echo "zextras hard nofile 524288" >>$limitstmp
     mv -f $limitstmp /etc/security/limits.conf
     chmod 640 /etc/security/limits.conf
   else
-    echo "zimbra soft nofile 524288" >/etc/security/limits.conf
-    echo "zimbra hard nofile 524288" >>/etc/security/limits.conf
+    echo "zextras soft nofile 524288" >/etc/security/limits.conf
+    echo "zextras hard nofile 524288" >>/etc/security/limits.conf
     chmod 640 /etc/security/limits.conf
   fi
 
 }
 
 postinst:apt() {
-  # Create group, user for zimbra and postfix.
+  # Create group, user for zextras and postfix.
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
@@ -658,7 +656,7 @@ postinst:apt() {
   rm -f /opt/zextras/java
 
   if [ -d "/opt/zextras/logger/db" ]; then
-    chown zimbra:zimbra /opt/zextras/logger/db
+    chown zextras:zextras /opt/zextras/logger/db
   fi
 
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
@@ -690,69 +688,69 @@ postinst:apt() {
     cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/zimbra
   fi
 
-  cp -f /opt/zextras/libexec/zimbra /etc/init.d/zimbra
-  chmod 755 /etc/init.d/zimbra
+  cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
+  chmod 755 /etc/init.d/carbonio
   if [ -x /sbin/chkconfig ]; then
-    chkconfig --del zimbra
-    chkconfig --add zimbra
-    chkconfig zimbra on
+    chkconfig --del zextras
+    chkconfig --add zextras
+    chkconfig zextras on
   elif [ -x /usr/sbin/update-rc.d ]; then
-    update-rc.d -f zimbra remove
-    update-rc.d zimbra start 99 2 5 . stop 01 0 1 6 .
+    update-rc.d -f zextras remove
+    update-rc.d zextras start 99 2 5 . stop 01 0 1 6 .
   else
-    rm -f /etc/rc*.d/S99zimbra
-    rm -f /etc/rc*.d/S89zimbra
-    rm -f /etc/rc*.d/K01zimbra
+    rm -f /etc/rc*.d/S99carbonio
+    rm -f /etc/rc*.d/S89carbonio
+    rm -f /etc/rc*.d/K01carbonio
 
     if [ -d /etc/rc0.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc0.d/S89zimbra
-      ln -s /etc/init.d/zimbra /etc/rc0.d/K01zimbra
+      ln -s /etc/init.d/carnbonio /etc/rc0.d/S89carbonio
+      ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
     fi
     if [ -d /etc/rc1.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc1.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
     fi
     if [ -d /etc/rc2.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc2.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc2.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc2.d/K01carbonio
     fi
     if [ -d /etc/rc3.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc3.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc3.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc3.d/K01carbonio
     fi
     if [ -d /etc/rc4.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc4.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc4.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc4.d/K01carbonio
     fi
     if [ -d /etc/rc5.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc5.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc5.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc5.d/K01carbonio
     fi
     if [ -d /etc/rc6.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc6.d/S89zimbra
-      ln -s /etc/init.d/zimbra /etc/rc6.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc6.d/S89carbonio
+      ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
     fi
 
   fi
 
   mkdir -p /opt/zextras/backup
-  chown zimbra:zimbra /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/backup
   mkdir -p /opt/zextras/log
-  chown zimbra:zimbra /opt/zextras/log
+  chown zextras:zextras /opt/zextras/log
   mkdir -p /opt/zextras/ssl
-  chown zimbra:zimbra /opt/zextras/ssl
+  chown zextras:zextras /opt/zextras/ssl
   mkdir -p /opt/zextras/.ssh
-  chown zimbra:zimbra /opt/zextras/.ssh
+  chown zextras:zextras /opt/zextras/.ssh
   mkdir -p /opt/zextras/zmstat
-  chown zimbra:zimbra /opt/zextras/zmstat
+  chown zextras:zextras /opt/zextras/zmstat
 
-  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi
@@ -770,7 +768,7 @@ postinst:apt() {
 }
 
 postinst:yum() {
-  # Create group, user for zimbra and postfix.
+  # Create group, user for zextras and postfix.
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
@@ -779,7 +777,7 @@ postinst:yum() {
   rm -f /opt/zextras/java
 
   if [ -d "/opt/zextras/logger/db" ]; then
-    chown zimbra:zimbra /opt/zextras/logger/db
+    chown zextras:zextras /opt/zextras/logger/db
   fi
 
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
@@ -787,72 +785,72 @@ postinst:yum() {
   fi
 
   if [ -d /etc/logrotate.d ]; then
-    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/zimbra
+    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/zextras
   fi
 
-  cp -f /opt/zextras/libexec/zimbra /etc/init.d/zimbra
-  chmod 755 /etc/init.d/zimbra
+  cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
+  chmod 755 /etc/init.d/carbonio
   if [ -x /sbin/chkconfig ]; then
-    chkconfig --del zimbra
-    chkconfig --add zimbra
-    chkconfig zimbra on
+    chkconfig --del carbonio
+    chkconfig --add carbonio
+    chkconfig carbonio on
   elif [ -x /usr/sbin/update-rc.d ]; then
-    update-rc.d -f zimbra remove
-    update-rc.d zimbra start 99 2 5 . stop 01 0 1 6 .
+    update-rc.d -f carbonio remove
+    update-rc.d carbonio start 99 2 5 . stop 01 0 1 6 .
   else
-    rm -f /etc/rc*.d/S99zimbra
-    rm -f /etc/rc*.d/S89zimbra
-    rm -f /etc/rc*.d/K01zimbra
+    rm -f /etc/rc*.d/S99carbonio
+    rm -f /etc/rc*.d/S89carbonio
+    rm -f /etc/rc*.d/K01carbonio
 
     if [ -d /etc/rc0.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc0.d/S89zimbra
-      ln -s /etc/init.d/zimbra /etc/rc0.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc0.d/S89carbonio
+      ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
     fi
     if [ -d /etc/rc1.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc1.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
     fi
     if [ -d /etc/rc2.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc2.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc2.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc2.d/K01carbonio
     fi
     if [ -d /etc/rc3.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc3.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc3.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc3.d/K01carbonio
     fi
     if [ -d /etc/rc4.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc4.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc4.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc4.d/K01carbonio
     fi
     if [ -d /etc/rc5.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc5.d/S99zimbra
-      ln -s /etc/init.d/zimbra /etc/rc5.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
+      ln -s /etc/init.d/carbonio /etc/rc5.d/K01carbonio
     fi
     if [ -d /etc/rc6.d ]; then
-      ln -s /etc/init.d/zimbra /etc/rc6.d/S89zimbra
-      ln -s /etc/init.d/zimbra /etc/rc6.d/K01zimbra
+      ln -s /etc/init.d/carbonio /etc/rc6.d/S89carbonio
+      ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
     fi
 
   fi
 
   mkdir -p /opt/zextras/backup
-  chown zimbra:zimbra /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/backup
   mkdir -p /opt/zextras/log
-  chown zimbra:zimbra /opt/zextras/log
+  chown zextras:zextras /opt/zextras/log
   mkdir -p /opt/zextras/ssl
-  chown zimbra:zimbra /opt/zextras/ssl
+  chown zextras:zextras /opt/zextras/ssl
   mkdir -p /opt/zextras/.ssh
-  chown zimbra:zimbra /opt/zextras/.ssh
+  chown zextras:zextras /opt/zextras/.ssh
   mkdir -p /opt/zextras/zmstat
-  chown zimbra:zimbra /opt/zextras/zmstat
+  chown zextras:zextras /opt/zextras/zmstat
 
-  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi

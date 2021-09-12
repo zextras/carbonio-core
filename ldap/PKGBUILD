@@ -34,7 +34,7 @@ postinst() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
   mkdir -p /opt/zextras/data/ldap/mdb/db
-  chown -R zimbra:zimbra /opt/zextras/data/ldap
+  chown -R zextras:zextras /opt/zextras/data/ldap
 
   grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then

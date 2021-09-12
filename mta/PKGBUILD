@@ -64,46 +64,46 @@ postinst:apt() {
     fi
   fi
 
-  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
-    grep -E -v '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    grep -E -v '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi
   chmod 440 /etc/sudoers.d/02_carbonio-mta
   chown root:root /etc/sudoers.d/02_carbonio-mta
 
-  chown zimbra:zimbra /opt/zextras/common/conf/master.cf.in
+  chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in
-  chown zimbra:zimbra /opt/zextras/common/conf/tag_as_*.re.in
+  chown zextras:zextras /opt/zextras/common/conf/tag_as_*.re.in
 
   mkdir -p /opt/zextras/data/amavisd/db
   mkdir -p /opt/zextras/data/amavisd/tmp
   mkdir -p /opt/zextras/data/amavisd/var
   mkdir -p /opt/zextras/data/amavisd/quarantine
-  chown -R zimbra:zimbra /opt/zextras/data/amavisd/*
+  chown -R zextras:zextras /opt/zextras/data/amavisd/*
 
   mkdir -p /opt/zextras/data/opendkim
-  chown -R zimbra:zimbra /opt/zextras/data/opendkim
+  chown -R zextras:zextras /opt/zextras/data/opendkim
 
   mkdir -p /opt/zextras/data/clamav/db
-  chown -R zimbra:zimbra /opt/zextras/data/clamav/db
+  chown -R zextras:zextras /opt/zextras/data/clamav/db
 
   mkdir -p /opt/zextras/data/postfix/spool/pid
-  chown postfix:zimbra /opt/zextras/data/postfix
+  chown postfix:zextras /opt/zextras/data/postfix
   chown root:postfix /opt/zextras/data/postfix/spool
   chown postfix:root /opt/zextras/data/postfix/spool/pid
 
-  chown zimbra:zimbra /opt/zextras/data
+  chown zextras:zextras /opt/zextras/data
 
   if [ ! -f /opt/zextras/common/conf/main.cf ]; then
     touch /opt/zextras/common/conf/main.cf
-    chown zimbra:zimbra /opt/zextras/common/conf/main.cf
+    chown zextras:zextras /opt/zextras/common/conf/main.cf
   fi
 
   if [ ! -e /etc/aliases -o -L /etc/aliases ]; then
@@ -124,51 +124,51 @@ postinst:apt() {
     /opt/zextras/libexec/zmfixperms
   fi
 
-  chgrp zimbra /opt/zextras/common/conf
+  chgrp zextras /opt/zextras/common/conf
   chmod g+w /opt/zextras/common/conf
 }
 
 postinst:yum() {
-  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
-    grep -E -v '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    grep -E -v '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi
   chmod 440 /etc/sudoers.d/02_carbonio-mta
   chown root:root /etc/sudoers.d/02_carbonio-mta
 
-  chown zimbra:zimbra /opt/zextras/common/conf/master.cf.in
+  chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in
-  chown zimbra:zimbra /opt/zextras/common/conf/tag_as_*.re.in
+  chown zextras:zextras /opt/zextras/common/conf/tag_as_*.re.in
 
   mkdir -p /opt/zextras/data/amavisd/db
   mkdir -p /opt/zextras/data/amavisd/tmp
   mkdir -p /opt/zextras/data/amavisd/var
   mkdir -p /opt/zextras/data/amavisd/quarantine
-  chown -R zimbra:zimbra /opt/zextras/data/amavisd/*
+  chown -R zextras:zextras /opt/zextras/data/amavisd/*
 
   mkdir -p /opt/zextras/data/opendkim
-  chown -R zimbra:zimbra /opt/zextras/data/opendkim
+  chown -R zextras:zextras /opt/zextras/data/opendkim
 
   mkdir -p /opt/zextras/data/clamav/db
-  chown -R zimbra:zimbra /opt/zextras/data/clamav/db
+  chown -R zextras:zextras /opt/zextras/data/clamav/db
 
   mkdir -p /opt/zextras/data/postfix/spool/pid
-  chown postfix:zimbra /opt/zextras/data/postfix
+  chown postfix:zextras /opt/zextras/data/postfix
   chown root:postfix /opt/zextras/data/postfix/spool
   chown postfix:root /opt/zextras/data/postfix/spool/pid
 
-  chown zimbra:zimbra /opt/zextras/data
+  chown zextras:zextras /opt/zextras/data
 
   if [ ! -f /opt/zextras/common/conf/main.cf ]; then
     touch /opt/zextras/common/conf/main.cf
-    chown zimbra:zimbra /opt/zextras/common/conf/main.cf
+    chown zextras:zextras /opt/zextras/common/conf/main.cf
   fi
 
   if [ ! -e /etc/aliases -o -L /etc/aliases ]; then
@@ -189,7 +189,7 @@ postinst:yum() {
     /opt/zextras/libexec/zmfixperms
   fi
 
-  chgrp zimbra /opt/zextras/common/conf
+  chgrp zextras /opt/zextras/common/conf
   chmod g+w /opt/zextras/common/conf
 }
 

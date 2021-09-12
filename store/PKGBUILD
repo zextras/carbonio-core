@@ -139,7 +139,7 @@ postinst() {
   if [ -f /opt/zextras/db/db.sql ]; then
     mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
-    chown zimbra:zimbra /opt/zextras/db/db.sql*
+    chown zextras:zextras /opt/zextras/db/db.sql*
     chmod 440 /opt/zextras/db/db.sql*
   fi
 
@@ -147,22 +147,22 @@ postinst() {
   (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
 
   mkdir -p /opt/zextras/mailboxd/logs
-  chown zimbra:zimbra /opt/zextras/mailboxd/logs
+  chown zextras:zextras /opt/zextras/mailboxd/logs
 
   mkdir -p /opt/zextras/redolog
   mkdir -p /opt/zextras/store
   mkdir -p /opt/zextras/index
   mkdir -p /opt/zextras/backup
-  chown zimbra:zimbra /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
 
-  grep -E -q '^%zimbra[[:space:]]' /etc/sudoers
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi

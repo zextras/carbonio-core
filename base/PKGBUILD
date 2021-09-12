@@ -5,10 +5,10 @@ targets=(
 pkgname="carbonio-base"
 pkgver="1.0.0"
 pkgrel="1"
-pkgdesc="Carbonio Base"
+pkgdesc="Carbonio base"
 pkgdesclong=(
-    "Carbonio Base is used as a simple method to allow removing"
-    "all the zimbra specific third party packages."
+    "Carbonio base is used as a simple method to allow removing"
+    "all the carbonio specific third party packages."
 )
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
@@ -53,16 +53,16 @@ if [ "$1" = configure ]; then
     fi
   }
 
-  grp_exists zimbra
+  grp_exists zextras
   if [ $? != 0 ]; then
-          groupadd -r zimbra
+          groupadd -r zextras
   fi
 
-  acct_exists zimbra
+  acct_exists zextras
   if [ $? != 0 ]; then
-          useradd -r -g zimbra -G tty -d /opt/zextras -s /bin/bash zimbra
+          useradd -r -g zextras -G tty -d /opt/zextras -s /bin/bash zextras
   else
-          usermod -g zimbra -d /opt/zextras -s /bin/bash zimbra
+          usermod -g zextras -d /opt/zextras -s /bin/bash zextras
   fi
 fi
 exit 0
@@ -94,15 +94,15 @@ postinst:yum() {
     fi
   }
 
-  grp_exists zimbra
+  grp_exists zextras
   if [ $? != 0 ]; then
-          groupadd -r zimbra
+          groupadd -r zextras
   fi
 
-  acct_exists zimbra
+  acct_exists zextras
   if [ $? != 0 ]; then
-          useradd -r -g zimbra -G tty -d /opt/zextras -s /bin/bash zimbra
+          useradd -r -g zextras -G tty -d /opt/zextras -s /bin/bash zextras
   else
-          usermod -g zimbra -d /opt/zextras -s /bin/bash zimbra
+          usermod -g zextras -d /opt/zextras -s /bin/bash zextras
   fi
 }

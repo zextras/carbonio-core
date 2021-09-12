@@ -63,7 +63,7 @@ postinst:apt() {
       /bin/rm -rf /opt/zextras/postfix
     fi
 
-    usermod -a -G postfix,tty zimbra
+    usermod -a -G postfix,tty zextras
   fi
   exit 0
 
@@ -108,6 +108,6 @@ postinst:yum() {
       /bin/rm -rf /opt/zextras/postfix
     fi
   fi
-  usermod -a -G postfix,tty zimbra
+  usermod -a -G postfix,tty zextras
 
 }
