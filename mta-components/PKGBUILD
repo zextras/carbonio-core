@@ -21,6 +21,7 @@ depends:apt=(
   "carbonio-mariadb"
   "carbonio-mta-base"
   "carbonio-opendkim"
+  "carbonio-perl-mail-spamassassin"
   "carbonio-policyd"
   "carbonio-postfix"
 )
@@ -32,6 +33,7 @@ depends:yum=(
   "carbonio-mariadb"
   "carbonio-mta-base"
   "carbonio-opendkim"
+  "carbonio-perl-mail-spamassassin"
   "carbonio-policyd"
   "carbonio-postfix"
 )

@@ -112,6 +112,7 @@ depends=(
   "carbonio-perl-xml-sax"
   "carbonio-perl-xml-simple"
   "carbonio-perl-zmq-constants"
+  "carbonio-perl-zmq-libzmq3"
 )
 section="mail"
 priority="optional"
