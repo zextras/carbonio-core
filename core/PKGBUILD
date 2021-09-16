@@ -353,7 +353,7 @@ package() {
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
   install -D opt/zextras/conf/zmconfigd.log4j.properties \
     "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
-  install -D opt/zextras/conf/zmlogrotate \
+  install -Dm644 opt/zextras/conf/zmlogrotate \
     "${pkgdir}/opt/zextras/conf/zmlogrotate"
   install -D opt/zextras/conf/zmssl.cnf.in \
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
@@ -685,7 +685,7 @@ postinst:apt() {
   chown -R root:root /opt/zextras/common/lib/perl5/Zimbra
 
   if [ -d /etc/logrotate.d ]; then
-    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/zimbra
+    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
   cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
@@ -785,7 +785,7 @@ postinst:yum() {
   fi
 
   if [ -d /etc/logrotate.d ]; then
-    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/zextras
+    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
   cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
