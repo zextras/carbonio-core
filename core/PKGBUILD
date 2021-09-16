@@ -370,10 +370,6 @@ package() {
   rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \
     "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
 
-  install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_clientuploader"
-  rsync -a opt/zextras/lib/ext/com_zimbra_clientuploader/ \
-    "${pkgdir}/opt/zextras/lib/ext/com_zimbra_clientuploader"
-
   install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_ssdb_ephemeral_store"
   rsync -a opt/zextras/lib/ext/com_zimbra_ssdb_ephemeral_store/ \
     "${pkgdir}/opt/zextras/lib/ext/com_zimbra_ssdb_ephemeral_store"
