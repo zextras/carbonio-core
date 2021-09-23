@@ -15,6 +15,7 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends:apt=(
+  "fontconfig"
   "iproute2"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
@@ -29,6 +30,7 @@ depends:apt=(
   "carbonio-timezone-data"
 )
 depends:yum=(
+  "fontconfig"
   "iproute"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
