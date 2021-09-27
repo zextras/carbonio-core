@@ -24,6 +24,7 @@ depends:apt=(
   "carbonio-perl-mail-spamassassin"
   "carbonio-policyd"
   "carbonio-postfix"
+  "carbonio-spamassassin-rules"
 )
 depends:yum=(
   "sqlite"
@@ -36,6 +37,7 @@ depends:yum=(
   "carbonio-perl-mail-spamassassin"
   "carbonio-policyd"
   "carbonio-postfix"
+  "carbonio-spamassassin-rules"
 )
 section="mail"
 priority="optional"
