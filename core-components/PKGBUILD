@@ -23,6 +23,7 @@ depends=(
   "carbonio-cyrus-sasl"
   "carbonio-mariadb"
   "carbonio-openjdk"
+  "carbonio-openjdk-cacerts"
   "carbonio-openldap"
   "carbonio-openssl"
   "carbonio-innotop"
