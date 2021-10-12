@@ -43,7 +43,7 @@ postinst() {
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
-    grep -E -v '^%zimbra[[:space:]]' /etc/sudoers >$sudotmp
+    grep -E -v '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi
