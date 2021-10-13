@@ -465,8 +465,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmfixperms"
   install -Dm755 opt/zextras/libexec/zmfixreminder \
     "${pkgdir}/opt/zextras/libexec/zmfixreminder"
-  install -Dm755 opt/zextras/libexec/zmgenentitlement \
-    "${pkgdir}/opt/zextras/libexec/zmgenentitlement"
   install -Dm755 opt/zextras/libexec/zmgsaupdate \
     "${pkgdir}/opt/zextras/libexec/zmgsaupdate"
   install -Dm755 opt/zextras/libexec/zmhspreport \
@@ -523,8 +521,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmmycnf"
   install -Dm755 opt/zextras/libexec/zmmyinit \
     "${pkgdir}/opt/zextras/libexec/zmmyinit"
-  install -Dm755 opt/zextras/libexec/zmnotifyinstall \
-    "${pkgdir}/opt/zextras/libexec/zmnotifyinstall"
   install -Dm755 opt/zextras/libexec/zmpostfixpolicyd \
     "${pkgdir}/opt/zextras/libexec/zmpostfixpolicyd"
   install -Dm755 opt/zextras/libexec/zmproxyconfgen \
@@ -567,8 +563,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmslapd"
   install -Dm755 opt/zextras/libexec/zmslapindex \
     "${pkgdir}/opt/zextras/libexec/zmslapindex"
-  install -Dm755 opt/zextras/libexec/zmsnmpinit \
-    "${pkgdir}/opt/zextras/libexec/zmsnmpinit"
   install -Dm755 opt/zextras/libexec/zmspamextract \
     "${pkgdir}/opt/zextras/libexec/zmspamextract"
   install -Dm755 opt/zextras/libexec/zmstat-allprocs \
@@ -603,12 +597,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
   install -Dm755 opt/zextras/libexec/zmthreadcpu \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
-  install -Dm755 opt/zextras/libexec/zmunbound \
-    "${pkgdir}/opt/zextras/libexec/zmunbound"
-  install -Dm755 opt/zextras/libexec/zmupdatedownload \
-    "${pkgdir}/opt/zextras/libexec/zmupdatedownload"
-  install -Dm755 opt/zextras/libexec/zmupdatezco \
-    "${pkgdir}/opt/zextras/libexec/zmupdatezco"
   install -Dm755 opt/zextras/libexec/zmupgrade.pm \
     "${pkgdir}/opt/zextras/libexec/zmupgrade.pm"
   install -D opt/zextras/logger/db/work/connection_failed.gif \
