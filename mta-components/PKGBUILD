@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-mta-components"
-pkgver="1.0.0"
+pkgver="21.00"
 pkgrel="1"
 pkgdesc="Carbonio components for mta package"
 pkgdesclong=(

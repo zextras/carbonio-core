@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-mbox-store-libs"
-pkgver="1.0.0"
+pkgver="21.00"
 pkgrel="1"
 pkgdesc="Replace Carbonio store libs"
 pkgdesclong=(

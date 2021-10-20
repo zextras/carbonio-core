@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-memcached-base"
-pkgver="1.0.0"
+pkgver="21.00"
 pkgrel="1"
 pkgdesc="Carbonio memcached base"
 pkgdesclong=(

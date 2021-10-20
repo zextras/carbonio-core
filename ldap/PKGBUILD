@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-ldap"
-pkgver="1.0.0"
+pkgver="21.00"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
