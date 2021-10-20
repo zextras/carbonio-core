@@ -19,7 +19,6 @@ depends=(
   "carbonio-common-mbox-conf-rights"
   "carbonio-common-mbox-conf"
   "carbonio-common-mbox-db"
-  "carbonio-common-mbox-docs"
   "carbonio-common-mbox-native-lib"
   "carbonio-mbox-conf"
   "carbonio-mbox-war"
