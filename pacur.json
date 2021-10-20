@@ -5,15 +5,6 @@
     "output": "artifacts",
     "Projects": [
         {
-            "name": "apache"
-        },
-        {
-            "name": "apache-base"
-        },
-        {
-            "name": "apache-components"
-        },
-        {
             "name": "base"
         },
         {
@@ -48,9 +39,6 @@
         },
         {
             "name": "core-components"
-        },
-        {
-            "name": "imapd"
         },
         {
             "name": "ldap"
@@ -117,24 +105,6 @@
         },
         {
             "name": "ce"
-        },
-        {
-            "name": "snmp"
-        },
-        {
-            "name": "snmp-base"
-        },
-        {
-            "name": "snmp-components"
-        },
-        {
-            "name": "spell"
-        },
-        {
-            "name": "spell-base"
-        },
-        {
-            "name": "spell-components"
         },
         {
             "name": "store"

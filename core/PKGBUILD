@@ -93,10 +93,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmantispamdbpasswd"
   install -D opt/zextras/bin/zmantivirusctl \
     "${pkgdir}/opt/zextras/bin/zmantivirusctl"
-  install -D opt/zextras/bin/zmapachectl \
-    "${pkgdir}/opt/zextras/bin/zmapachectl"
-  install -D opt/zextras/bin/zmarchivectl \
-    "${pkgdir}/opt/zextras/bin/zmarchivectl"
   install -D opt/zextras/bin/zmauditswatchctl \
     "${pkgdir}/opt/zextras/bin/zmauditswatchctl"
   install -D opt/zextras/bin/zmblobchk \
@@ -199,8 +195,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmskindeploy"
   install -D opt/zextras/bin/zmsoap \
     "${pkgdir}/opt/zextras/bin/zmsoap"
-  install -D opt/zextras/bin/zmspellctl \
-    "${pkgdir}/opt/zextras/bin/zmspellctl"
   install -D opt/zextras/bin/zmsshkeygen \
     "${pkgdir}/opt/zextras/bin/zmsshkeygen"
   install -D opt/zextras/bin/zmstat-chart \
@@ -372,18 +366,12 @@ package() {
   rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \
     "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
 
-  install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_ssdb_ephemeral_store"
-  rsync -a opt/zextras/lib/ext/com_zimbra_ssdb_ephemeral_store/ \
-    "${pkgdir}/opt/zextras/lib/ext/com_zimbra_ssdb_ephemeral_store"
-
   install -D opt/zextras/lib/junixsocket-native-2.0.4-amd64-Linux-gpp-jni.nar \
     "${pkgdir}/opt/zextras/lib/junixsocket-native-2.0.4-amd64-Linux-gpp-jni.nar"
   install -D opt/zextras/lib/libjunixsocket-native-2.0.4.so \
     "${pkgdir}/opt/zextras/lib/libjunixsocket-native-2.0.4.so"
   install -Dm755 opt/zextras/libexec/600.zimbra \
     "${pkgdir}/opt/zextras/libexec/600.zimbra"
-  install -Dm755 opt/zextras/libexec/addUser.sh \
-    "${pkgdir}/opt/zextras/libexec/addUser.sh"
   install -Dm755 opt/zextras/libexec/client_usage_report.py \
     "${pkgdir}/opt/zextras/libexec/client_usage_report.py"
   install -Dm755 opt/zextras/libexec/configrewrite \
@@ -394,20 +382,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/icalmig"
   install -Dm755 opt/zextras/libexec/installer/bin/get_plat_tag.sh \
     "${pkgdir}/opt/zextras/libexec/installer/bin/get_plat_tag.sh"
-  install -Dm755 opt/zextras/libexec/installer/install.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/install.sh"
-  install -Dm755 opt/zextras/libexec/installer/util/addUser.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/util/addUser.sh"
-  install -Dm755 opt/zextras/libexec/installer/util/globals.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/util/globals.sh"
-  install -Dm755 opt/zextras/libexec/installer/util/modules/getconfig.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/util/modules/getconfig.sh"
-  install -Dm755 opt/zextras/libexec/installer/util/modules/packages.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/util/modules/packages.sh"
-  install -Dm755 opt/zextras/libexec/installer/util/modules/postinstall.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/util/modules/postinstall.sh"
-  install -Dm755 opt/zextras/libexec/installer/util/utilfunc.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/util/utilfunc.sh"
   install -Dm755 opt/zextras/libexec/postinstall.pm \
     "${pkgdir}/opt/zextras/libexec/postinstall.pm"
   install -Dm755 opt/zextras/libexec/preinstall.pm \
