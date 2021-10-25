@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-mbox-admin-console-war"
-pkgver="21.00"
+pkgver="3.0.0"
 pkgrel="1"
 pkgdesc="Carbonio Admin Console War"
 pkgdesclong=(

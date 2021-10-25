@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-core-jar"
-pkgver="21.00"
+pkgver="3.0.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Jars"
 pkgdesclong=(
