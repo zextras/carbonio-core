@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="3.0.0"
+pkgver="3.0.1"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -654,7 +654,7 @@ postinst:apt() {
     chkconfig zextras on
   elif [ -x /usr/sbin/update-rc.d ]; then
     update-rc.d -f carbonio remove
-    update-rc.d carbonio start 99 2 5 . stop 01 0 1 6 .
+    update-rc.d carbonio start 99 3 5 . stop 01 0 1 6 .
   else
     rm -f /etc/rc*.d/S99carbonio
     rm -f /etc/rc*.d/S89carbonio
@@ -754,7 +754,7 @@ postinst:yum() {
     chkconfig carbonio on
   elif [ -x /usr/sbin/update-rc.d ]; then
     update-rc.d -f carbonio remove
-    update-rc.d carbonio start 99 2 5 . stop 01 0 1 6 .
+    update-rc.d carbonio start 99 3 5 . stop 01 0 1 6 .
   else
     rm -f /etc/rc*.d/S99carbonio
     rm -f /etc/rc*.d/S89carbonio

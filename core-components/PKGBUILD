@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core-components"
-pkgver="3.0.0"
+pkgver="3.0.1"
 pkgrel="1"
 pkgdesc="Carbonio components for core package"
 pkgdesclong=(

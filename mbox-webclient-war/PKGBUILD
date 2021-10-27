@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-mbox-webclient-war"
-pkgver="3.0.0"
+pkgver="3.0.1"
 pkgrel="1"
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"

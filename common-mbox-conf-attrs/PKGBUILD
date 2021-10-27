@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-mbox-conf-attrs"
-pkgver="3.0.0"
+pkgver="3.0.1"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Attributes Configuration"
 pkgdesclong=(
