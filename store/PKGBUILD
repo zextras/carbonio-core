@@ -21,7 +21,6 @@ depends=(
   "carbonio-mbox-service"
   "carbonio-mbox-store-libs"
   "carbonio-mbox-war"
-  "carbonio-mbox-webclient-war"
   "carbonio-store-components"
   "carbonio-jetty-distribution"
 )
