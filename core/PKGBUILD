@@ -42,6 +42,9 @@ depends:yum=(
   "carbonio-core-components"
   "carbonio-timezone-data"
 )
+optdepends=(
+  "carbonio-common-mbox-docs"
+)
 
 package() {
   cd "${srcdir}"/../../

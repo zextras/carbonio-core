@@ -24,6 +24,10 @@ depends=(
   "carbonio-mbox-war"
   "carbonio-store-components"
 )
+optdepends=(
+  "carbonio-common-mbox-docs"
+)
+
 section="mail"
 priority="optional"
 

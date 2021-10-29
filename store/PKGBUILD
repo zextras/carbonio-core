@@ -25,6 +25,9 @@ depends=(
   "carbonio-store-components"
   "carbonio-jetty-distribution"
 )
+optdepends=(
+  "carbonio-mbox-webclient-war"
+)
 
 package() {
   cd "${srcdir}"/../../
