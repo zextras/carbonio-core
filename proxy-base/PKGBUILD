@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-proxy-base"
-pkgver="3.0.1"
+pkgver="3.0.2"
 pkgrel="1"
 pkgdesc="Carbonio proxy base"
 pkgdesclong=(
