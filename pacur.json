@@ -5,7 +5,28 @@
     "output": "artifacts",
     "Projects": [
         {
-            "name": "base"
+            "name": "appserver"
+        },
+        {
+            "name": "appserver-admin-console-war"
+        },
+        {
+            "name": "appserver-conf"
+        },
+        {
+            "name": "appserver-service"
+        },
+        {
+            "name": "appserver-store-libs"
+        },
+        {
+            "name": "appserver-war"
+        },
+        {
+            "name": "appserver-webclient-war"
+        },
+        {
+            "name": "ce"
         },
         {
             "name": "common-core-jar"
@@ -14,109 +35,40 @@
             "name": "common-core-libs"
         },
         {
-            "name": "common-mbox-conf"
+            "name": "common-appserver-conf"
         },
         {
-            "name": "common-mbox-conf-attrs"
+            "name": "common-appserver-db"
         },
         {
-            "name": "common-mbox-conf-msgs"
+            "name": "common-appserver-docs"
         },
         {
-            "name": "common-mbox-conf-rights"
-        },
-        {
-            "name": "common-mbox-db"
-        },
-        {
-            "name": "common-mbox-docs"
-        },
-        {
-            "name": "common-mbox-native-lib"
+            "name": "common-appserver-native-lib"
         },
         {
             "name": "core"
         },
         {
-            "name": "core-components"
-        },
-        {
-            "name": "ldap"
-        },
-        {
-            "name": "ldap-base"
-        },
-        {
-            "name": "ldap-components"
+            "name": "directory-server"
         },
         {
             "name": "logger"
         },
         {
-            "name": "mbox-admin-console-war"
-        },
-        {
-            "name": "mbox-conf"
-        },
-        {
-            "name": "mbox-service"
-        },
-        {
-            "name": "mbox-store-libs"
-        },
-        {
-            "name": "mbox-war"
-        },
-        {
-            "name": "mbox-webclient-war"
-        },
-        {
-            "name": "memcached-base"
-        },
-        {
             "name": "mta"
-        },
-        {
-            "name": "mta-base"
-        },
-        {
-            "name": "mta-components"
-        },
-        {
-            "name": "osl"
-        },
-        {
-            "name": "os-requirements"
         },
         {
             "name": "perl"
         },
         {
-            "name": "perl-base"
-        },
-        {
             "name": "proxy"
         },
         {
-            "name": "proxy-base"
-        },
-        {
-            "name": "proxy-components"
-        },
-        {
-            "name": "ce"
-        },
-        {
-            "name": "store"
-        },
-        {
-            "name": "store-base"
-        },
-        {
-            "name": "store-components"
-        },
-        {
             "name": "timezone-data"
+        },
+        {
+            "name": "webui"
         }
     ]
 }

@@ -1,0 +1,182 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-appserver"
+pkgver="3.0.3"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+pkgdesclong=(
+  "An open-source, community-driven email server"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends=(
+  "carbonio-core"
+  "carbonio-appserver-admin-console-war"
+  "carbonio-appserver-conf"
+  "carbonio-appserver-service"
+  "carbonio-appserver-store-libs"
+  "carbonio-appserver-war"
+  "carbonio-jetty-distribution"
+  "carbonio-mariadb"
+)
+optdepends=(
+  "carbonio-appserver-webclient-war"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -D etc/sudoers.d/02_carbonio-store \
+    "${pkgdir}/etc/sudoers.d/02_carbonio-store"
+  install -D opt/zextras/conf/antisamy.xml \
+    "${pkgdir}/opt/zextras/conf/antisamy.xml"
+  install -D opt/zextras/conf/owasp_policy.xml \
+    "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
+  install -D opt/zextras/conf/zmztozmig.conf \
+    "${pkgdir}/opt/zextras/conf/zmztozmig.conf"
+  install -D opt/zextras/extensions-extra/openidconsumer/README.txt \
+    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/README.txt"
+  install -D opt/zextras/extensions-extra/openidconsumer/formredirection.jsp \
+    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/formredirection.jsp"
+  install -D opt/zextras/extensions-extra/openidconsumer/guice-2.0.jar \
+    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/guice-2.0.jar"
+  install -D opt/zextras/extensions-extra/openidconsumer/openid4java-1.0.0.jar \
+    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/openid4java-1.0.0.jar"
+  cp opt/zextras/extensions-extra/openidconsumer/zm-openid-consumer-store-*.jar \
+    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/"
+  install -D opt/zextras/jetty_base/etc/jetty-setuid.xml \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
+  install -D opt/zextras/jetty_base/etc/jetty.xml.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
+  install -D opt/zextras/jetty_base/etc/jettyrc \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
+  install -D opt/zextras/jetty_base/etc/krb5.ini.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
+  install -D opt/zextras/jetty_base/etc/spnego.conf.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
+  install -D opt/zextras/jetty_base/etc/spnego.properties.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
+  install -D opt/zextras/jetty_base/etc/webdefault.xml \
+    "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
+  install -D opt/zextras/jetty_base/etc/zimbra.policy.example \
+    "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
+  install -D opt/zextras/jetty_base/etc/zimlet.web.xml.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/zimlet.web.xml.in"
+  install -D opt/zextras/jetty_base/modules/deploy.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
+  install -D opt/zextras/jetty_base/modules/mail.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
+  install -D opt/zextras/jetty_base/modules/npn \
+    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+  install -D opt/zextras/jetty_base/modules/rewrite.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
+  install -D opt/zextras/jetty_base/modules/setuid.mod.in \
+    "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
+  install -D opt/zextras/jetty_base/modules/zimbra.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
+  install -D opt/zextras/jetty_base/start.d/setuid.ini.in \
+    "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
+  install -D opt/zextras/jetty_base/temp/.emptyfile \
+    "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
+  install -D opt/zextras/jetty_base/webapps/service/WEB-INF/lib/zimlettaglib.jar \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/service/WEB-INF/lib/zimlettaglib.jar"
+  cp opt/zextras/jetty_base/webapps/service/WEB-INF/lib/zm-taglib-*.jar \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/service/WEB-INF/lib/"
+  install -D opt/zextras/jetty_base/webapps/service/WEB-INF/zimbra.tld \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/service/WEB-INF/zimbra.tld"
+  install -D opt/zextras/lib/ext/clamscanner/clamscanner.jar \
+    "${pkgdir}/opt/zextras/lib/ext/clamscanner/clamscanner.jar"
+  install -D opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar \
+    "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar"
+  install -D opt/zextras/lib/ext/openidconsumer/guice-2.0.jar \
+    "${pkgdir}/opt/zextras/lib/ext/openidconsumer/guice-2.0.jar"
+  install -D opt/zextras/lib/ext/zimbraldaputils/zimbraldaputils.jar \
+    "${pkgdir}/opt/zextras/lib/ext/zimbraldaputils/zimbraldaputils.jar"
+  install -D opt/zextras/lib/ext/zm-gql/zmgql.jar \
+    "${pkgdir}/opt/zextras/lib/ext/zm-gql/zmgql.jar"
+  install -D opt/zextras/libexec/zmcleaniplanetics \
+    "${pkgdir}/opt/zextras/libexec/zmcleaniplanetics"
+  install -D opt/zextras/libexec/zmztozmig \
+    "${pkgdir}/opt/zextras/libexec/zmztozmig"
+  install -D opt/zextras/log/.hotspot_compiler \
+    "${pkgdir}/opt/zextras/log/.hotspot_compiler"
+
+  mkdir -p "${pkgdir}/opt/zextras/bin/"
+  mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/lib/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+  mkdir -p "${pkgdir}/opt/zextras/lib/jars/"
+
+  install -Ddm755 "${pkgdir}/opt/zextras/zimlets/"
+  rsync -a opt/zextras/zimlets/ \
+    "${pkgdir}/opt/zextras/zimlets"
+
+  install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/downloads"
+  cp -r opt/zextras/jetty_base/webapps/zimbra/downloads/* \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/downloads"
+
+  cp -r opt/zextras/jetty_base/webapps/zimbra/robots.txt \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+}
+
+preinst() {
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    rm -rf /opt/zextras/mailboxd/work/zimbra >/dev/null 2>&1
+  fi
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbraAdmin" ]; then
+    rm -rf /opt/zextras/mailboxd/work/zimbraAdmin >/dev/null 2>&1
+  fi
+}
+
+postinst() {
+  H=$(hostname -s)
+
+  if [ -f /opt/zextras/db/db.sql ]; then
+    mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
+    sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
+    chown zextras:zextras /opt/zextras/db/db.sql*
+    chmod 440 /opt/zextras/db/db.sql*
+  fi
+
+  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
+  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
+
+  mkdir -p /opt/zextras/mailboxd/logs
+  chown zextras:zextras /opt/zextras/mailboxd/logs
+
+  mkdir -p /opt/zextras/redolog
+  mkdir -p /opt/zextras/store
+  mkdir -p /opt/zextras/index
+  mkdir -p /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
+  if [ $? = 0 ]; then
+    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
+      echo "Failed to create tmpfile"
+      exit 1
+    }
+    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
+    mv -f $sudotmp /etc/sudoers
+    chmod $SUDOMODE /etc/sudoers
+  fi
+
+  chmod 440 /etc/sudoers.d/02_carbonio-store
+  chown root:root /etc/sudoers.d/02_carbonio-store
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+
+}

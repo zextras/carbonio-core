@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="3.0.2"
+pkgver="3.0.3"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -14,36 +14,139 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 arch="amd64"
-depends:apt=(
+depends:ubuntu-bionic=(
+  "carbonio-amavis-logwatch"
+  "carbonio-common-appserver-conf"
+  "carbonio-common-appserver-db"
+  "carbonio-common-appserver-native-lib"
+  "carbonio-common-core-jar"
+  "carbonio-common-core-libs"
+  "carbonio-curl"
+  "carbonio-cyrus-sasl"
+  "carbonio-innotop"
+  "carbonio-jemalloc"
+  "carbonio-mariadb"
+  "carbonio-openjdk-cacerts"
+  "carbonio-openjdk"
+  "carbonio-openldap"
+  "carbonio-openssl"
+  "carbonio-perl"
+  "carbonio-pflogsumm"
+  "carbonio-postfix-logwatch"
+  "carbonio-prepflog"
+  "carbonio-rrdtool"
+  "carbonio-timezone-data"
+  "coreutils"
+  "file"
   "fontconfig"
   "iproute2"
+  "libaio1"
+  "libexpat1"
+  "libgmp10"
+  "libidn11"
+  "libpcre3"
+  "libperl5.26"
+  "libsocket6-perl"
+  "libstdc++6"
+  "lsb-release"
+  "net-tools"
+  "netcat-openbsd"
+  "pax" 
+  "perl"
+  "procps"
+  "resolvconf"
+  "sudo"
+  "sysstat" 
+  "unzip"
+)
+depends:ubuntu-focal=(
+  "carbonio-amavis-logwatch"
+  "carbonio-common-appserver-conf"
+  "carbonio-common-appserver-db"
+  "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
-  "carbonio-common-mbox-conf-attrs"
-  "carbonio-common-mbox-conf-msgs"
-  "carbonio-common-mbox-conf-rights"
-  "carbonio-common-mbox-conf"
-  "carbonio-common-mbox-db"
-  "carbonio-common-mbox-native-lib"
-  "carbonio-core-components"
+  "carbonio-curl"
+  "carbonio-cyrus-sasl"
+  "carbonio-innotop"
+  "carbonio-jemalloc"
+  "carbonio-mariadb"
+  "carbonio-openjdk-cacerts"
+  "carbonio-openjdk"
+  "carbonio-openldap"
+  "carbonio-openssl"
+  "carbonio-perl"
+  "carbonio-pflogsumm"
+  "carbonio-postfix-logwatch"
+  "carbonio-prepflog"
+  "carbonio-rrdtool"
   "carbonio-timezone-data"
+  "coreutils"
+  "file"
+  "fontconfig"
+  "iproute2"
+  "libaio1"
+  "libexpat1"
+  "libgmp10"
+  "libidn11"
+  "libpcre3"
+  "libperl5.30"
+  "libsocket6-perl"
+  "libstdc++6"
+  "lsb-release"
+  "net-tools"
+  "netcat-openbsd"
+  "pax" 
+  "perl"
+  "procps"
+  "resolvconf"
+  "sudo"
+  "sysstat" 
+  "unzip"
 )
 depends:yum=(
-  "fontconfig"
-  "iproute"
+  "carbonio-amavis-logwatch"
+  "carbonio-common-appserver-conf"
+  "carbonio-common-appserver-db"
+  "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
-  "carbonio-common-mbox-conf-attrs"
-  "carbonio-common-mbox-conf-msgs"
-  "carbonio-common-mbox-conf-rights"
-  "carbonio-common-mbox-conf"
-  "carbonio-common-mbox-db"
-  "carbonio-common-mbox-native-lib"
-  "carbonio-core-components"
+  "carbonio-curl"
+  "carbonio-cyrus-sasl"
+  "carbonio-innotop"
+  "carbonio-jemalloc"
+  "carbonio-mariadb"
+  "carbonio-openjdk-cacerts"
+  "carbonio-openjdk"
+  "carbonio-openldap"
+  "carbonio-openssl"
+  "carbonio-perl"
+  "carbonio-pflogsumm"
+  "carbonio-postfix-logwatch"
+  "carbonio-prepflog"
+  "carbonio-rrdtool"
   "carbonio-timezone-data"
+  "coreutils"
+  "expat"
+  "file"
+  "fontconfig"
+  "gmp"
+  "iproute"
+  "libaio"
+  "libidn"
+  "libstdc++"
+  "net-tools"
+  "nmap-cat"
+  "pcre"
+  "perl-core"
+  "perl-Socket6"
+  "perl"
+  "sudo"
+  "sysstat"
+  "unzip"
 )
 optdepends=(
-  "carbonio-common-mbox-docs"
+  "carbonio-common-appserver-docs"
 )
 
 package() {
@@ -580,7 +683,37 @@ package() {
     "${pkgdir}/opt/zextras/logger/db/work/data_not_available.gif"
 }
 
-preinst() {
+preinst:apt() {
+  if [ "$1" = configure ]; then
+
+    if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
+      echo "zextras soft nproc 278528" >/etc/security/limits.d/10-zextras.conf
+      echo "zextras hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+      echo "postfix soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+      echo "postfix hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+      echo "root soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+      echo "root hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+    fi
+    if [ -f "/etc/security/limits.conf" ]; then
+      limitstmp=$(mktemp -t limitstmp.XXXXXX 2>/dev/null) || {
+        echo "Failed to create tmpfile"
+        exit 1
+      }
+      grep -E -v -e '^zextras.*nofile' /etc/security/limits.conf >$limitstmp
+      echo "zextras soft nofile 524288" >>$limitstmp
+      echo "zextras hard nofile 524288" >>$limitstmp
+      mv -f $limitstmp /etc/security/limits.conf
+      chmod 640 /etc/security/limits.conf
+    else
+      echo "zextras soft nofile 524288" >/etc/security/limits.conf
+      echo "zextras hard nofile 524288" >>/etc/security/limits.conf
+      chmod 640 /etc/security/limits.conf
+    fi
+  fi
+  exit 0
+}
+
+preinst:yum() {
   if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
     echo "zextras soft nproc 278528" >/etc/security/limits.d/10-zextras.conf
     echo "zextras hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
@@ -604,11 +737,43 @@ preinst() {
     echo "zextras hard nofile 524288" >>/etc/security/limits.conf
     chmod 640 /etc/security/limits.conf
   fi
-
 }
 
 postinst:apt() {
-  # Create group, user for zextras and postfix.
+  if [ "$1" = "configure" ]; then
+    # creating zextras group if it isn't already there
+    if ! getent group zextras >/dev/null; then
+      addgroup --system --force-badname --quiet zextras
+    fi
+
+    # creating zextras user if it isn't already there
+    if ! getent passwd zextras >/dev/null; then
+      adduser --system --force-badname --quiet \
+        --ingroup zextras \
+        --home /opt/zextras \
+        --shell /bin/bash \
+        zextras
+      usermod -c "zextras user" zextras
+    fi
+  
+    # creating postfix and postdrop groups if aren't already there
+    if ! getent group postdrop >/dev/null; then
+      addgroup --system --force-badname --quiet postdrop
+    fi
+    if ! getent group postfix >/dev/null; then
+      addgroup --system --force-badname --quiet postfix
+    fi
+
+    # creating postfix user if it isn't already there
+    if ! getent passwd postfix >/dev/null; then
+      adduser --system --force-badname --quiet \
+        --ingroup postfix \
+        --home /opt/zextras/postfix \
+        postfix
+      usermod -c "postfix user" postfix
+    fi
+    usermod -a -G postfix,tty zextras
+  fi
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
@@ -729,7 +894,37 @@ postinst:apt() {
 }
 
 postinst:yum() {
-  # Create group, user for zextras and postfix.
+  # creating zextras group if it isn't already there
+  if ! getent group zextras >/dev/null; then
+    addgroup --system --force-badname --quiet zextras
+  fi
+  # creating zextras user if it isn't already there
+  if ! getent passwd zextras >/dev/null; then
+    adduser --system --force-badname --quiet \
+      --ingroup zextras \
+      --home /opt/zextras \
+      --shell /bin/bash \
+      zextras
+    usermod -c "zextras user" zextras
+  fi
+
+  # creating postfix and postdrop groups if aren't already there
+  if ! getent group postdrop >/dev/null; then
+    addgroup --system --force-badname --quiet postdrop
+  fi
+  if ! getent group postfix >/dev/null; then
+    addgroup --system --force-badname --quiet postfix
+  fi
+
+  # creating postfix user if it isn't already there
+  if ! getent passwd postfix >/dev/null; then
+    adduser --system --force-badname --quiet \
+      --ingroup postfix \
+      --home /opt/zextras/postfix \
+      postfix
+    usermod -c "postfix user" postfix
+  fi
+  usermod -a -G postfix,tty zextras
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
@@ -825,5 +1020,4 @@ postinst:yum() {
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
   fi
-
 }

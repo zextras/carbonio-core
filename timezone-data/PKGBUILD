@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-timezone-data"
-pkgver="3.0.2"
+pkgver="3.0.3"
 pkgrel="1"
 arch="amd64"
 pkgdesc="Carbonio Timezone Data"
@@ -13,7 +13,7 @@ pkgdesclong=(
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 depends=(
-  "carbonio-core-components"
+  "carbonio-core"
 )
 section="mail"
 priority="optional"

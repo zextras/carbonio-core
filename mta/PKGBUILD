@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-mta"
-pkgver="3.0.2"
+pkgver="3.0.3"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -14,9 +14,31 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 arch="amd64"
-depends=(
+depends:apt=(
+  "carbonio-altermime"
+  "carbonio-amavisd"
+  "carbonio-clamav"
   "carbonio-core"
-  "carbonio-mta-components"
+  "carbonio-mariadb"
+  "carbonio-opendkim"
+  "carbonio-perl-mail-spamassassin"
+  "carbonio-policyd"
+  "carbonio-postfix"
+  "carbonio-spamassassin-rules"
+  "sqlite3"
+)
+depends:yum=(
+  "carbonio-altermime"
+  "carbonio-amavisd"
+  "carbonio-clamav"
+  "carbonio-core"
+  "carbonio-mariadb"
+  "carbonio-opendkim"
+  "carbonio-perl-mail-spamassassin"
+  "carbonio-policyd"
+  "carbonio-postfix"
+  "carbonio-spamassassin-rules"
+  "sqlite"
 )
 provides=(
   "mail-transport-agent"
@@ -192,4 +214,3 @@ postinst:yum() {
   chgrp zextras /opt/zextras/common/conf
   chmod g+w /opt/zextras/common/conf
 }
-

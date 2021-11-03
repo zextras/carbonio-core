@@ -2,7 +2,7 @@ targets=(
   "centos"
   "ubuntu"
 )
-pkgname="carbonio-proxy"
+pkgname="carbonio-directory-server"
 pkgver="3.0.3"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
@@ -14,31 +14,29 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 arch="amd64"
-depends:apt=(
+depends=(
   "carbonio-core"
-  "carbonio-memcached"
-  "carbonio-nginx"
-  "sqlite3"
-)
-depends:yum=(
-  "carbonio-core"
-  "carbonio-memcached"
-  "carbonio-nginx"
-  "sqlite"
+  "carbonio-openldap"
+  "carbonio-openssl"
 )
 
 package() {
   cd "${srcdir}"/../../
-  install -D etc/sudoers.d/02_carbonio-proxy \
-    "${pkgdir}/etc/sudoers.d/02_carbonio-proxy"
-  mkdir -p "${pkgdir}/opt/zextras/conf/nginx/includes/"
-  rsync -a opt/zextras/conf/nginx/templates/ \
-    "${pkgdir}/opt/zextras/conf/nginx/templates/"
+  install -D etc/sudoers.d/02_carbonio-ldap \
+    "${pkgdir}/etc/sudoers.d/02_carbonio-ldap"
+  install -Ddm755 "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
+  rsync -a opt/zextras/common/etc/openldap/zimbra/ \
+    "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
 }
 
 postinst() {
-  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
 
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
   if [ $? = 0 ]; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
@@ -49,7 +47,7 @@ postinst() {
     mv -f $sudotmp /etc/sudoers
     chmod $SUDOMODE /etc/sudoers
   fi
-  chmod 440 /etc/sudoers.d/02_carbonio-proxy
-  chown root:root /etc/sudoers.d/02_carbonio-proxy
-  chown -R zextras:zextras /opt/zextras/conf/nginx
+  chmod 440 /etc/sudoers.d/02_carbonio-ldap
+  chown root:root /etc/sudoers.d/02_carbonio-ldap
+  chown -R root:root /opt/zextras/common/etc/openldap
 }

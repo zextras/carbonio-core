@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-core-jar"
-pkgver="3.0.2"
+pkgver="3.0.3"
 pkgrel="1"
 pkgdesc="Carbonio Core Jars"
 pkgdesclong=(
@@ -13,7 +13,7 @@ arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 depends=(
-  "carbonio-core-components"
+  "carbonio-core"
 )
 section="mail"
 priority="optional"

@@ -1,0 +1,33 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-webui"
+pkgver="3.0.3"
+pkgrel="1"
+pkgdesc="Carbonio WebUI"
+pkgdesclong=(
+    "Carbonio WebUI is used as a simple method to allow usage"
+    "of its shiny and gorgeous UI."
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+
+# Not available yet
+#  "carbonio-team-ui"
+#  "carbonio-drive-ui"
+depends=(
+  "carbonio-calendar"
+  "carbonio-contacts"
+  "carbonio-error-reporter"
+  "carbonio-login"
+  "carbonio-mails"
+  "carbonio-shell"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../
+}

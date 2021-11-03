@@ -1,0 +1,82 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-appserver-webclient-war"
+pkgver="3.0.3"
+pkgrel="1"
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-appserver"
+)
+section="mail"
+priority="optional"
+pkgdesc="Carbonio WebClient War"
+pkgdesclong=(
+  "Carbonio WebClient Warr"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -D opt/zextras/conf/templates/abook/Contacts.template \
+    "${pkgdir}/opt/zextras/conf/templates/abook/Contacts.template"
+  install -D opt/zextras/conf/templates/abook/Contacts_ja.template \
+    "${pkgdir}/opt/zextras/conf/templates/abook/Contacts_ja.template"
+  install -D opt/zextras/conf/templates/briefcase/Briefcase.template \
+    "${pkgdir}/opt/zextras/conf/templates/briefcase/Briefcase.template"
+  install -D opt/zextras/conf/templates/calendar/Appointment.template \
+    "${pkgdir}/opt/zextras/conf/templates/calendar/Appointment.template"
+  install -D opt/zextras/conf/templates/calendar/Appointment_ar.template \
+    "${pkgdir}/opt/zextras/conf/templates/calendar/Appointment_ar.template"
+  install -D opt/zextras/conf/templates/calendar/Calendar.template \
+    "${pkgdir}/opt/zextras/conf/templates/calendar/Calendar.template"
+  install -D opt/zextras/conf/templates/data/ImportExport.template \
+    "${pkgdir}/opt/zextras/conf/templates/data/ImportExport.template"
+  install -D opt/zextras/conf/templates/dwt/Widgets.template \
+    "${pkgdir}/opt/zextras/conf/templates/dwt/Widgets.template"
+  install -D opt/zextras/conf/templates/mail/Message.template \
+    "${pkgdir}/opt/zextras/conf/templates/mail/Message.template"
+  install -D opt/zextras/conf/templates/prefs/Options.template \
+    "${pkgdir}/opt/zextras/conf/templates/prefs/Options.template"
+  install -D opt/zextras/conf/templates/prefs/Options_test.js \
+    "${pkgdir}/opt/zextras/conf/templates/prefs/Options_test.js"
+  install -D opt/zextras/conf/templates/prefs/Pages.template \
+    "${pkgdir}/opt/zextras/conf/templates/prefs/Pages.template"
+  install -D opt/zextras/conf/templates/prefs/Widgets.template \
+    "${pkgdir}/opt/zextras/conf/templates/prefs/Widgets.template"
+  install -D opt/zextras/conf/templates/share/App.template \
+    "${pkgdir}/opt/zextras/conf/templates/share/App.template"
+  install -D opt/zextras/conf/templates/share/Dialogs.template \
+    "${pkgdir}/opt/zextras/conf/templates/share/Dialogs.template"
+  install -D opt/zextras/conf/templates/share/Quota.template \
+    "${pkgdir}/opt/zextras/conf/templates/share/Quota.template"
+  install -D opt/zextras/conf/templates/share/Widgets.template \
+    "${pkgdir}/opt/zextras/conf/templates/share/Widgets.template"
+  install -D opt/zextras/conf/templates/tasks/Tasks.template \
+    "${pkgdir}/opt/zextras/conf/templates/tasks/Tasks.template"
+  install -D opt/zextras/conf/templates/voicemail/Voicemail.template \
+    "${pkgdir}/opt/zextras/conf/templates/voicemail/Voicemail.template"
+  install -D opt/zextras/conf/templates/zimbra/Widgets.template \
+    "${pkgdir}/opt/zextras/conf/templates/zimbra/Widgets.template"
+
+  install -D opt/zextras/jetty_base/etc/jetty-env.xml.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-env.xml.in"
+  install -D opt/zextras/jetty_base/etc/zimbra.web.xml.in \
+    "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.web.xml.in"
+
+  install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra"
+  rsync -a \
+    --exclude='TzMsg*' \
+    --exclude='AjxTimezoneData.js' \
+    --exclude='bitbucket-pipelines.yml' \
+    --exclude='downloads' \
+    --exclude='robots.txt' \
+    opt/zextras/jetty_base/webapps/zimbra/ \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra"
+
+  install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/work/zimbra/jsp"
+  rsync -a opt/zextras/jetty_base/work/zimbra/jsp/ \
+    "${pkgdir}/opt/zextras/jetty_base/work/zimbra/jsp/"
+}
