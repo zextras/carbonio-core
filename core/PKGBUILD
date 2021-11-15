@@ -476,8 +476,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/libjunixsocket-native-2.0.4.so"
   install -Dm755 opt/zextras/libexec/600.zimbra \
     "${pkgdir}/opt/zextras/libexec/600.zimbra"
-  install -Dm755 opt/zextras/libexec/client_usage_report.py \
-    "${pkgdir}/opt/zextras/libexec/client_usage_report.py"
   install -Dm755 opt/zextras/libexec/configrewrite \
     "${pkgdir}/opt/zextras/libexec/configrewrite"
   install -Dm755 opt/zextras/libexec/get_plat_tag.sh \
@@ -507,8 +505,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmantispammycnf"
   install -Dm755 opt/zextras/libexec/zmcbpolicydinit \
     "${pkgdir}/opt/zextras/libexec/zmcbpolicydinit"
-  install -Dm755 opt/zextras/libexec/zmcheckduplicatemysqld \
-    "${pkgdir}/opt/zextras/libexec/zmcheckduplicatemysqld"
   install -Dm755 opt/zextras/libexec/zmcheckexpiredcerts \
     "${pkgdir}/opt/zextras/libexec/zmcheckexpiredcerts"
   install -Dm755 opt/zextras/libexec/zmcleantmp \
