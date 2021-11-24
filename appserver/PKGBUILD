@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver"
-pkgver="3.0.3"
+pkgver="3.0.4"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
