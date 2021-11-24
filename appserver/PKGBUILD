@@ -24,9 +24,6 @@ depends=(
   "carbonio-jetty-distribution"
   "carbonio-mariadb"
 )
-optdepends=(
-  "carbonio-appserver-webclient-war"
-)
 
 package() {
   cd "${srcdir}"/../../
