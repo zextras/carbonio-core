@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-proxy"
-pkgver="3.0.5"
+pkgver="3.0.6"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
