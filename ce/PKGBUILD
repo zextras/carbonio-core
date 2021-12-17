@@ -51,6 +51,8 @@ package() {
     "${pkgdir}/usr/bin/carbonio-bootstrap"
   install -Dm755 "${srcdir}"/install_history \
     "${pkgdir}"/opt/zextras/.install_history
+  install -Dm755 "${srcdir}"/mini_alue_ce \
+    "${pkgdir}"/opt/zextras/.mini_alue_ce
 }
 
 postinst() {
