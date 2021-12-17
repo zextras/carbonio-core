@@ -39,8 +39,10 @@ depends:yum=(
 sources=(
   "carbonio-bootstrap"
   "install_history"
+  "mini_alue_ce"
 )
 hashsums=(
+  "SKIP"
   "SKIP"
   "SKIP"
 )
