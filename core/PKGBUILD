@@ -671,8 +671,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
   install -Dm755 opt/zextras/libexec/zmthreadcpu \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
-  install -Dm755 opt/zextras/libexec/zmupgrade.pm \
-    "${pkgdir}/opt/zextras/libexec/zmupgrade.pm"
   install -D opt/zextras/logger/db/work/connection_failed.gif \
     "${pkgdir}/opt/zextras/logger/db/work/connection_failed.gif"
   install -D opt/zextras/logger/db/work/data_not_available.gif \

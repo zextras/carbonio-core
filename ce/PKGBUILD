@@ -38,11 +38,9 @@ depends:yum=(
 )
 sources=(
   "carbonio-bootstrap"
-  "install_history"
   "mini_alue_ce"
 )
 hashsums=(
-  "SKIP"
   "SKIP"
   "SKIP"
 )
@@ -51,10 +49,9 @@ package() {
   cd "${srcdir}"/../../
   install -Dm755 "${srcdir}"/carbonio-bootstrap \
     "${pkgdir}/usr/bin/carbonio-bootstrap"
-  install -Dm755 "${srcdir}"/install_history \
-    "${pkgdir}"/opt/zextras/.install_history
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
+  echo "${pkgver}" > "${pkgdir}"/opt/zextras/.version
 }
 
 postinst() {
