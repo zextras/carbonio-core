@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-webui"
-pkgver="3.0.6"
+pkgver="3.0.7"
 pkgrel="1"
 pkgdesc="Carbonio WebUI"
 pkgdesclong=(
@@ -15,15 +15,16 @@ maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 
 # Not available yet
-#  "carbonio-team-ui"
-#  "carbonio-drive-ui"
+#  "carbonio-auth-ui"
+#  "carbonio-chats-ui"
+#  "carbonio-files-ui"
 depends=(
-  "carbonio-calendar"
-  "carbonio-contacts"
-  "carbonio-error-reporter"
+  "carbonio-calendars-ui"
+  "carbonio-contacts-ui"
+  "carbonio-error-reporter-ui"
   "carbonio-login"
-  "carbonio-mails"
-  "carbonio-shell"
+  "carbonio-mails-ui"
+  "carbonio-shell-ui"
 )
 section="mail"
 priority="optional"

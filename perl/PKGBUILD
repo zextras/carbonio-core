@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-perl"
-pkgver="3.0.6"
+pkgver="3.0.7"
 pkgrel="1"
 pkgdesc="Carbonio Perl"
 pkgdesclong=(
