@@ -14,15 +14,14 @@ arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 
-# Not available yet
-#  "carbonio-auth-ui"
-#  "carbonio-chats-ui"
-#  "carbonio-files-ui"
 depends=(
+  "carbonio-auth-ui"
+  "carbonio-chats-ui"
+  "carbonio-files-ui"
   "carbonio-calendars-ui"
   "carbonio-contacts-ui"
   "carbonio-error-reporter-ui"
-  "carbonio-login"
+  "carbonio-login-ui"
   "carbonio-mails-ui"
   "carbonio-shell-ui"
 )
