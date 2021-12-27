@@ -1,36 +1,39 @@
 #!/bin/bash
 
+# Check privileges
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
 ########## Start utility functions
-bordered_title()
-{
-    title="| $1 |"
-    edge=$(echo "$title" | sed 's/./-/g')
-    echo "$edge"; echo "$title"; echo "$edge"
+bordered_title() {
+  title="| $1 |"
+  # shellcheck disable=SC2001
+  edge=$(echo "$title" | sed 's/./-/g')
+  echo "$edge"
+  echo "$title"
+  echo "$edge"
 }
 
 # concat $2 $1 times and print
-repeated_char()
-{
-    printf "%$1s" | tr " " "$2"
+repeated_char() {
+  printf "%$1s" | tr " " "$2"
 }
 
 # print ce_alue
-print_ce_alue()
-{
-    alue=/opt/zextras/.mini_alue_ce
-    if [ -e "$alue" ]; then
-        repeated_char 80 "-"
-        echo
-        fold -w 80 -s $alue
-        repeated_char 80 "-"
-        echo $'\n'
-    fi
+print_ce_alue() {
+  alue=/opt/zextras/.mini_alue_ce
+  if [ -e "$alue" ]; then
+    repeated_char 80 "-"
+    echo
+    fold -w 80 -s $alue
+    repeated_char 80 "-"
+    echo $'\n'
+  fi
 }
 
 ########## End utility functions
-
-
-
 
 ########## Start Carbonio Bootstrap
 
