@@ -28,7 +28,7 @@ package() {
     --exclude='zimlettaglib.jar' \
     --exclude='zm-taglib-*.jar' \
     --exclude='zimbra.tld' \
-    --exclude='antisamy-1.5.8z.jar' \
+    --exclude='antisamy-1.5.13.jar' \
     opt/zextras/jetty_base/webapps/service/ \
     "${pkgdir}/opt/zextras/jetty_base/webapps/service"
 }
