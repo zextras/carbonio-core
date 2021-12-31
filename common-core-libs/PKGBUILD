@@ -27,7 +27,6 @@ package() {
     --exclude='zimbracommon.jar' \
     --exclude='zimbrasoap.jar' \
     --exclude='zimbrastore.jar' \
-    --exclude='zmzimbratozimbramig.jar' \
     opt/zextras/lib/jars/ \
     "${pkgdir}/opt/zextras/lib/jars"
 }
