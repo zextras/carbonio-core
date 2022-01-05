@@ -11,16 +11,7 @@
             "name": "appserver-admin-console-war"
         },
         {
-            "name": "appserver-conf"
-        },
-        {
-            "name": "appserver-service"
-        },
-        {
             "name": "appserver-store-libs"
-        },
-        {
-            "name": "appserver-war"
         },
         {
             "name": "appserver-webclient-war"
@@ -29,22 +20,7 @@
             "name": "ce"
         },
         {
-            "name": "common-core-jar"
-        },
-        {
             "name": "common-core-libs"
-        },
-        {
-            "name": "common-appserver-conf"
-        },
-        {
-            "name": "common-appserver-db"
-        },
-        {
-            "name": "common-appserver-docs"
-        },
-        {
-            "name": "common-appserver-native-lib"
         },
         {
             "name": "core"
