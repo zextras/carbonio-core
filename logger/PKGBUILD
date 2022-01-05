@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-logger"
-pkgver="3.0.8"
+pkgver="3.0.9"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
