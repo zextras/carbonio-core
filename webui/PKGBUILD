@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-webui"
-pkgver="3.0.10"
+pkgver="3.0.11"
 pkgrel="1"
 pkgdesc="Carbonio WebUI"
 pkgdesclong=(
@@ -18,7 +18,6 @@ url="https://zextras.com"
 
 depends=(
   "carbonio-auth-ui"
-  "carbonio-chats-ui"
   "carbonio-calendars-ui"
   "carbonio-contacts-ui"
   "carbonio-error-reporter-ui"
