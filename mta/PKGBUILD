@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-mta"
-pkgver="3.0.9"
+pkgver="3.0.10"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
