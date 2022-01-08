@@ -463,8 +463,6 @@ package() {
     "${pkgdir}/opt/zextras/db/create_database.sql"
   install -D opt/zextras/db/db.sql \
     "${pkgdir}/opt/zextras/db/db.sql"
-  install -D opt/zextras/docs/zmztozmig.txt \
-    "${pkgdir}/opt/zextras/docs/zmztozmig.txt"
 
   install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
   rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \

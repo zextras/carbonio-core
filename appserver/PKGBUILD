@@ -33,8 +33,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/antisamy.xml"
   install -D opt/zextras/conf/owasp_policy.xml \
     "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
-  install -D opt/zextras/conf/zmztozmig.conf \
-    "${pkgdir}/opt/zextras/conf/zmztozmig.conf"
   install -D opt/zextras/extensions-extra/openidconsumer/README.txt \
     "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/README.txt"
   install -D opt/zextras/extensions-extra/openidconsumer/formredirection.jsp \
@@ -95,10 +93,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/ext/zimbraldaputils/zimbraldaputils.jar"
   install -D opt/zextras/lib/ext/zm-gql/zmgql.jar \
     "${pkgdir}/opt/zextras/lib/ext/zm-gql/zmgql.jar"
-  install -D opt/zextras/libexec/zmcleaniplanetics \
-    "${pkgdir}/opt/zextras/libexec/zmcleaniplanetics"
-  install -D opt/zextras/libexec/zmztozmig \
-    "${pkgdir}/opt/zextras/libexec/zmztozmig"
   install -D opt/zextras/log/.hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
 
