@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver-webclient-war"
-pkgver="3.0.13"
+pkgver="4.0.0"
 pkgrel="1"
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
