@@ -808,11 +808,7 @@ postinst:apt() {
 
   cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
   chmod 755 /etc/init.d/carbonio
-  if [ -x /sbin/chkconfig ]; then
-    chkconfig --del carbonio
-    chkconfig --add carbonio
-    chkconfig zextras on
-  elif [ -x /usr/sbin/update-rc.d ]; then
+  if [ -x /usr/sbin/update-rc.d ]; then
     update-rc.d -f carbonio remove
     update-rc.d carbonio start 99 3 5 . stop 01 0 1 6 .
   else
@@ -821,7 +817,7 @@ postinst:apt() {
     rm -f /etc/rc*.d/K01carbonio
 
     if [ -d /etc/rc0.d ]; then
-      ln -s /etc/init.d/carnbonio /etc/rc0.d/S89carbonio
+      ln -s /etc/init.d/carbonio /etc/rc0.d/S89carbonio
       ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
     fi
     if [ -d /etc/rc1.d ]; then
@@ -942,9 +938,6 @@ postinst:yum() {
     chkconfig --del carbonio
     chkconfig --add carbonio
     chkconfig carbonio on
-  elif [ -x /usr/sbin/update-rc.d ]; then
-    update-rc.d -f carbonio remove
-    update-rc.d carbonio start 99 3 5 . stop 01 0 1 6 .
   else
     rm -f /etc/rc*.d/S99carbonio
     rm -f /etc/rc*.d/S89carbonio
