@@ -38,9 +38,6 @@
             "name": "perl"
         },
         {
-            "name": "timezone-data"
-        },
-        {
             "name": "webui"
         }
     ]
