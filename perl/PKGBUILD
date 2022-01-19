@@ -110,8 +110,6 @@ depends:apt=(
   "carbonio-perl-xml-sax-expat"
   "carbonio-perl-xml-sax"
   "carbonio-perl-xml-simple"
-  "carbonio-perl-zmq-constants"
-  "carbonio-perl-zmq-libzmq3"
   "perl"
 )
 depends:yum=(
@@ -210,8 +208,6 @@ depends:yum=(
   "carbonio-perl-xml-sax-expat"
   "carbonio-perl-xml-sax"
   "carbonio-perl-xml-simple"
-  "carbonio-perl-zmq-constants"
-  "carbonio-perl-zmq-libzmq3"
   "perl-core"
   "perl"
 )
