@@ -675,6 +675,20 @@ package() {
     "${pkgdir}/opt/zextras/logger/db/work/data_not_available.gif"
 }
 
+postrm:apt() {
+  if [ "$1" = purge ]; then
+    if crontab -l -u "zextras" > "/dev/null" ; then
+      crontab -r -u "zextras";
+    fi
+  fi
+}
+
+postrm:yum() {
+  if crontab -l -u "zextras" > "/dev/null" ; then
+    crontab -r -u "zextras";
+  fi
+}
+
 preinst:apt() {
   if [ "$1" = configure ]; then
 
