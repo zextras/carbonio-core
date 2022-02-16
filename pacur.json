@@ -35,9 +35,6 @@
             "name": "mta"
         },
         {
-            "name": "perl"
-        },
-        {
             "name": "webui"
         }
     ]

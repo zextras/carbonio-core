@@ -12,12 +12,6 @@ pkgdesclong=(
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
-depends=(
-  "carbonio-appserver"
-)
-conflicts=(
-  "carbonio-appserver-admin-common"
-)
 section="mail"
 priority="optional"
 

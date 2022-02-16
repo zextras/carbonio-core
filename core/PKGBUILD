@@ -15,26 +15,29 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends:ubuntu-bionic=(
-  "carbonio-amavis-logwatch"
+  "adduser"
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
-  "carbonio-curl"
-  "carbonio-cyrus-sasl"
   "carbonio-innotop"
-  "carbonio-jemalloc"
-  "carbonio-mariadb"
   "carbonio-openjdk-cacerts"
   "carbonio-openjdk"
   "carbonio-openldap"
   "carbonio-openssl"
-  "carbonio-perl"
-  "carbonio-pflogsumm"
-  "carbonio-postfix-logwatch"
-  "carbonio-prepflog"
-  "carbonio-rrdtool"
+  "carbonio-perl-carp-clan"
+  "carbonio-perl-crypt-saltedhash"
+  "carbonio-perl-data-uuid"
+  "carbonio-perl-date-manip"
+  "carbonio-perl-dbi"
+  "carbonio-perl-file-grep"
+  "carbonio-perl-filesys-df"
+  "carbonio-perl-io-compress"
+  "carbonio-perl-json-pp"
+  "carbonio-perl-netaddr-ip"
+  "carbonio-perl-net-dns"
+  "carbonio-perl-net-ldap"
   "carbonio-timezone-data"
   "coreutils"
   "file"
@@ -51,35 +54,41 @@ depends:ubuntu-bionic=(
   "lsb-release"
   "net-tools"
   "netcat-openbsd"
+  "passwd"
   "pax" 
+  "pending-setups"
   "perl"
   "procps"
   "resolvconf"
+  "service-discover"
   "sudo"
   "sysstat" 
   "unzip"
 )
 depends:ubuntu-focal=(
-  "carbonio-amavis-logwatch"
+  "adduser"
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
-  "carbonio-curl"
-  "carbonio-cyrus-sasl"
   "carbonio-innotop"
-  "carbonio-jemalloc"
-  "carbonio-mariadb"
+  "carbonio-perl-carp-clan"
+  "carbonio-perl-crypt-saltedhash"
+  "carbonio-perl-data-uuid"
+  "carbonio-perl-date-manip"
+  "carbonio-perl-dbi"
+  "carbonio-perl-file-grep"
+  "carbonio-perl-filesys-df"
+  "carbonio-perl-io-compress"
+  "carbonio-perl-json-pp"
+  "carbonio-perl-netaddr-ip"
+  "carbonio-perl-net-dns"
+  "carbonio-perl-net-ldap"
   "carbonio-openjdk-cacerts"
   "carbonio-openjdk"
   "carbonio-openldap"
   "carbonio-openssl"
-  "carbonio-perl"
-  "carbonio-pflogsumm"
-  "carbonio-postfix-logwatch"
-  "carbonio-prepflog"
-  "carbonio-rrdtool"
   "carbonio-timezone-data"
   "coreutils"
   "file"
@@ -96,35 +105,40 @@ depends:ubuntu-focal=(
   "lsb-release"
   "net-tools"
   "netcat-openbsd"
-  "pax" 
+  "passwd"
+  "pax"
+  "pending-setups"
   "perl"
   "procps"
   "resolvconf"
+  "service-discover"
   "sudo"
   "sysstat" 
   "unzip"
 )
 depends:yum=(
-  "carbonio-amavis-logwatch"
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
-  "carbonio-curl"
-  "carbonio-cyrus-sasl"
   "carbonio-innotop"
-  "carbonio-jemalloc"
-  "carbonio-mariadb"
+  "carbonio-perl-carp-clan"
+  "carbonio-perl-crypt-saltedhash"
+  "carbonio-perl-data-uuid"
+  "carbonio-perl-date-manip"
+  "carbonio-perl-dbi"
+  "carbonio-perl-file-grep"
+  "carbonio-perl-filesys-df"
+  "carbonio-perl-io-compress"
+  "carbonio-perl-json-pp"
+  "carbonio-perl-netaddr-ip"
+  "carbonio-perl-net-dns"
+  "carbonio-perl-net-ldap"
   "carbonio-openjdk-cacerts"
-  "carbonio-openjdk"
   "carbonio-openldap"
+  "carbonio-openjdk"
   "carbonio-openssl"
-  "carbonio-perl"
-  "carbonio-pflogsumm"
-  "carbonio-postfix-logwatch"
-  "carbonio-prepflog"
-  "carbonio-rrdtool"
   "carbonio-timezone-data"
   "coreutils"
   "expat"
@@ -138,9 +152,12 @@ depends:yum=(
   "net-tools"
   "nmap-cat"
   "pcre"
+  "pending-setups"
   "perl-core"
   "perl-Socket6"
   "perl"
+  "service-discover"
+  "shadow-utils"
   "sudo"
   "sysstat"
   "unzip"
@@ -148,13 +165,20 @@ depends:yum=(
 optdepends=(
   "carbonio-common-appserver-docs"
 )
+sources=(
+  "carbonio-bootstrap"
+  "mini_alue_ce"
+)
+hashsums=(
+  "SKIP"
+  "SKIP"
+)
 
 package() {
+  mkdir -p "${pkgdir}/opt/zextras/logger/db/data"
   cd "${srcdir}"/../../
-  install -D etc/sudoers.d/01_carbonio \
-    "${pkgdir}/etc/sudoers.d/01_carbonio"
-  install -D etc/sudoers.d/02_carbonio-core \
-    "${pkgdir}/etc/sudoers.d/02_carbonio-core"
+  install -D etc/sudoers.d/carbonio \
+    "${pkgdir}/etc/sudoers.d/carbonio"
   install -D opt/zextras/.bash_profile \
     "${pkgdir}/opt/zextras/.bash_profile"
   install -D opt/zextras/.bashrc \
@@ -673,6 +697,13 @@ package() {
     "${pkgdir}/opt/zextras/logger/db/work/connection_failed.gif"
   install -D opt/zextras/logger/db/work/data_not_available.gif \
     "${pkgdir}/opt/zextras/logger/db/work/data_not_available.gif"
+
+  install -Dm755 "${srcdir}"/carbonio-bootstrap \
+    "${pkgdir}/usr/bin/carbonio-bootstrap"
+
+  install -Dm755 "${srcdir}"/mini_alue_ce \
+    "${pkgdir}"/opt/zextras/.mini_alue_ce
+  echo "22.1.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
@@ -690,6 +721,19 @@ postrm:yum() {
 }
 
 preinst:apt() {
+
+  if [ "$1" = upgrade ]; then
+    if [ x"$2" != "x" ]; then
+      ca_certs_save_dir="/opt/zextras/.saveconfig/carbonio-openjdk-cacerts"
+      if [ ! -d "${ca_certs_save_dir}" ]; then
+        mkdir -p "${ca_certs_save_dir}"
+      fi
+      cacerts=$(mktemp --tmpdir="${ca_certs_save_dir}" cacerts.XXXXXX 2>/dev/null)
+
+      cp /opt/zextras/common/etc/java/cacerts "${ca_certs_save_dir}"
+    fi
+  fi
+
   if [ "$1" = configure ]; then
 
     if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
@@ -716,10 +760,15 @@ preinst:apt() {
       chmod 640 /etc/security/limits.conf
     fi
   fi
-  exit 0
 }
 
 preinst:yum() {
+  if [ "$1" -ge "2" ]; then
+    mkdir -p /opt/zextras/.saveconfig/carbonio-openjdk-cacerts
+    cacerts=`mktemp --tmpdir=/opt/zextras/.saveconfig/carbonio-openjdk-cacerts cacerts.XXXXXX`
+    cp /opt/zextras/common/etc/java/cacerts $cacerts
+  fi
+
   if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
     echo "zextras soft nproc 278528" >/etc/security/limits.d/10-zextras.conf
     echo "zextras hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
@@ -784,11 +833,41 @@ postinst:apt() {
   H=$(hostname --fqdn)
   I=$(hostname -i)
 
-  #Symlinks
-  rm -f /opt/zextras/java
+  chown zextras:zextras /opt/zextras/common/etc/java/cacerts
+  chmod 644 /opt/zextras/common/etc/java/cacerts
+
+  mailboxd_truststore_password=$(su - zextras -c "zmlocalconfig -s -m nokey mailboxd_truststore_password")
+  if [ "$2" != "" ]; then
+    if [ -x /opt/zextras/bin/zmcertmgr ]; then
+      if [ $mailboxd_truststore_password != "changeit" ]; then
+	      su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
+      fi
+      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts/*; do
+          if [ -d "$dir" ]; then
+             chown zextras:zextras $dir/cacerts.*
+             chmod 644 $dir/cacerts.*
+             for cert in `/opt/zextras/common/bin/keytool -list -keystore $dir/cacerts.*  -storepass $mailboxd_truststore_password | grep trustedCertEntry | grep -v 'openjdk-cacerts/build/ubuntu'| grep -v 'tmp/rhel'| grep -Eo "^[^,]*"`;do
+                /opt/zextras/common/bin/keytool -exportcert -keystore $dir/cacerts.* -storepass $mailboxd_truststore_password -alias $cert -file $dir/${cert}.crt
+                chown zextras:zextras $dir/${cert}.crt
+                su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/${cert}.crt"
+             done
+          fi
+     done
+    fi
+  fi
 
   if [ -d "/opt/zextras/logger/db" ]; then
     chown zextras:zextras /opt/zextras/logger/db
+  fi
+
+  if [ ! -d "/opt/zextras/common/conf" ]; then
+    mkdir -p /opt/zextras/common/conf
+    chown -R zextras:zextras /opt/zextras/common/conf
+  fi
+
+  if [ ! -d "/opt/zextras/conf/ca" ]; then
+    mkdir -p /opt/zextras/conf/ca
+    chown -R zextras:zextras /opt/zextras/conf/ca
   fi
 
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
@@ -883,11 +962,8 @@ postinst:apt() {
     chmod $SUDOMODE /etc/sudoers
   fi
 
-  chmod 440 /etc/sudoers.d/01_carbonio
-  chown root:root /etc/sudoers.d/01_carbonio
-
-  chmod 440 /etc/sudoers.d/02_carbonio-core
-  chown root:root /etc/sudoers.d/02_carbonio-core
+  chmod 440 /etc/sudoers.d/carbonio
+  chown root:root /etc/sudoers.d/carbonio
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
@@ -931,15 +1007,49 @@ postinst:yum() {
   H=$(hostname --fqdn)
   I=$(hostname -i)
 
-  #Symlinks
-  rm -f /opt/zextras/java
-
   if [ -d "/opt/zextras/logger/db" ]; then
     chown zextras:zextras /opt/zextras/logger/db
   fi
 
+  if [ ! -d "/opt/zextras/common/conf" ]; then
+    mkdir -p /opt/zextras/common/conf
+    chown -R zextras:zextras /opt/zextras/common/conf
+  fi
+
+  if [ ! -d "/opt/zextras/conf/ca" ]; then
+    mkdir -p /opt/zextras/conf/ca
+    chown -R zextras:zextras /opt/zextras/conf/ca
+  fi
+
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
     ln -f -s ca.pem /opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0
+  fi
+
+  mailboxd_truststore_password=$(/bin/su - zextras -c "zmlocalconfig -s -m nokey mailboxd_truststore_password")
+  chown zextras:zextras /opt/zextras/common/etc/java/cacerts
+  chmod 644 /opt/zextras/common/etc/java/cacerts
+
+  if [ "$1" -ge "2" ]; then
+    if [ -x /opt/zextras/bin/zmcertmgr ]; then
+      # Run as zextras, extract CA to /opt/zextras/conf/ca
+      su - zextras -c '/opt/zextras/bin/zmcertmgr createca'
+      # Run as zextras, update OpenJDK cacerts file with the CA stored in LDAP
+      su - zextras -c '/opt/zextras/bin/zmcertmgr deployca --localonly'
+      if [ $mailboxd_truststore_password != "changeit" ]; then
+        su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
+      fi
+      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts; do
+        if [ -d "$dir" ]; then
+          chown zextras:zextras $dir/cacerts.*
+          chmod 644 $dir/cacerts.*
+          for cert in $(/opt/zextras/common/bin/keytool -list -keystore $dir/cacerts.* -storepass changeit | grep trustedCertEntry | grep -v 'openjdk-cacerts/build/ubuntu' | grep -v 'tmp/rhel' | grep -v 'openjdk-cacerts/build/rhel' | grep -Eo "^[^,]*"); do
+            /opt/zextras/common/bin/keytool -exportcert -keystore $dir/cacerts.* -storepass changeit -alias $cert -file $dir/${cert}.crt
+            chown zextras:zextras $dir/${cert}.crt
+            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/${cert}.crt"
+          done
+        fi
+      done
+    fi
   fi
 
   if [ -d /etc/logrotate.d ]; then
@@ -1010,11 +1120,8 @@ postinst:yum() {
     chmod $SUDOMODE /etc/sudoers
   fi
 
-  chmod 440 /etc/sudoers.d/01_carbonio
-  chown root:root /etc/sudoers.d/01_carbonio
-
-  chmod 440 /etc/sudoers.d/02_carbonio-core
-  chown root:root /etc/sudoers.d/02_carbonio-core
+  chmod 440 /etc/sudoers.d/carbonio
+  chown root:root /etc/sudoers.d/carbonio
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms

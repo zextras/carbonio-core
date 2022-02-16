@@ -49,8 +49,6 @@ conflicts=(
 
 package() {
   cd "${srcdir}"/../../
-  install -D etc/sudoers.d/02_carbonio-mta \
-    "${pkgdir}/etc/sudoers.d/02_carbonio-mta"
   install -D opt/zextras/common/conf/master.cf.in \
     "${pkgdir}/opt/zextras/common/conf/master.cf.in"
   install -D opt/zextras/common/conf/tag_as_foreign.re.in \
@@ -85,20 +83,6 @@ postinst:apt() {
       ln -s /opt/zextras/common/sbin/sendmail /usr/sbin/sendmail
     fi
   fi
-
-  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
-  if [ $? = 0 ]; then
-    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
-    grep -E -v '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
-    mv -f $sudotmp /etc/sudoers
-    chmod $SUDOMODE /etc/sudoers
-  fi
-  chmod 440 /etc/sudoers.d/02_carbonio-mta
-  chown root:root /etc/sudoers.d/02_carbonio-mta
 
   chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in
@@ -151,19 +135,6 @@ postinst:apt() {
 }
 
 postinst:yum() {
-  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
-  if [ $? = 0 ]; then
-    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];printf("%04o\n",$mode & 07777);')
-    grep -E -v '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
-    mv -f $sudotmp /etc/sudoers
-    chmod $SUDOMODE /etc/sudoers
-  fi
-  chmod 440 /etc/sudoers.d/02_carbonio-mta
-  chown root:root /etc/sudoers.d/02_carbonio-mta
 
   chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in

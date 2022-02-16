@@ -15,15 +15,16 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends=(
+  "carbonio-amavis-logwatch"
   "carbonio-core"
+  "carbonio-perl-dbd-sqlite"
+  "carbonio-perl-swatchdog"
+  "carbonio-pflogsumm"
+  "carbonio-postfix-logwatch"
+  "carbonio-prepflog"
+  "carbonio-rrdtool"
 )
 
 package() {
-  mkdir -p "${pkgdir}/opt/zextras/logger/db/data"
-}
-
-postinst() {
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  cd "${srcdir}"
 }

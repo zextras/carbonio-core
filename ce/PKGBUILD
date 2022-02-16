@@ -15,43 +15,24 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends:apt=(
-  "adduser"
-  "carbonio-core"
   "carbonio-directory-server"
   "carbonio-logger"
   "carbonio-mta"
   "carbonio-proxy"
   "carbonio-appserver"
   "carbonio-webui"
-  "passwd"
 )
 depends:yum=(
-  "carbonio-core"
   "carbonio-directory-server"
   "carbonio-logger"
-  "carbonio-memcached"
   "carbonio-mta"
   "carbonio-proxy"
   "carbonio-appserver"
   "carbonio-webui"
-  "shadow-utils"
-)
-sources=(
-  "carbonio-bootstrap"
-  "mini_alue_ce"
-)
-hashsums=(
-  "SKIP"
-  "SKIP"
 )
 
 package() {
   cd "${srcdir}"/../../
-  install -Dm755 "${srcdir}"/carbonio-bootstrap \
-    "${pkgdir}/usr/bin/carbonio-bootstrap"
-  install -Dm755 "${srcdir}"/mini_alue_ce \
-    "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "22.1.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postinst() {
