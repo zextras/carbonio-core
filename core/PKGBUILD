@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="4.0.3"
+pkgver="4.0.4"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -150,7 +150,7 @@ depends:yum=(
   "libidn"
   "libstdc++"
   "net-tools"
-  "nmap-cat"
+  "nmap-ncat"
   "pcre"
   "pending-setups"
   "perl-core"
@@ -161,6 +161,9 @@ depends:yum=(
   "sudo"
   "sysstat"
   "unzip"
+)
+provides:yum=(
+  "/usr/bin/zmpython"
 )
 optdepends=(
   "carbonio-common-appserver-docs"
@@ -972,35 +975,43 @@ postinst:apt() {
 postinst:yum() {
   # creating zextras group if it isn't already there
   if ! getent group zextras >/dev/null; then
-    addgroup --system --force-badname --quiet zextras
+    groupadd --system zextras >/dev/null
   fi
   # creating zextras user if it isn't already there
   if ! getent passwd zextras >/dev/null; then
-    adduser --system --force-badname --quiet \
-      --ingroup zextras \
-      --home /opt/zextras \
+    useradd --system \
+      -g zextras \
+      -d /opt/zextras \
       --shell /bin/bash \
-      zextras
+      zextras >/dev/null
     usermod -c "zextras user" zextras
   fi
 
   # creating postfix and postdrop groups if aren't already there
   if ! getent group postdrop >/dev/null; then
-    addgroup --system --force-badname --quiet postdrop
+    groupadd --system postdrop >/dev/null
   fi
   if ! getent group postfix >/dev/null; then
-    addgroup --system --force-badname --quiet postfix
+    groupadd --system postfix >/dev/null
   fi
 
   # creating postfix user if it isn't already there
   if ! getent passwd postfix >/dev/null; then
-    adduser --system --force-badname --quiet \
-      --ingroup postfix \
-      --home /opt/zextras/postfix \
+    useradd --system \
+      -g postfix \
+      -d /opt/zextras/postfix \
       postfix
     usermod -c "postfix user" postfix
   fi
   usermod -a -G postfix,tty zextras
+
+  # creating postfix user if it isn't already there
+  if ! getent passwd syslog >/dev/null; then
+    useradd --system \
+      -g adm \
+      syslog
+    usermod -c "syslog user" syslog
+  fi
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
