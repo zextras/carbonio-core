@@ -113,14 +113,14 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/json-20090211.jar"
   install -D opt/zextras/jetty_base/common/lib/jtnef-1.9.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jtnef-1.9.0.jar"
-  install -D opt/zextras/jetty_base/common/lib/junixsocket-common-2.3.2.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-common-2.3.2.jar"
-  install -D opt/zextras/jetty_base/common/lib/junixsocket-demo-2.3.2.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-demo-2.3.2.jar"
-  install -D opt/zextras/jetty_base/common/lib/junixsocket-mysql-2.3.2.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-mysql-2.3.2.jar"
-  install -D opt/zextras/jetty_base/common/lib/junixsocket-rmi-2.3.2.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-rmi-2.3.2.jar"
+  install -D opt/zextras/jetty_base/common/lib/junixsocket-common-2.4.0.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-common-2.4.0.jar"
+  install -D opt/zextras/jetty_base/common/lib/junixsocket-demo-2.4.0.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-demo-2.4.0.jar"
+  install -D opt/zextras/jetty_base/common/lib/junixsocket-mysql-2.4.0.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-mysql-2.4.0.jar"
+  install -D opt/zextras/jetty_base/common/lib/junixsocket-rmi-2.4.0.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-rmi-2.4.0.jar"
   install -D opt/zextras/jetty_base/common/lib/jzlib-1.0.7.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jzlib-1.0.7.jar"
   install -D opt/zextras/jetty_base/common/lib/libidn-1.24.jar \
@@ -135,6 +135,8 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/nekohtml-1.9.22.jar"
   install -D opt/zextras/jetty_base/common/lib/oauth-20100527.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-20100527.jar"
+  install -D opt/zextras/jetty_base/common/lib/oauth-provider-20100527.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-provider-20100527.jar"
   install -D opt/zextras/jetty_base/common/lib/owasp-java-html-sanitizer-20191001.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/owasp-java-html-sanitizer-20191001.1.jar"
   install -D opt/zextras/jetty_base/common/lib/slf4j-api-1.7.30.jar \

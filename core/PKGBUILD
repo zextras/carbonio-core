@@ -493,10 +493,9 @@ package() {
   rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \
     "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
 
-  install -D opt/zextras/lib/junixsocket-native-2.0.4-amd64-Linux-gpp-jni.nar \
-    "${pkgdir}/opt/zextras/lib/junixsocket-native-2.0.4-amd64-Linux-gpp-jni.nar"
-  install -D opt/zextras/lib/libjunixsocket-native-2.0.4.so \
-    "${pkgdir}/opt/zextras/lib/libjunixsocket-native-2.0.4.so"
+  install -D opt/zextras/lib/junixsocket-native-2.4.0-amd64-Linux-clang-jni.nar \
+    "${pkgdir}/opt/zextras/lib/junixsocket-native-2.4.0-amd64-Linux-clang-jni.nar"
+
   install -Dm755 opt/zextras/libexec/600.zimbra \
     "${pkgdir}/opt/zextras/libexec/600.zimbra"
   install -Dm755 opt/zextras/libexec/configrewrite \
