@@ -34,3 +34,19 @@ postinst() {
 
   chown -R root:root /opt/zextras/common/etc/openldap
 }
+
+postinst:apt() {
+  if [ "$1" = upgrade ] && [ -z "$2" ]; then
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+  fi
+}
+
+preinst:yum() {
+  if [ "$1" -ge "2" ]; then
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+  fi
+}
