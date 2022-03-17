@@ -8,19 +8,7 @@
             "name": "appserver"
         },
         {
-            "name": "appserver-admin-console-war"
-        },
-        {
-            "name": "appserver-store-libs"
-        },
-        {
-            "name": "appserver-webclient-war"
-        },
-        {
             "name": "ce"
-        },
-        {
-            "name": "common-core-libs"
         },
         {
             "name": "core"
