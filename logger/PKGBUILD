@@ -4,7 +4,7 @@ targets=(
 )
 pkgname="carbonio-logger"
 pkgver="4.0.6"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
   "An open-source, community-driven email server"
@@ -15,6 +15,7 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends=(
+  "carbonio-appserver"
   "carbonio-amavis-logwatch"
   "carbonio-core"
   "carbonio-perl-dbd-sqlite"
