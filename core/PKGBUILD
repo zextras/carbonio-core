@@ -684,6 +684,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmstat-ldap"
   install -Dm755 opt/zextras/libexec/zmstat-mtaqueue \
     "${pkgdir}/opt/zextras/libexec/zmstat-mtaqueue"
+  install -Dm755 opt/zextras/libexec/postfix-prometheus \
+    "${pkgdir}/opt/zextras/libexec/postfix-prometheus"
   install -Dm755 opt/zextras/libexec/zmstat-mysql \
     "${pkgdir}/opt/zextras/libexec/zmstat-mysql"
   install -Dm755 opt/zextras/libexec/zmstat-nginx \
