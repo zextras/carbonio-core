@@ -4,7 +4,7 @@ targets=(
 )
 pkgname="carbonio-core"
 pkgver="4.0.9"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
   "An open-source, community-driven email server"
