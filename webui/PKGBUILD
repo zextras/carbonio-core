@@ -13,14 +13,10 @@ pkgdesclong=(
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
-
-# "carbonio-files-ui"
-
 depends=(
   "carbonio-auth-ui"
   "carbonio-calendars-ui"
   "carbonio-contacts-ui"
-  "carbonio-error-reporter-ui"
   "carbonio-login-ui"
   "carbonio-mails-ui"
   "carbonio-shell-ui"
