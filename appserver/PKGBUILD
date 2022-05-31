@@ -100,6 +100,8 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/lib/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+  mkdir -p "${pkgdir}/opt/zextras/cache/"
+  mkdir -p "${pkgdir}/opt/zextras/incoming/"
   mkdir -p "${pkgdir}/opt/zextras/lib/jars/"
 
   install -Ddm755 "${pkgdir}/opt/zextras/zimlets/"
