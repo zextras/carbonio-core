@@ -49,6 +49,24 @@ conflicts=(
 
 package() {
   cd "${srcdir}"/../../
+
+  # consul for mta
+  install -Dm 755 usr/bin/carbonio-mta \
+    "${pkgdir}/usr/bin/carbonio-mta"
+  install -Dm 644 lib/systemd/system/carbonio-mta-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-mta-sidecar.service"
+  install -Dm 644 etc/zextras/service-discover/carbonio-mta.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mta.hcl"
+  install -Dm 644 etc/zextras/pending-setups.d/carbonio-mta.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mta.sh"
+  install -Dm 644 etc/carbonio/mta/service-discover/policies.json \
+    "${pkgdir}/etc/carbonio/mta/service-discover/policies.json"
+  install -Dm 644 etc/carbonio/mta/service-discover/intentions.json \
+    "${pkgdir}/etc/carbonio/mta/service-discover/intentions.json"
+  install -Dm 644 etc/carbonio/mta/service-discover/service-protocol.json \
+    "${pkgdir}/etc/carbonio/mta/service-discover/service-protocol.json"
+
+  # postfix
   install -D opt/zextras/common/conf/master.cf.in \
     "${pkgdir}/opt/zextras/common/conf/master.cf.in"
   install -D opt/zextras/common/conf/tag_as_foreign.re.in \
@@ -66,6 +84,7 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/data/postfix/"
 
 }
+
 
 postinst:apt() {
   #Symlinks
@@ -132,6 +151,23 @@ postinst:apt() {
 
   chgrp zextras /opt/zextras/common/conf
   chmod g+w /opt/zextras/common/conf
+
+  # mta consul
+  getent group 'carbonio-mta' >/dev/null ||
+    groupadd -r 'carbonio-mta'
+  getent passwd 'carbonio-mta' >/dev/null ||
+    useradd -r -M -g 'carbonio-mta' -s /sbin/nologin 'carbonio-mta'
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-mta.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-mta-sidecar.service >/dev/null 2>&1 || :
+  fi
+
+  echo "======================================================"
+  echo "Carbonio mta installed successfully!"
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
 }
 
 postinst:yum() {
@@ -184,4 +220,37 @@ postinst:yum() {
 
   chgrp zextras /opt/zextras/common/conf
   chmod g+w /opt/zextras/common/conf
+
+  # mta consul
+  getent group 'carbonio-mta' >/dev/null ||
+    groupadd -r 'carbonio-mta'
+  getent passwd 'carbonio-mta' >/dev/null ||
+    useradd -r -M -g 'carbonio-mta' -s /sbin/nologin 'carbonio-mta'
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-mta.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-mta-sidecar.service >/dev/null 2>&1 || :
+  fi
+
+  echo "======================================================"
+  echo "Carbonio mta installed successfully!"
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
+}
+
+prerm() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable carbonio-mta.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-mta-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-mta.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-mta-sidecar.service >/dev/null 2>&1 || :
+  fi
+}
+
+postrm() {
+  rm -f /etc/carbonio/mta/service-discover/token
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
 }
