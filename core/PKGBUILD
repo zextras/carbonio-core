@@ -712,7 +712,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "22.7.2" > "${pkgdir}"/opt/zextras/.version
+  echo "22.8.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
