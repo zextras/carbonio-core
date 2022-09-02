@@ -20,6 +20,7 @@ depends=(
   "carbonio-login-ui"
   "carbonio-mails-ui"
   "carbonio-shell-ui"
+  "carbonio-admin-login-ui"
 )
 section="mail"
 priority="optional"

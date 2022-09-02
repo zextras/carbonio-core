@@ -15,7 +15,6 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends=(
-  "carbonio-admin-login-ui"
   "carbonio-appserver-admin-console-war"
   "carbonio-appserver-conf"
   "carbonio-appserver-service"
