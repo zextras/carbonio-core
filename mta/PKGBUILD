@@ -15,29 +15,23 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends:apt=(
-  "carbonio-altermime"
-  "carbonio-amavisd"
+  "carbonio-mecha"
   "carbonio-clamav"
   "carbonio-core"
   "carbonio-mariadb"
   "carbonio-opendkim"
-  "carbonio-perl-mail-spamassassin"
   "carbonio-policyd"
   "carbonio-postfix"
-  "carbonio-spamassassin-rules"
   "sqlite3"
 )
 depends:yum=(
-  "carbonio-altermime"
-  "carbonio-amavisd"
+  "carbonio-mecha"
   "carbonio-clamav"
   "carbonio-core"
   "carbonio-mariadb"
   "carbonio-opendkim"
-  "carbonio-perl-mail-spamassassin"
   "carbonio-policyd"
   "carbonio-postfix"
-  "carbonio-spamassassin-rules"
   "sqlite"
 )
 provides=(
@@ -74,9 +68,6 @@ package() {
   install -D opt/zextras/common/conf/tag_as_originating.re.in \
     "${pkgdir}/opt/zextras/common/conf/tag_as_originating.re.in"
 
-  mkdir -p "${pkgdir}/opt/zextras/data/altermime/"
-  install -D opt/zextras/data/amavisd/mysql/antispamdb.sql \
-    "${pkgdir}/opt/zextras/data/amavisd/mysql/antispamdb.sql"
   mkdir -p "${pkgdir}/opt/zextras/data/cbpolicyd/"
   mkdir -p "${pkgdir}/opt/zextras/data/cbpolicyd/db/"
   mkdir -p "${pkgdir}/opt/zextras/data/clamav/"
@@ -106,12 +97,6 @@ postinst:apt() {
   chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in
   chown zextras:zextras /opt/zextras/common/conf/tag_as_*.re.in
-
-  mkdir -p /opt/zextras/data/amavisd/db
-  mkdir -p /opt/zextras/data/amavisd/tmp
-  mkdir -p /opt/zextras/data/amavisd/var
-  mkdir -p /opt/zextras/data/amavisd/quarantine
-  chown -R zextras:zextras /opt/zextras/data/amavisd/*
 
   mkdir -p /opt/zextras/data/opendkim
   chown -R zextras:zextras /opt/zextras/data/opendkim
@@ -175,12 +160,6 @@ postinst:yum() {
   chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in
   chown zextras:zextras /opt/zextras/common/conf/tag_as_*.re.in
-
-  mkdir -p /opt/zextras/data/amavisd/db
-  mkdir -p /opt/zextras/data/amavisd/tmp
-  mkdir -p /opt/zextras/data/amavisd/var
-  mkdir -p /opt/zextras/data/amavisd/quarantine
-  chown -R zextras:zextras /opt/zextras/data/amavisd/*
 
   mkdir -p /opt/zextras/data/opendkim
   chown -R zextras:zextras /opt/zextras/data/opendkim

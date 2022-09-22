@@ -147,12 +147,6 @@ package() {
     "${pkgdir}/opt/zextras/.platform"
   install -D opt/zextras/.viminfo \
     "${pkgdir}/opt/zextras/.viminfo"
-  install -D opt/zextras/bin/antispam-mysql \
-    "${pkgdir}/opt/zextras/bin/antispam-mysql"
-  install -D opt/zextras/bin/antispam-mysql.server \
-    "${pkgdir}/opt/zextras/bin/antispam-mysql.server"
-  install -D opt/zextras/bin/antispam-mysqladmin \
-    "${pkgdir}/opt/zextras/bin/antispam-mysqladmin"
   install -D opt/zextras/bin/carbonio \
     "${pkgdir}/opt/zextras/bin/carbonio"
   install -D opt/zextras/bin/ldap \
@@ -171,12 +165,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/qshape"
   install -D opt/zextras/bin/zmaccts \
     "${pkgdir}/opt/zextras/bin/zmaccts"
-  install -D opt/zextras/bin/zmamavisdctl \
-    "${pkgdir}/opt/zextras/bin/zmamavisdctl"
-  install -D opt/zextras/bin/zmantispamctl \
-    "${pkgdir}/opt/zextras/bin/zmantispamctl"
-  install -D opt/zextras/bin/zmantispamdbpasswd \
-    "${pkgdir}/opt/zextras/bin/zmantispamdbpasswd"
   install -D opt/zextras/bin/zmantivirusctl \
     "${pkgdir}/opt/zextras/bin/zmantivirusctl"
   install -D opt/zextras/bin/zmauditswatchctl \
@@ -365,10 +353,6 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm"
   install -D opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm"
-  install -D opt/zextras/conf/amavisd-custom.conf \
-    "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
-  install -D opt/zextras/conf/amavisd.conf.in \
-    "${pkgdir}/opt/zextras/conf/amavisd.conf.in"
   install -D opt/zextras/conf/auditswatchrc.in \
     "${pkgdir}/opt/zextras/conf/auditswatchrc.in"
   install -D opt/zextras/conf/cbpolicyd.conf.in \
