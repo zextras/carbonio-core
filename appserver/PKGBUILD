@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver"
-pkgver="4.0.14"
+pkgver="4.0.15"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -15,7 +15,6 @@ section="mail"
 priority="optional"
 arch="amd64"
 depends=(
-  "carbonio-admin-login-ui"
   "carbonio-appserver-admin-console-war"
   "carbonio-appserver-conf"
   "carbonio-appserver-service"
