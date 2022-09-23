@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="4.0.14"
+pkgver="4.0.15"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -712,7 +712,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "22.8.0" > "${pkgdir}"/opt/zextras/.version
+  echo "22.10.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
