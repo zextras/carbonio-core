@@ -367,8 +367,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
   install -D opt/zextras/conf/crontabs/crontab.store \
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
-  install -D opt/zextras/conf/dspam.conf.in \
-    "${pkgdir}/opt/zextras/conf/dspam.conf.in"
   install -D opt/zextras/conf/externaldirsync/Exchange2000.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml"
   install -D opt/zextras/conf/externaldirsync/Exchange2003.xml \
