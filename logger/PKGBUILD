@@ -16,7 +16,6 @@ priority="optional"
 arch="amd64"
 depends=(
   "carbonio-appserver"
-  "carbonio-amavis-logwatch"
   "carbonio-core"
   "carbonio-perl-dbd-sqlite"
   "carbonio-perl-swatchdog"
