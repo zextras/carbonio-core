@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-webui"
-pkgver="4.0.15"
+pkgver="4.0.16"
 pkgrel="1"
 pkgdesc="Carbonio WebUI"
 pkgdesclong=(
@@ -21,6 +21,8 @@ depends=(
   "carbonio-mails-ui"
   "carbonio-shell-ui"
   "carbonio-admin-login-ui"
+  "carbonio-admin-console-ui"
+  "carbonio-admin-ui"
 )
 section="mail"
 priority="optional"
