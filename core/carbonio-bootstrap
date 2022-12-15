@@ -35,13 +35,16 @@ print_ce_alue() {
 
 ########## End utility functions
 
+
 ########## Start Carbonio Bootstrap
 
-# print welcome message
-bordered_title $'Starting Carbonio Bootstrap...'
+if [ -z "$1" ] || [ "$1" = "-c" ]; then
+ # print welcome message
+ bordered_title $'Starting Carbonio Bootstrap...'
 
-# print product usage information
-print_ce_alue
+ # print product usage information
+ print_ce_alue
+fi
 
 # Bootstrap and start C services
 /opt/zextras/libexec/zmsetup.pl "${@}"
