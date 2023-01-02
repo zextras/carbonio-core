@@ -926,6 +926,8 @@ postinst:apt() {
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
+  echo `date +%s`": INSTALLED ${pkgname}" >> /opt/zextras/.install_history
+
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
   fi
@@ -1091,6 +1093,8 @@ postinst:yum() {
 
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
+
+  echo `date +%s`": INSTALLED ${pkgname}" >> /opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
