@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="4.0.18"
+pkgver="4.0.19"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -39,6 +39,7 @@ depends:ubuntu-focal=(
   "carbonio-openjdk"
   "carbonio-openldap"
   "carbonio-openssl"
+  "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
   "coreutils"
   "file"
@@ -92,6 +93,7 @@ depends:yum=(
   "carbonio-openldap"
   "carbonio-openjdk"
   "carbonio-openssl"
+  "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
   "coreutils"
   "expat"
@@ -664,7 +666,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.1.0" > "${pkgdir}"/opt/zextras/.version
+  echo "23.2.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
@@ -926,6 +928,8 @@ postinst:apt() {
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
+  echo `date +%s`": INSTALLED ${pkgname}" >> /opt/zextras/.install_history
+
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
   fi
@@ -1091,6 +1095,8 @@ postinst:yum() {
 
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
+
+  echo `date +%s`": INSTALLED ${pkgname}" >> /opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
