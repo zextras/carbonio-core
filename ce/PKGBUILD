@@ -16,7 +16,6 @@ priority="optional"
 arch="amd64"
 depends:apt=(
   "carbonio-directory-server"
-  "carbonio-logger"
   "carbonio-mta"
   "carbonio-proxy"
   "carbonio-appserver"
@@ -24,7 +23,6 @@ depends:apt=(
 )
 depends:yum=(
   "carbonio-directory-server"
-  "carbonio-logger"
   "carbonio-mta"
   "carbonio-proxy"
   "carbonio-appserver"

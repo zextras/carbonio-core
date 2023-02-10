@@ -25,7 +25,6 @@ depends:ubuntu-focal=(
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
-  "carbonio-perl-date-manip"
   "carbonio-perl-dbi"
   "carbonio-perl-file-grep"
   "carbonio-perl-filesys-df"
@@ -79,7 +78,6 @@ depends:yum=(
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
-  "carbonio-perl-date-manip"
   "carbonio-perl-dbi"
   "carbonio-perl-file-grep"
   "carbonio-perl-filesys-df"
@@ -135,7 +133,6 @@ hashsums=(
 )
 
 package() {
-  mkdir -p "${pkgdir}/opt/zextras/logger/db/data"
   cd "${srcdir}"/../../
   install -D etc/sudoers.d/carbonio \
     "${pkgdir}/etc/sudoers.d/carbonio"
@@ -183,8 +180,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmantispamdbpasswd"
   install -D opt/zextras/bin/zmantivirusctl \
     "${pkgdir}/opt/zextras/bin/zmantivirusctl"
-  install -D opt/zextras/bin/zmauditswatchctl \
-    "${pkgdir}/opt/zextras/bin/zmauditswatchctl"
   install -D opt/zextras/bin/zmblobchk \
     "${pkgdir}/opt/zextras/bin/zmblobchk"
   install -D opt/zextras/bin/zmcaldebug \
@@ -235,12 +230,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmlmtpinject"
   install -D opt/zextras/bin/zmlocalconfig \
     "${pkgdir}/opt/zextras/bin/zmlocalconfig"
-  install -D opt/zextras/bin/zmloggerctl \
-    "${pkgdir}/opt/zextras/bin/zmloggerctl"
-  install -D opt/zextras/bin/zmloggerhostmap \
-    "${pkgdir}/opt/zextras/bin/zmloggerhostmap"
-  install -D opt/zextras/bin/zmlogswatchctl \
-    "${pkgdir}/opt/zextras/bin/zmlogswatchctl"
   install -D opt/zextras/bin/zmmailbox \
     "${pkgdir}/opt/zextras/bin/zmmailbox"
   install -D opt/zextras/bin/zmmailboxdctl \
@@ -295,8 +284,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmstatctl"
   install -D opt/zextras/bin/zmstorectl \
     "${pkgdir}/opt/zextras/bin/zmstorectl"
-  install -D opt/zextras/bin/zmswatchctl \
-    "${pkgdir}/opt/zextras/bin/zmswatchctl"
   install -D opt/zextras/bin/zmthrdump \
     "${pkgdir}/opt/zextras/bin/zmthrdump"
   install -D opt/zextras/bin/zmtlsctl \
@@ -373,8 +360,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
   install -D opt/zextras/conf/amavisd.conf.in \
     "${pkgdir}/opt/zextras/conf/amavisd.conf.in"
-  install -D opt/zextras/conf/auditswatchrc.in \
-    "${pkgdir}/opt/zextras/conf/auditswatchrc.in"
   install -D opt/zextras/conf/cbpolicyd.conf.in \
     "${pkgdir}/opt/zextras/conf/cbpolicyd.conf.in"
   install -D opt/zextras/conf/clamd.conf.in \
@@ -405,8 +390,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/externaldirsync/openldap.xml"
   install -D opt/zextras/conf/freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
-  install -D opt/zextras/conf/logswatchrc \
-    "${pkgdir}/opt/zextras/conf/logswatchrc"
   install -D opt/zextras/conf/opendkim-localnets.conf.in \
     "${pkgdir}/opt/zextras/conf/opendkim-localnets.conf.in"
   install -D opt/zextras/conf/opendkim.conf.in \
@@ -419,8 +402,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/sasl2/smtpd.conf.in"
   install -D opt/zextras/conf/saslauthd.conf.in \
     "${pkgdir}/opt/zextras/conf/saslauthd.conf.in"
-  install -D opt/zextras/conf/swatchrc.in \
-    "${pkgdir}/opt/zextras/conf/swatchrc.in"
   install -D opt/zextras/conf/zmconfigd/postfix_content_filter.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/postfix_content_filter.cf"
   install -D opt/zextras/conf/zmconfigd/smtpd_end_of_data_restrictions.cf \
@@ -500,8 +481,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmconfigd"
   install -Dm755 opt/zextras/libexec/zmcpustat \
     "${pkgdir}/opt/zextras/libexec/zmcpustat"
-  install -Dm755 opt/zextras/libexec/zmdailyreport \
-    "${pkgdir}/opt/zextras/libexec/zmdailyreport"
   install -Dm755 opt/zextras/libexec/zmdbintegrityreport \
     "${pkgdir}/opt/zextras/libexec/zmdbintegrityreport"
   install -Dm755 opt/zextras/libexec/zmdiaglog \
@@ -558,10 +537,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
   install -Dm755 opt/zextras/libexec/ldapattributeupdate \
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
-  install -Dm755 opt/zextras/libexec/zmlogger \
-    "${pkgdir}/opt/zextras/libexec/zmlogger"
-  install -Dm755 opt/zextras/libexec/zmloggerinit \
-    "${pkgdir}/opt/zextras/libexec/zmloggerinit"
   install -Dm755 opt/zextras/libexec/zmlogprocess \
     "${pkgdir}/opt/zextras/libexec/zmlogprocess"
   install -Dm755 opt/zextras/libexec/zmmailboxdmgr \
@@ -600,8 +575,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmreplchk"
   install -Dm755 opt/zextras/libexec/zmresetmysqlpassword \
     "${pkgdir}/opt/zextras/libexec/zmresetmysqlpassword"
-  install -Dm755 opt/zextras/libexec/zmrrdfetch \
-    "${pkgdir}/opt/zextras/libexec/zmrrdfetch"
   install -Dm755 opt/zextras/libexec/zmsacompile \
     "${pkgdir}/opt/zextras/libexec/zmsacompile"
   install -Dm755 opt/zextras/libexec/zmsaupdate \
@@ -656,10 +629,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
   install -Dm755 opt/zextras/libexec/zmthreadcpu \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
-  install -D opt/zextras/logger/db/work/connection_failed.gif \
-    "${pkgdir}/opt/zextras/logger/db/work/connection_failed.gif"
-  install -D opt/zextras/logger/db/work/data_not_available.gif \
-    "${pkgdir}/opt/zextras/logger/db/work/data_not_available.gif"
 
   install -Dm755 "${srcdir}"/carbonio-bootstrap \
     "${pkgdir}/usr/bin/carbonio-bootstrap"
@@ -819,10 +788,6 @@ postinst:apt() {
     fi
   fi
 
-  if [ -d "/opt/zextras/logger/db" ]; then
-    chown zextras:zextras /opt/zextras/logger/db
-  fi
-
   if [ ! -d "/opt/zextras/common/conf" ]; then
     mkdir -p /opt/zextras/common/conf
     chown -R zextras:zextras /opt/zextras/common/conf
@@ -979,10 +944,6 @@ postinst:yum() {
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
-
-  if [ -d "/opt/zextras/logger/db" ]; then
-    chown zextras:zextras /opt/zextras/logger/db
-  fi
 
   if [ ! -d "/opt/zextras/common/conf" ]; then
     mkdir -p /opt/zextras/common/conf
