@@ -481,6 +481,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmconfigd"
   install -Dm755 opt/zextras/libexec/zmcpustat \
     "${pkgdir}/opt/zextras/libexec/zmcpustat"
+  install -Dm755 opt/zextras/libexec/zmdailyreport \
+    "${pkgdir}/opt/zextras/libexec/zmdailyreport"
   install -Dm755 opt/zextras/libexec/zmdbintegrityreport \
     "${pkgdir}/opt/zextras/libexec/zmdbintegrityreport"
   install -Dm755 opt/zextras/libexec/zmdiaglog \
