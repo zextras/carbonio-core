@@ -22,6 +22,7 @@ depends=(
   "carbonio-core"
   "carbonio-jetty-distribution"
   "carbonio-mariadb"
+  "carbonio-prometheus-mysqld-exporter"
 )
 
 package() {

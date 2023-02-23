@@ -17,9 +17,6 @@
             "name": "directory-server"
         },
         {
-            "name": "logger"
-        },
-        {
             "name": "mta"
         },
         {
