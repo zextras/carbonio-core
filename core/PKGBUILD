@@ -790,6 +790,10 @@ postinst:apt() {
     fi
   fi
 
+  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
+    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
+  fi
+
   if [ ! -d "/opt/zextras/common/conf" ]; then
     mkdir -p /opt/zextras/common/conf
     chown -R zextras:zextras /opt/zextras/common/conf
@@ -946,6 +950,10 @@ postinst:yum() {
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
+
+  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
+    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
+  fi
 
   if [ ! -d "/opt/zextras/common/conf" ]; then
     mkdir -p /opt/zextras/common/conf
