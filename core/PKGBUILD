@@ -459,6 +459,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zcs"
   install -Dm755 opt/zextras/libexec/carbonio \
     "${pkgdir}/opt/zextras/libexec/carbonio"
+  install -Dm755 opt/zextras/libexec/certbot \
+    "${pkgdir}/opt/zextras/libexec/certbot"
   install -Dm755 opt/zextras/libexec/zmaltermimeconfig \
     "${pkgdir}/opt/zextras/libexec/zmaltermimeconfig"
   install -Dm755 opt/zextras/libexec/zmantispamdbinit \
