@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="4.0.21"
+pkgver="4.0.22"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -459,6 +459,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zcs"
   install -Dm755 opt/zextras/libexec/carbonio \
     "${pkgdir}/opt/zextras/libexec/carbonio"
+  install -Dm755 opt/zextras/libexec/certbot \
+    "${pkgdir}/opt/zextras/libexec/certbot"
   install -Dm755 opt/zextras/libexec/zmaltermimeconfig \
     "${pkgdir}/opt/zextras/libexec/zmaltermimeconfig"
   install -Dm755 opt/zextras/libexec/zmantispamdbinit \
@@ -637,7 +639,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.4.0" > "${pkgdir}"/opt/zextras/.version
+  echo "23.5.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
@@ -788,6 +790,10 @@ postinst:apt() {
           fi
      done
     fi
+  fi
+
+  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
+    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
   fi
 
   if [ ! -d "/opt/zextras/common/conf" ]; then
@@ -946,6 +952,10 @@ postinst:yum() {
 
   H=$(hostname --fqdn)
   I=$(hostname -i)
+
+  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
+    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
+  fi
 
   if [ ! -d "/opt/zextras/common/conf" ]; then
     mkdir -p /opt/zextras/common/conf

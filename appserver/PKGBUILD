@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver"
-pkgver="4.0.21"
+pkgver="4.0.22"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -87,8 +87,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar"
   install -D opt/zextras/lib/ext/openidconsumer/guice-2.0.jar \
     "${pkgdir}/opt/zextras/lib/ext/openidconsumer/guice-2.0.jar"
-  install -D opt/zextras/lib/ext/zm-gql/zmgql.jar \
-    "${pkgdir}/opt/zextras/lib/ext/zm-gql/zmgql.jar"
   install -D opt/zextras/log/.hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
 
