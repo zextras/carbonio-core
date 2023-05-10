@@ -541,6 +541,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
   install -Dm755 opt/zextras/libexec/ldapattributeupdate \
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
+    install -Dm755 opt/zextras/libexec/ldapattributecleanup \
+        "${pkgdir}/opt/zextras/libexec/ldapattributecleanup"
   install -Dm755 opt/zextras/libexec/zmlogprocess \
     "${pkgdir}/opt/zextras/libexec/zmlogprocess"
   install -Dm755 opt/zextras/libexec/zmmailboxdmgr \
