@@ -37,11 +37,11 @@ postinst:apt() {
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     echo "*Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/ldapattributecleanup"
-    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/bin/ldap stop 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
-    su - zextras -c "/opt/zextras/bin/ldap start"
+    su - zextras -c "/opt/zextras/bin/ldap start 2>/dev/null"
   fi
 }
 
@@ -56,10 +56,10 @@ preinst:yum() {
   if [ "$1" -ge "2" ]; then
     echo "*Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/ldapattributecleanup"
-    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/bin/ldap stop 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
-    su - zextras -c "/opt/zextras/bin/ldap start"
+    su - zextras -c "/opt/zextras/bin/ldap start 2>/dev/null"
   fi
 }
