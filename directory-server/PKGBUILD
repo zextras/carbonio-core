@@ -36,7 +36,6 @@ postinst:apt() {
   
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     echo "*Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/ldapattributecleanup"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -55,7 +54,6 @@ preinst:yum() {
 
   if [ "$1" -ge "2" ]; then
     echo "*Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/ldapattributecleanup"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
