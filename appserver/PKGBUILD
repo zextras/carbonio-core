@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver"
-pkgver="4.0.23"
+pkgver="4.0.24"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -31,16 +31,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/antisamy.xml"
   install -D opt/zextras/conf/owasp_policy.xml \
     "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
-  install -D opt/zextras/extensions-extra/openidconsumer/README.md \
-    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/README.md"
-  install -D opt/zextras/extensions-extra/openidconsumer/formredirection.jsp \
-    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/formredirection.jsp"
-  install -D opt/zextras/extensions-extra/openidconsumer/guice-2.0.jar \
-    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/guice-2.0.jar"
-  install -D opt/zextras/extensions-extra/openidconsumer/openid4java-1.0.0.jar \
-    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/openid4java-1.0.0.jar"
-  cp opt/zextras/extensions-extra/openidconsumer/zm-openid-consumer-store-*.jar \
-    "${pkgdir}/opt/zextras/extensions-extra/openidconsumer/"
   install -D opt/zextras/jetty_base/etc/jetty-setuid.xml \
     "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
   install -D opt/zextras/jetty_base/etc/jetty.xml.in \
@@ -85,8 +75,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/ext/clamscanner/clamscanner.jar"
   install -D opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar \
     "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar"
-  install -D opt/zextras/lib/ext/openidconsumer/guice-2.0.jar \
-    "${pkgdir}/opt/zextras/lib/ext/openidconsumer/guice-2.0.jar"
   install -D opt/zextras/log/.hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
 
