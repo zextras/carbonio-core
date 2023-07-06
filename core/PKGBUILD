@@ -300,8 +300,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmupdateauthkeys"
   install -D opt/zextras/bin/zmvolume \
     "${pkgdir}/opt/zextras/bin/zmvolume"
-  install -D opt/zextras/bin/zmzimletctl \
-    "${pkgdir}/opt/zextras/bin/zmzimletctl"
   install -D opt/zextras/common/lib/jylibs/commands.py \
     "${pkgdir}/opt/zextras/common/lib/jylibs/commands.py"
   install -D opt/zextras/common/lib/jylibs/conf.py \

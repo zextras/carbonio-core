@@ -47,8 +47,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
   install -D opt/zextras/jetty_base/etc/zimbra.policy.example \
     "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
-  install -D opt/zextras/jetty_base/etc/zimlet.web.xml.in \
-    "${pkgdir}/opt/zextras/jetty_base/etc/zimlet.web.xml.in"
   install -D opt/zextras/jetty_base/modules/deploy.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
   install -D opt/zextras/jetty_base/modules/mail.mod \
@@ -65,12 +63,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
   install -D opt/zextras/jetty_base/temp/.emptyfile \
     "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
-  install -D opt/zextras/jetty_base/webapps/service/WEB-INF/lib/zimlettaglib.jar \
-    "${pkgdir}/opt/zextras/jetty_base/webapps/service/WEB-INF/lib/zimlettaglib.jar"
-  cp opt/zextras/jetty_base/webapps/service/WEB-INF/lib/zm-taglib-*.jar \
-    "${pkgdir}/opt/zextras/jetty_base/webapps/service/WEB-INF/lib/"
-  install -D opt/zextras/jetty_base/webapps/service/WEB-INF/zimbra.tld \
-    "${pkgdir}/opt/zextras/jetty_base/webapps/service/WEB-INF/zimbra.tld"
   install -D opt/zextras/lib/ext/clamscanner/clamscanner.jar \
     "${pkgdir}/opt/zextras/lib/ext/clamscanner/clamscanner.jar"
   install -D opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar \
@@ -86,10 +78,6 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/cache/"
   mkdir -p "${pkgdir}/opt/zextras/incoming/"
   mkdir -p "${pkgdir}/opt/zextras/lib/jars/"
-
-  install -Ddm755 "${pkgdir}/opt/zextras/zimlets/"
-  rsync -a opt/zextras/zimlets/ \
-    "${pkgdir}/opt/zextras/zimlets"
 
   cp -r opt/zextras/jetty_base/webapps/zimbra/robots.txt \
     "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
