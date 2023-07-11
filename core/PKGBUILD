@@ -3,8 +3,8 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="4.0.23"
-pkgrel="2"
+pkgver="4.0.24"
+pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
   "An open-source, community-driven email server"
@@ -300,8 +300,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmupdateauthkeys"
   install -D opt/zextras/bin/zmvolume \
     "${pkgdir}/opt/zextras/bin/zmvolume"
-  install -D opt/zextras/bin/zmzimletctl \
-    "${pkgdir}/opt/zextras/bin/zmzimletctl"
   install -D opt/zextras/common/lib/jylibs/commands.py \
     "${pkgdir}/opt/zextras/common/lib/jylibs/commands.py"
   install -D opt/zextras/common/lib/jylibs/conf.py \
@@ -641,7 +639,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.6.0" > "${pkgdir}"/opt/zextras/.version
+  echo "23.7.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
