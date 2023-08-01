@@ -226,8 +226,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmjavaext"
   install -D opt/zextras/bin/zmldappasswd \
     "${pkgdir}/opt/zextras/bin/zmldappasswd"
-  install -D opt/zextras/bin/zmldapupgrade \
-    "${pkgdir}/opt/zextras/bin/zmldapupgrade"
   install -D opt/zextras/bin/zmlmtpinject \
     "${pkgdir}/opt/zextras/bin/zmlmtpinject"
   install -D opt/zextras/bin/zmlocalconfig \
