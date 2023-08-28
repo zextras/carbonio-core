@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-core"
-pkgver="4.0.25"
+pkgver="4.0.27"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 pkgdesclong=(
@@ -226,8 +226,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmjavaext"
   install -D opt/zextras/bin/zmldappasswd \
     "${pkgdir}/opt/zextras/bin/zmldappasswd"
-  install -D opt/zextras/bin/zmldapupgrade \
-    "${pkgdir}/opt/zextras/bin/zmldapupgrade"
   install -D opt/zextras/bin/zmlmtpinject \
     "${pkgdir}/opt/zextras/bin/zmlmtpinject"
   install -D opt/zextras/bin/zmlocalconfig \
@@ -300,8 +298,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmupdateauthkeys"
   install -D opt/zextras/bin/zmvolume \
     "${pkgdir}/opt/zextras/bin/zmvolume"
-  install -D opt/zextras/bin/zmzimletctl \
-    "${pkgdir}/opt/zextras/bin/zmzimletctl"
   install -D opt/zextras/common/lib/jylibs/commands.py \
     "${pkgdir}/opt/zextras/common/lib/jylibs/commands.py"
   install -D opt/zextras/common/lib/jylibs/conf.py \
@@ -641,7 +637,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.7.0" > "${pkgdir}"/opt/zextras/.version
+  echo "23.9.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm:apt() {
