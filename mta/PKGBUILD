@@ -1,20 +1,13 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-mta"
 pkgver="4.0.28"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
-pkgdesclong=(
-  "An open-source, community-driven email server"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
-depends:apt=(
+arch=('x86_64')
+depends__apt=(
   "carbonio-altermime"
   "carbonio-amavisd"
   "carbonio-clamav"
@@ -28,7 +21,7 @@ depends:apt=(
   "carbonio-spamassassin-rules"
   "sqlite3"
 )
-depends:yum=(
+depends__yum=(
   "carbonio-altermime"
   "carbonio-amavisd"
   "carbonio-clamav"
@@ -87,8 +80,7 @@ package() {
 
 }
 
-
-postinst:apt() {
+postinst__apt() {
   #Symlinks
 
   if [ ! -e "/usr/sbin/sendmail" -o -L "/usr/bin/sendmail" ]; then
@@ -172,7 +164,7 @@ postinst:apt() {
   echo "======================================================"
 }
 
-postinst:yum() {
+postinst__yum() {
 
   chown zextras:zextras /opt/zextras/common/conf/master.cf.in
   chmod 440 /opt/zextras/common/conf/master.cf.in
