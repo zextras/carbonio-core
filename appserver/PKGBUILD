@@ -1,19 +1,12 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-appserver"
 pkgver="4.0.27"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
-pkgdesclong=(
-  "An open-source, community-driven email server"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
+arch=('x86_64')
 depends=(
   "carbonio-appserver-conf"
   "carbonio-appserver-service"
@@ -122,5 +115,4 @@ postinst() {
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
   fi
-
 }
