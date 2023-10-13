@@ -1,19 +1,12 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-directory-server"
 pkgver="4.0.27"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
-pkgdesclong=(
-  "An open-source, community-driven email server"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
+arch=('x86_64')
 depends=(
   "carbonio-core"
   "carbonio-prometheus-openldap-exporter"
@@ -22,18 +15,18 @@ depends=(
 package() {
   cd "${srcdir}"/../../
   install -Ddm755 "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
-  rsync -a opt/zextras/common/etc/openldap/zimbra/ \
+  cp -r opt/zextras/common/etc/openldap/zimbra \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
 }
 
-postinst:apt() {
+postinst__apt() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
   mkdir -p /opt/zextras/data/ldap/mdb/db
   chown -R zextras:zextras /opt/zextras/data/ldap
 
   chown -R root:root /opt/zextras/common/etc/openldap
-  
+
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     echo "*Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/bin/ldap stop"
@@ -44,7 +37,7 @@ postinst:apt() {
   fi
 }
 
-preinst:yum() {
+preinst__yum() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
   mkdir -p /opt/zextras/data/ldap/mdb/db

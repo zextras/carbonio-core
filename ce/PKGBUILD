@@ -1,27 +1,13 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-ce"
 pkgver="4.0.27"
 pkgrel="1"
 pkgdesc="The Carbonio Community Edition bootstrap package"
-pkgdesclong=(
-  "The Carbonio Community Edition bootstrap package"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
-depends:apt=(
-  "carbonio-directory-server"
-  "carbonio-mta"
-  "carbonio-proxy"
-  "carbonio-appserver"
-  "carbonio-webui"
-)
-depends:yum=(
+arch=('x86_64')
+depends=(
   "carbonio-directory-server"
   "carbonio-mta"
   "carbonio-proxy"
@@ -30,7 +16,7 @@ depends:yum=(
 )
 
 package() {
-  cd "${srcdir}"/../../
+  cd "${srcdir}"
 }
 
 postinst() {

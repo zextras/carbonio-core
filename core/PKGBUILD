@@ -1,20 +1,13 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-core"
 pkgver="4.0.27"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
-pkgdesclong=(
-  "An open-source, community-driven email server"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
-depends:ubuntu-focal=(
+arch=('x86_64')
+depends__ubuntu_focal=(
   "adduser"
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-db"
@@ -69,7 +62,7 @@ depends:ubuntu-focal=(
   "sysstat"
   "unzip"
 )
-depends:ubuntu-jammy=(
+depends__ubuntu_jammy=(
   "adduser"
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-db"
@@ -103,7 +96,7 @@ depends:ubuntu-jammy=(
   "libaio1"
   "libexpat1"
   "libgmp10"
-  "libidn11"
+  "libidn12"
   "libpcre3"
   "libperl5.34"
   "libsocket6-perl"
@@ -124,7 +117,7 @@ depends:ubuntu-jammy=(
   "sysstat"
   "unzip"
 )
-depends:yum=(
+depends__yum=(
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
@@ -174,7 +167,7 @@ depends:yum=(
   "sysstat"
   "unzip"
 )
-provides:yum=(
+provides__yum=(
   "/usr/bin/zmpython"
 )
 optdepends=(
@@ -483,7 +476,7 @@ package() {
     "${pkgdir}/opt/zextras/db/db.sql"
 
   install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
-  rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \
+  cp -r opt/zextras/lib/ext/com_zimbra_cert_manager \
     "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
 
   install -D opt/zextras/lib/junixsocket-native-2.4.0-amd64-Linux-clang-jni.nar \
@@ -503,11 +496,11 @@ package() {
     "${pkgdir}/opt/zextras/libexec/postinstall.pm"
   install -Dm755 opt/zextras/libexec/preinstall.pm \
     "${pkgdir}/opt/zextras/libexec/preinstall.pm"
-  
+
   install -Ddm755 "${pkgdir}/opt/zextras/libexec/scripts"
-  rsync -a opt/zextras/libexec/scripts/ \
+  cp -r opt/zextras/libexec/scripts/ \
     "${pkgdir}/opt/zextras/libexec/scripts"
-  
+
   install -Dm755 opt/zextras/libexec/zcs \
     "${pkgdir}/opt/zextras/libexec/zcs"
   install -Dm755 opt/zextras/libexec/carbonio \
@@ -692,24 +685,24 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.9.0" > "${pkgdir}"/opt/zextras/.version
+  echo "23.9.0" >"${pkgdir}"/opt/zextras/.version
 }
 
-postrm:apt() {
+postrm__apt() {
   if [ "$1" = purge ]; then
-    if crontab -l -u "zextras" > "/dev/null" ; then
-      crontab -r -u "zextras";
+    if crontab -l -u "zextras" >"/dev/null"; then
+      crontab -r -u "zextras"
     fi
   fi
 }
 
-postrm:yum() {
-  if crontab -l -u "zextras" > "/dev/null" ; then
-    crontab -r -u "zextras";
+postrm__yum() {
+  if crontab -l -u "zextras" >"/dev/null"; then
+    crontab -r -u "zextras"
   fi
 }
 
-preinst:apt() {
+preinst__apt() {
 
   if [ "$1" = upgrade ]; then
     if [ x"$2" != "x" ]; then
@@ -751,10 +744,10 @@ preinst:apt() {
   fi
 }
 
-preinst:yum() {
+preinst__yum() {
   if [ "$1" -ge "2" ]; then
     mkdir -p /opt/zextras/.saveconfig/carbonio-openjdk-cacerts
-    cacerts=`mktemp --tmpdir=/opt/zextras/.saveconfig/carbonio-openjdk-cacerts cacerts.XXXXXX`
+    cacerts=$(mktemp --tmpdir=/opt/zextras/.saveconfig/carbonio-openjdk-cacerts cacerts.XXXXXX)
     cp /opt/zextras/common/etc/java/cacerts $cacerts
   fi
 
@@ -783,7 +776,7 @@ preinst:yum() {
   fi
 }
 
-postinst:apt() {
+postinst__apt() {
   if [ "$1" = "configure" ]; then
     # creating zextras group if it isn't already there
     if ! getent group zextras >/dev/null; then
@@ -799,7 +792,7 @@ postinst:apt() {
         zextras
       usermod -c "zextras user" zextras
     fi
-  
+
     # creating postfix and postdrop groups if aren't already there
     if ! getent group postdrop >/dev/null; then
       addgroup --system --force-badname --quiet postdrop
@@ -829,19 +822,19 @@ postinst:apt() {
   if [ "$2" != "" ]; then
     if [ -x /opt/zextras/bin/zmcertmgr ]; then
       if [ $mailboxd_truststore_password != "changeit" ]; then
-	      su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
+        su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
       fi
       for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts/*; do
-          if [ -d "$dir" ]; then
-             chown zextras:zextras $dir/cacerts.*
-             chmod 644 $dir/cacerts.*
-             for cert in `/opt/zextras/common/bin/keytool -list -keystore $dir/cacerts.*  -storepass $mailboxd_truststore_password | grep trustedCertEntry | grep -v 'openjdk-cacerts/build/ubuntu'| grep -v 'tmp/rhel'| grep -Eo "^[^,]*"`;do
-                /opt/zextras/common/bin/keytool -exportcert -keystore $dir/cacerts.* -storepass $mailboxd_truststore_password -alias $cert -file $dir/${cert}.crt
-                chown zextras:zextras $dir/${cert}.crt
-                su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/${cert}.crt"
-             done
-          fi
-     done
+        if [ -d "$dir" ]; then
+          chown zextras:zextras $dir/cacerts.*
+          chmod 644 $dir/cacerts.*
+          for cert in $(/opt/zextras/common/bin/keytool -list -keystore $dir/cacerts.* -storepass $mailboxd_truststore_password | grep trustedCertEntry | grep -v 'openjdk-cacerts/build/ubuntu' | grep -v 'tmp/rhel' | grep -Eo "^[^,]*"); do
+            /opt/zextras/common/bin/keytool -exportcert -keystore $dir/cacerts.* -storepass $mailboxd_truststore_password -alias $cert -file $dir/${cert}.crt
+            chown zextras:zextras $dir/${cert}.crt
+            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/${cert}.crt"
+          done
+        fi
+      done
     fi
   fi
 
@@ -954,7 +947,7 @@ postinst:apt() {
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
-  echo `date +%s`": INSTALLED ${pkgname}" >> /opt/zextras/.install_history
+  echo $(date +%s)": INSTALLED ${pkgname}" >>/opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
@@ -962,7 +955,7 @@ postinst:apt() {
 
 }
 
-postinst:yum() {
+postinst__yum() {
   # creating zextras group if it isn't already there
   if ! getent group zextras >/dev/null; then
     groupadd --system zextras >/dev/null
@@ -1122,7 +1115,7 @@ postinst:yum() {
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
-  echo `date +%s`": INSTALLED ${pkgname}" >> /opt/zextras/.install_history
+  echo $(date +%s)": INSTALLED ${pkgname}" >>/opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
