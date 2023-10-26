@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.0.29"
+pkgver="4.0.30"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
