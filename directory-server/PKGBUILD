@@ -1,6 +1,6 @@
 pkgname="carbonio-directory-server"
 pkgver="4.0.30"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
@@ -40,7 +40,7 @@ postinst__apt() {
   fi
 }
 
-preinst__yum() {
+postinst__yum() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
   mkdir -p /opt/zextras/data/ldap/mdb/db
@@ -48,7 +48,7 @@ preinst__yum() {
 
   chown -R root:root /opt/zextras/common/etc/openldap
 
-  if [ "$1" -ge "2" ]; then
+  if [ "$1" -eq 2 ]; then
     echo "*Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
