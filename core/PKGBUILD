@@ -473,10 +473,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
   install -D opt/zextras/contrib/zmfetchercfg \
     "${pkgdir}/opt/zextras/contrib/zmfetchercfg"
-  install -D opt/zextras/db/create_database.sql \
-    "${pkgdir}/opt/zextras/db/create_database.sql"
-  install -D opt/zextras/db/db.sql \
-    "${pkgdir}/opt/zextras/db/db.sql"
 
   install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
   rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \
