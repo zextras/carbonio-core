@@ -64,7 +64,6 @@ depends__ubuntu_focal=(
 depends__ubuntu_jammy=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
@@ -118,7 +117,6 @@ depends__ubuntu_jammy=(
 )
 depends__yum=(
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
