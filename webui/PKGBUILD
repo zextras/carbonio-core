@@ -4,6 +4,13 @@ pkgrel="1"
 pkgdesc="Carbonio WebUI shiny and gorgeous UI"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "GPL-2.0-only"
+)
 url="https://zextras.com"
 depends=(
   "carbonio-auth-ui"
