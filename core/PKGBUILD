@@ -10,7 +10,6 @@ arch=('x86_64')
 depends__ubuntu_focal=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
