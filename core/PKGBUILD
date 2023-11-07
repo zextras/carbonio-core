@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.0.28"
+pkgver="4.0.30"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -688,7 +688,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.10.0" > "${pkgdir}"/opt/zextras/.version
+  echo "23.11.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm__apt() {
@@ -950,7 +950,7 @@ postinst__apt() {
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
-  echo $(date +%s)": INSTALLED ${pkgname}" >>/opt/zextras/.install_history
+  echo $(date +%s)": INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
@@ -1118,7 +1118,7 @@ postinst__yum() {
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
-  echo $(date +%s)": INSTALLED ${pkgname}" >>/opt/zextras/.install_history
+  echo $(date +%s)": INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms

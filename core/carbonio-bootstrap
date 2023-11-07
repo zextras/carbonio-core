@@ -10,7 +10,7 @@ fi
 ########## Start utility functions
 bordered_title() {
   title="| $1 |"
-  edge="${title//./-}"
+  edge=$(echo "$title" | sed 's/./-/g')
   echo "${edge}"
   echo "${title}"
   echo "${edge}"
