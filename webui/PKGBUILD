@@ -9,9 +9,10 @@ copyright=(
   "2022, Synacor, Inc."
 )
 license=(
+  "AGPL-3.0-only"
   "GPL-2.0-only"
 )
-url="https://zextras.com"
+url="https://github.com/zextras"
 depends=(
   "carbonio-auth-ui"
   "carbonio-calendars-ui"
