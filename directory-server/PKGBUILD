@@ -1,9 +1,17 @@
 pkgname="carbonio-directory-server"
-pkgver="4.0.30"
-pkgrel="2"
+pkgver="4.0.31"
+pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
-url="https://zextras.com"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "AGPL-3.0-only"
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
 section="mail"
 priority="optional"
 arch=('x86_64')
