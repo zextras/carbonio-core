@@ -1,5 +1,5 @@
 pkgname="carbonio-directory-server"
-pkgver="4.0.30"
+pkgver="4.0.31"
 pkgrel="2"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"

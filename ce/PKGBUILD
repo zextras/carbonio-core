@@ -1,5 +1,5 @@
 pkgname="carbonio-ce"
-pkgver="4.0.30"
+pkgver="4.0.31"
 pkgrel="1"
 pkgdesc="The Carbonio Community Edition bootstrap package"
 maintainer="Zextras <packages@zextras.com>"
