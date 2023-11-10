@@ -1,9 +1,17 @@
 pkgname="carbonio-ce"
-pkgver="4.0.30"
+pkgver="4.0.31"
 pkgrel="1"
 pkgdesc="The Carbonio Community Edition bootstrap package"
 maintainer="Zextras <packages@zextras.com>"
-url="https://zextras.com"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "AGPL-3.0-only"
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
 section="mail"
 priority="optional"
 arch=('x86_64')
