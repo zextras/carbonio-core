@@ -18,7 +18,6 @@ arch=('x86_64')
 depends__ubuntu_focal=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
@@ -73,7 +72,6 @@ depends__ubuntu_focal=(
 depends__ubuntu_jammy=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
@@ -127,7 +125,6 @@ depends__ubuntu_jammy=(
 )
 depends__yum=(
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
@@ -481,10 +478,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
   install -D opt/zextras/contrib/zmfetchercfg \
     "${pkgdir}/opt/zextras/contrib/zmfetchercfg"
-  install -D opt/zextras/db/create_database.sql \
-    "${pkgdir}/opt/zextras/db/create_database.sql"
-  install -D opt/zextras/db/db.sql \
-    "${pkgdir}/opt/zextras/db/db.sql"
 
   install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
   rsync -a opt/zextras/lib/ext/com_zimbra_cert_manager/ \
