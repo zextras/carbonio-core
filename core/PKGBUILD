@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.0.33"
+pkgver="4.0.34"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -14,13 +14,17 @@ url="https://github.com/zextras"
 section="mail"
 priority="optional"
 arch=('x86_64')
-depends__ubuntu_focal=(
+depends__apt=(
   "adduser"
   "carbonio-common-appserver-conf"
   "carbonio-common-appserver-native-lib"
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
   "carbonio-innotop"
+  "carbonio-openjdk-cacerts"
+  "carbonio-openjdk"
+  "carbonio-openldap"
+  "carbonio-openssl"
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
@@ -30,14 +34,10 @@ depends__ubuntu_focal=(
   "carbonio-perl-filesys-df"
   "carbonio-perl-io-compress"
   "carbonio-perl-json-pp"
-  "carbonio-perl-netaddr-ip"
   "carbonio-perl-net-dns"
   "carbonio-perl-net-ldap"
+  "carbonio-perl-netaddr-ip"
   "carbonio-perl-xml-simple"
-  "carbonio-openjdk-cacerts"
-  "carbonio-openjdk"
-  "carbonio-openldap"
-  "carbonio-openssl"
   "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
   "coreutils"
@@ -47,63 +47,8 @@ depends__ubuntu_focal=(
   "libaio1"
   "libexpat1"
   "libgmp10"
-  "libidn11"
   "libpcre3"
-  "libperl5.30"
-  "libsocket6-perl"
-  "libstdc++6"
-  "lsb-release"
-  "net-tools"
-  "netcat-openbsd"
-  "openssh-client"
-  "passwd"
-  "pax"
-  "pending-setups"
   "perl"
-  "procps"
-  "resolvconf"
-  "rsyslog"
-  "service-discover"
-  "sudo"
-  "sysstat"
-  "unzip"
-)
-depends__ubuntu_jammy=(
-  "adduser"
-  "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-native-lib"
-  "carbonio-common-core-jar"
-  "carbonio-common-core-libs"
-  "carbonio-innotop"
-  "carbonio-perl-carp-clan"
-  "carbonio-perl-crypt-saltedhash"
-  "carbonio-perl-data-uuid"
-  "carbonio-perl-date-manip"
-  "carbonio-perl-dbi"
-  "carbonio-perl-file-grep"
-  "carbonio-perl-filesys-df"
-  "carbonio-perl-io-compress"
-  "carbonio-perl-json-pp"
-  "carbonio-perl-netaddr-ip"
-  "carbonio-perl-net-dns"
-  "carbonio-perl-net-ldap"
-  "carbonio-perl-xml-simple"
-  "carbonio-openjdk-cacerts"
-  "carbonio-openjdk"
-  "carbonio-openldap"
-  "carbonio-openssl"
-  "carbonio-prometheus-node-exporter"
-  "carbonio-timezone-data"
-  "coreutils"
-  "file"
-  "fontconfig"
-  "iproute2"
-  "libaio1"
-  "libexpat1"
-  "libgmp10"
-  "libidn12"
-  "libpcre3"
-  "libperl5.34"
   "libsocket6-perl"
   "libstdc++6"
   "lsb-release"
@@ -128,6 +73,10 @@ depends__yum=(
   "carbonio-common-core-jar"
   "carbonio-common-core-libs"
   "carbonio-innotop"
+  "carbonio-openjdk-cacerts"
+  "carbonio-openjdk"
+  "carbonio-openldap"
+  "carbonio-openssl"
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
@@ -137,14 +86,10 @@ depends__yum=(
   "carbonio-perl-filesys-df"
   "carbonio-perl-io-compress"
   "carbonio-perl-json-pp"
-  "carbonio-perl-netaddr-ip"
   "carbonio-perl-net-dns"
   "carbonio-perl-net-ldap"
+  "carbonio-perl-netaddr-ip"
   "carbonio-perl-xml-simple"
-  "carbonio-openjdk-cacerts"
-  "carbonio-openldap"
-  "carbonio-openjdk"
-  "carbonio-openssl"
   "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
   "coreutils"
@@ -154,7 +99,6 @@ depends__yum=(
   "gmp"
   "iproute"
   "libaio"
-  "libidn"
   "libstdc++"
   "net-tools"
   "nmap-ncat"
@@ -429,18 +373,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
   install -D opt/zextras/conf/dspam.conf.in \
     "${pkgdir}/opt/zextras/conf/dspam.conf.in"
-  install -D opt/zextras/conf/externaldirsync/Exchange2000.xml \
-    "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml"
-  install -D opt/zextras/conf/externaldirsync/Exchange2003.xml \
-    "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2003.xml"
-  install -D opt/zextras/conf/externaldirsync/Exchange5.5.xml \
-    "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange5.5.xml"
-  install -D opt/zextras/conf/externaldirsync/domino.xml \
-    "${pkgdir}/opt/zextras/conf/externaldirsync/domino.xml"
-  install -D opt/zextras/conf/externaldirsync/novellGroupWise.xml \
-    "${pkgdir}/opt/zextras/conf/externaldirsync/novellGroupWise.xml"
-  install -D opt/zextras/conf/externaldirsync/openldap.xml \
-    "${pkgdir}/opt/zextras/conf/externaldirsync/openldap.xml"
   install -D opt/zextras/conf/freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
   install -D opt/zextras/conf/opendkim-localnets.conf.in \
@@ -499,10 +431,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/postinstall.pm"
   install -Dm755 opt/zextras/libexec/preinstall.pm \
     "${pkgdir}/opt/zextras/libexec/preinstall.pm"
-
-  install -Ddm755 "${pkgdir}/opt/zextras/libexec/scripts"
-  rsync -a opt/zextras/libexec/scripts/ \
-    "${pkgdir}/opt/zextras/libexec/scripts"
 
   install -Dm755 opt/zextras/libexec/zcs \
     "${pkgdir}/opt/zextras/libexec/zcs"
@@ -688,7 +616,7 @@ package() {
 
   install -Dm755 "${srcdir}"/mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
-  echo "23.12.0" > "${pkgdir}"/opt/zextras/.version
+  echo "24.1.0" > "${pkgdir}"/opt/zextras/.version
 }
 
 postrm__apt() {
