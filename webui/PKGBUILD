@@ -1,5 +1,5 @@
 pkgname="carbonio-webui"
-pkgver="4.0.33"
+pkgver="4.0.34"
 pkgrel="1"
 pkgdesc="Carbonio WebUI shiny and gorgeous UI"
 arch=('x86_64')
