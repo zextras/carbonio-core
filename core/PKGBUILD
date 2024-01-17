@@ -134,21 +134,59 @@ sha256sums=(
 )
 
 package() {
-  cd "${srcdir}"/../../
-  install -D etc/sudoers.d/carbonio \
-    "${pkgdir}/etc/sudoers.d/carbonio"
-  install -D opt/zextras/.bash_profile \
+
+  cd "${srcdir}/../../staging/core"
+
+  # rpmconf
+
+  install -D rpmconf/zextras.bash_profile \
     "${pkgdir}/opt/zextras/.bash_profile"
-  install -D opt/zextras/.bashrc \
+  install -D rpmconf/zextras.bashrc \
     "${pkgdir}/opt/zextras/.bashrc"
-  install -D opt/zextras/.exrc \
+  install -D rpmconf/zextras.exrc \
     "${pkgdir}/opt/zextras/.exrc"
-  install -D opt/zextras/.ldaprc \
+  install -D rpmconf/zextras.ldaprc \
     "${pkgdir}/opt/zextras/.ldaprc"
-  install -D opt/zextras/.platform \
+  install -D rpmconf/zextras.platform \
     "${pkgdir}/opt/zextras/.platform"
-  install -D opt/zextras/.viminfo \
+  install -D rpmconf/zextras.viminfo \
     "${pkgdir}/opt/zextras/.viminfo"
+
+  # sudoers
+    install -D rpmconf/sudoers.d/carbonio \
+      "${pkgdir}/etc/sudoers.d/carbonio"
+
+  # Env
+  install -D rpmconf/Env/crontabs/crontab \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab"
+  install -D rpmconf/Env/crontabs/crontab.ldap \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.ldap"
+  install -D rpmconf/Env/crontabs/crontab.logger \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.logger"
+  install -D rpmconf/Env/crontabs/crontab.mta \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
+  install -D rpmconf/Env/crontabs/crontab.store \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
+
+  # Install
+  install -Dm755 rpmconf/Install/postinstall.pm \
+    "${pkgdir}/opt/zextras/libexec/postinstall.pm"
+  install -Dm755 rpmconf/Install/preinstall.pm \
+    "${pkgdir}/opt/zextras/libexec/preinstall.pm"
+  install -Dm755 rpmconf/Install/zmsetup.pl \
+    "${pkgdir}/opt/zextras/libexec/zmsetup.pl"
+
+  # Build
+  install -Dm755 rpmconf/Build/get_plat_tag.sh \
+    "${pkgdir}/opt/zextras/libexec/get_plat_tag.sh"
+  install -Dm755 rpmconf/Build/get_plat_tag.sh \
+    "${pkgdir}/opt/zextras/libexec/installer/bin/get_plat_tag.sh"
+
+  # Conf
+  install -D rpmconf/Conf/zmssl.cnf.in \
+    "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
+
+  # Other
   install -D opt/zextras/bin/antispam-mysql \
     "${pkgdir}/opt/zextras/bin/antispam-mysql"
   install -D opt/zextras/bin/antispam-mysql.server \
@@ -322,7 +360,6 @@ package() {
   install -D opt/zextras/common/lib/jylibs/state.py \
     "${pkgdir}/opt/zextras/common/lib/jylibs/state.py"
 
-  cd "${srcdir}/../../staging/core"
 
   # lib
   install -D lib/DB/DB.pm \
@@ -384,16 +421,6 @@ package() {
   install -D mta/saslauthd.conf.in \
     "${pkgdir}/opt/zextras/conf/saslauthd.conf.in"
 
-  install -D opt/zextras/conf/crontabs/crontab \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab"
-  install -D opt/zextras/conf/crontabs/crontab.ldap \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.ldap"
-  install -D opt/zextras/conf/crontabs/crontab.logger \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.logger"
-  install -D opt/zextras/conf/crontabs/crontab.mta \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
-  install -D opt/zextras/conf/crontabs/crontab.store \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
   install -D opt/zextras/conf/freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
   install -D mta/zmconfigd/postfix_content_filter.cf \
@@ -415,8 +442,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
   install -Dm644 opt/zextras/conf/zmlogrotate \
     "${pkgdir}/opt/zextras/conf/zmlogrotate"
-  install -D opt/zextras/conf/zmssl.cnf.in \
-    "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
   install -D opt/zextras/contrib/zmfetchercfg \
     "${pkgdir}/opt/zextras/contrib/zmfetchercfg"
 
@@ -431,16 +456,10 @@ package() {
     "${pkgdir}/opt/zextras/libexec/600.zimbra"
   install -Dm755 opt/zextras/libexec/configrewrite \
     "${pkgdir}/opt/zextras/libexec/configrewrite"
-  install -Dm755 opt/zextras/libexec/get_plat_tag.sh \
-    "${pkgdir}/opt/zextras/libexec/get_plat_tag.sh"
   install -Dm755 opt/zextras/libexec/icalmig \
     "${pkgdir}/opt/zextras/libexec/icalmig"
-  install -Dm755 opt/zextras/libexec/installer/bin/get_plat_tag.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/bin/get_plat_tag.sh"
-  install -Dm755 opt/zextras/libexec/postinstall.pm \
-    "${pkgdir}/opt/zextras/libexec/postinstall.pm"
-  install -Dm755 opt/zextras/libexec/preinstall.pm \
-    "${pkgdir}/opt/zextras/libexec/preinstall.pm"
+
+
 
   install -Dm755 opt/zextras/libexec/zcs \
     "${pkgdir}/opt/zextras/libexec/zcs"
@@ -574,8 +593,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmserverips"
   install -Dm755 opt/zextras/libexec/zmsetservername \
     "${pkgdir}/opt/zextras/libexec/zmsetservername"
-  install -Dm755 opt/zextras/libexec/zmsetup.pl \
-    "${pkgdir}/opt/zextras/libexec/zmsetup.pl"
   install -Dm755 opt/zextras/libexec/zmslapadd \
     "${pkgdir}/opt/zextras/libexec/zmslapadd"
   install -Dm755 opt/zextras/libexec/zmslapcat \
