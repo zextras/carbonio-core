@@ -357,10 +357,26 @@ package() {
     "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
   install -D opt/zextras/conf/amavisd.conf.in \
     "${pkgdir}/opt/zextras/conf/amavisd.conf.in"
-  install -D opt/zextras/conf/cbpolicyd.conf.in \
+
+  cd "${srcdir}/../../staging/core"
+  # core mta
+  install -D mta/cbpolicyd.conf.in \
     "${pkgdir}/opt/zextras/conf/cbpolicyd.conf.in"
-  install -D opt/zextras/conf/clamd.conf.in \
+  install -D mta/clamd.conf.in \
     "${pkgdir}/opt/zextras/conf/clamd.conf.in"
+  install -D mta/opendkim-localnets.conf.in \
+    "${pkgdir}/opt/zextras/conf/opendkim-localnets.conf.in"
+  install -D mta/opendkim.conf.in \
+    "${pkgdir}/opt/zextras/conf/opendkim.conf.in"
+  install -D mta/postfix_header_checks.in \
+    "${pkgdir}/opt/zextras/conf/postfix_header_checks.in"
+  install -D mta/salocal.cf.in \
+    "${pkgdir}/opt/zextras/conf/salocal.cf.in"
+  install -D mta/postfix_sasl_smtpd.conf \
+    "${pkgdir}/opt/zextras/conf/sasl2/smtpd.conf.in"
+  install -D mta/saslauthd.conf.in \
+    "${pkgdir}/opt/zextras/conf/saslauthd.conf.in"
+
   install -D opt/zextras/conf/crontabs/crontab \
     "${pkgdir}/opt/zextras/conf/crontabs/crontab"
   install -D opt/zextras/conf/crontabs/crontab.ldap \
@@ -375,30 +391,19 @@ package() {
     "${pkgdir}/opt/zextras/conf/dspam.conf.in"
   install -D opt/zextras/conf/freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
-  install -D opt/zextras/conf/opendkim-localnets.conf.in \
-    "${pkgdir}/opt/zextras/conf/opendkim-localnets.conf.in"
-  install -D opt/zextras/conf/opendkim.conf.in \
-    "${pkgdir}/opt/zextras/conf/opendkim.conf.in"
-  install -D opt/zextras/conf/postfix_header_checks.in \
-    "${pkgdir}/opt/zextras/conf/postfix_header_checks.in"
-  install -D opt/zextras/conf/salocal.cf.in \
-    "${pkgdir}/opt/zextras/conf/salocal.cf.in"
-  install -D opt/zextras/conf/sasl2/smtpd.conf.in \
-    "${pkgdir}/opt/zextras/conf/sasl2/smtpd.conf.in"
-  install -D opt/zextras/conf/saslauthd.conf.in \
-    "${pkgdir}/opt/zextras/conf/saslauthd.conf.in"
-  install -D opt/zextras/conf/zmconfigd/postfix_content_filter.cf \
+  install -D mta/zmconfigd/postfix_content_filter.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/postfix_content_filter.cf"
-  install -D opt/zextras/conf/zmconfigd/smtpd_end_of_data_restrictions.cf \
+  install -D mta/zmconfigd/smtpd_end_of_data_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_end_of_data_restrictions.cf"
-  install -D opt/zextras/conf/zmconfigd/smtpd_recipient_restrictions.cf \
+  install -D mta/zmconfigd/smtpd_recipient_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_recipient_restrictions.cf"
-  install -D opt/zextras/conf/zmconfigd/smtpd_relay_restrictions.cf \
+  install -D mta/zmconfigd/smtpd_relay_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_relay_restrictions.cf"
-  install -D opt/zextras/conf/zmconfigd/smtpd_sender_login_maps.cf \
+  install -D mta/zmconfigd/smtpd_sender_login_maps.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_sender_login_maps.cf"
-  install -D opt/zextras/conf/zmconfigd/smtpd_sender_restrictions.cf \
+  install -D mta/zmconfigd/smtpd_sender_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_sender_restrictions.cf"
+
   install -D opt/zextras/conf/zmconfigd.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
   install -D opt/zextras/conf/zmconfigd.log4j.properties \
