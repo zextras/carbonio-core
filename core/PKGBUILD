@@ -321,40 +321,42 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/jylibs/serverconfig.py"
   install -D opt/zextras/common/lib/jylibs/state.py \
     "${pkgdir}/opt/zextras/common/lib/jylibs/state.py"
-  install -D opt/zextras/common/lib/perl5/Zimbra/DB/DB.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/DB/DB.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/LDAP.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/LDAP.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/LocalConfig.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/LocalConfig.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/Mon/Logger.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Logger.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/Mon/LoggerSchema.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/LoggerSchema.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/Mon/Zmstat.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Zmstat.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/SMTP.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SMTP.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap11.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap11.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap12.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap12.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlDoc.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlDoc.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlElement.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlElement.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/Util/Common.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Common.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/Util/LDAP.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/LDAP.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm"
-  install -D opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm"
 
   cd "${srcdir}/../../staging/core"
+
+  # lib
+  install -D lib/DB/DB.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/DB/DB.pm"
+  install -D lib/LDAP.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/LDAP.pm"
+  install -D lib/LocalConfig.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/LocalConfig.pm"
+  install -D lib/Mon/Logger.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Logger.pm"
+  install -D lib/Mon/LoggerSchema.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/LoggerSchema.pm"
+  install -D lib/Mon/Zmstat.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Zmstat.pm"
+  install lib/SMTP.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SMTP.pm"
+  install -D lib/SOAP/Soap.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap.pm"
+  install -D lib/SOAP/Soap11.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap11.pm"
+  install -D lib/SOAP/Soap12.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/Soap12.pm"
+  install -D lib/SOAP/XmlDoc.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlDoc.pm"
+  install -D lib/SOAP/XmlElement.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlElement.pm"
+  install -D lib/Utils/Common.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Common.pm"
+  install -D lib/Utils/LDAP.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/LDAP.pm"
+  install -D lib/Utils/Timezone.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm"
+  install -D lib/ZmClient.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm"
 
   # core amavis
   install -D amavis/amavisd/amavisd-custom.conf \
