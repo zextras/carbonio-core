@@ -353,12 +353,17 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm"
   install -D opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm"
-  install -D opt/zextras/conf/amavisd-custom.conf \
-    "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
-  install -D opt/zextras/conf/amavisd.conf.in \
-    "${pkgdir}/opt/zextras/conf/amavisd.conf.in"
 
   cd "${srcdir}/../../staging/core"
+
+  # core amavis
+  install -D amavis/amavisd/amavisd-custom.conf \
+    "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
+  install -D amavis/amavisd.conf.in \
+    "${pkgdir}/opt/zextras/conf/amavisd.conf.in"
+  install -D amavis/dspam.conf.in \
+    "${pkgdir}/opt/zextras/conf/dspam.conf.in"
+
   # core mta
   install -D mta/cbpolicyd.conf.in \
     "${pkgdir}/opt/zextras/conf/cbpolicyd.conf.in"
@@ -387,8 +392,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
   install -D opt/zextras/conf/crontabs/crontab.store \
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
-  install -D opt/zextras/conf/dspam.conf.in \
-    "${pkgdir}/opt/zextras/conf/dspam.conf.in"
   install -D opt/zextras/conf/freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
   install -D mta/zmconfigd/postfix_content_filter.cf \
