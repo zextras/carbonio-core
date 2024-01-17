@@ -5,16 +5,10 @@
     "output": "artifacts",
     "Projects": [
         {
-            "name": "appserver"
-        },
-        {
             "name": "ce"
         },
         {
             "name": "core"
-        },
-        {
-            "name": "mta"
         },
         {
             "name": "webui"
