@@ -136,24 +136,25 @@ sha256sums=(
 package() {
 
   cd "${srcdir}/../../staging/core"
+  ls
 
   # rpmconf
 
-  install -D rpmconf/zextras.bash_profile \
+  # Env
+  install -D rpmconf/Env/zextras.bash_profile \
     "${pkgdir}/opt/zextras/.bash_profile"
-  install -D rpmconf/zextras.bashrc \
+  install -D rpmconf/Env/zextras.bashrc \
     "${pkgdir}/opt/zextras/.bashrc"
-  install -D rpmconf/zextras.exrc \
+  install -D rpmconf/Env/zextras.exrc \
     "${pkgdir}/opt/zextras/.exrc"
-  install -D rpmconf/zextras.ldaprc \
+  install -D rpmconf/Env/zextras.ldaprc \
     "${pkgdir}/opt/zextras/.ldaprc"
-  install -D rpmconf/zextras.platform \
+  install -D rpmconf/Env/zextras.platform \
     "${pkgdir}/opt/zextras/.platform"
-  install -D rpmconf/zextras.viminfo \
+  install -D rpmconf/Env/zextras.viminfo \
     "${pkgdir}/opt/zextras/.viminfo"
-
   # sudoers
-    install -D rpmconf/sudoers.d/carbonio \
+    install -D rpmconf/Env/sudoers.d/carbonio \
       "${pkgdir}/etc/sudoers.d/carbonio"
 
   # Env
