@@ -387,11 +387,11 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlDoc.pm"
   install -D lib/SOAP/XmlElement.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SOAP/XmlElement.pm"
-  install -D lib/Utils/Common.pm \
+  install -D lib/Util/Common.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Common.pm"
-  install -D lib/Utils/LDAP.pm \
+  install -D lib/Util/LDAP.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/LDAP.pm"
-  install -D lib/Utils/Timezone.pm \
+  install -D lib/Util/Timezone.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm"
   install -D lib/ZmClient.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm"
