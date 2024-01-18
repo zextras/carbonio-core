@@ -115,9 +115,6 @@ depends__yum=(
   "sysstat"
   "unzip"
 )
-makedepends=(
-  "rsync"
-)
 provides__yum=(
   "/usr/bin/zmpython"
 )
