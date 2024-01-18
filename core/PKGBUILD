@@ -152,12 +152,15 @@ sha256sums=(
 package() {
 
   # LOCAL FILES
-  install -Dm755 "${srcdir}"/carbonio-bootstrap \
+
+  # srcdir is /tmp/core/src, yap creates src with sources but cannot move nested directories, only flat files
+  cd "${srcdir}/.."
+
+  install -Dm755 carbonio-bootstrap \
     "${pkgdir}/usr/bin/carbonio-bootstrap"
-  install -Dm755 "${srcdir}"/mini_alue_ce \
+  install -Dm755 mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
 
-  cd "${srcdir}/../../staging/core"
   # lib
   install -D lib/DB/DB.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/DB/DB.pm"
