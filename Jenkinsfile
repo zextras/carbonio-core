@@ -27,7 +27,7 @@ pipeline {
         stage('Stash') {
             steps {
                 sh 'mkdir staging'
-                sh 'cp -r package conf staging'
+                sh 'cp -r yap.json ce core webui staging'
                 stash includes: 'staging/**', name: 'staging'
             }
         }
@@ -43,7 +43,7 @@ pipeline {
                     steps {
                         unstash 'staging'
                         sh 'cp -r staging /tmp'
-                        sh 'sudo yap build ubuntu /tmp/staging/package'
+                        sh 'sudo yap build ubuntu /tmp/staging'
                         stash includes: 'artifacts/', name: 'artifacts-deb'
                     }
                     post {
@@ -62,7 +62,7 @@ pipeline {
                     steps {
                         unstash 'staging'
                         sh 'cp -r staging /tmp'
-                        sh 'sudo yap build rocky /tmp/staging/package'
+                        sh 'sudo yap build rocky /tmp/staging'
                         stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rpm'
                     }
                     post {
