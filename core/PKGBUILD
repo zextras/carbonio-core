@@ -636,8 +636,9 @@ postrm__yum() {
 preinst__apt() {
 
   if [ "$1" = upgrade ]; then
-    if [ x"$2" != "x" ]; then
-      ca_certs_save_dir="/opt/zextras/.saveconfig/carbonio-openjdk-cacerts"
+    if [ "$2" != "" ]; then
+      ca_certs_version="$(cat /opt/zextras/common/etc/java/.caversion)"
+      ca_certs_save_dir="/opt/zextras/.saveconfig/carbonio-openjdk-cacerts-${ca_certs_version}"
       if [ ! -d "${ca_certs_save_dir}" ]; then
         mkdir -p "${ca_certs_save_dir}"
       fi
@@ -650,26 +651,32 @@ preinst__apt() {
   if [ "$1" = configure ]; then
 
     if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
-      echo "zextras soft nproc 278528" >/etc/security/limits.d/10-zextras.conf
-      echo "zextras hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-      echo "postfix soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-      echo "postfix hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-      echo "root soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-      echo "root hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+      {
+        echo "zextras soft nproc 278528"
+        echo "zextras hard nproc 278528"
+        echo "postfix soft nproc 278528"
+        echo "postfix hard nproc 278528"
+        echo "root soft nproc 278528"
+        echo "root hard nproc 278528"
+      } >>/etc/security/limits.d/10-zextras.conf
     fi
     if [ -f "/etc/security/limits.conf" ]; then
       limitstmp=$(mktemp -t limitstmp.XXXXXX 2>/dev/null) || {
         echo "Failed to create tmpfile"
         exit 1
       }
-      grep -E -v -e '^zextras.*nofile' /etc/security/limits.conf >$limitstmp
-      echo "zextras soft nofile 524288" >>$limitstmp
-      echo "zextras hard nofile 524288" >>$limitstmp
-      mv -f $limitstmp /etc/security/limits.conf
+      {
+        grep -E -v -e '^zextras.*nofile' /etc/security/limits.conf
+        echo "zextras soft nofile 524288"
+        echo "zextras hard nofile 524288"
+      } >>"$limitstmp"
+      mv -f "$limitstmp" /etc/security/limits.conf
       chmod 640 /etc/security/limits.conf
     else
-      echo "zextras soft nofile 524288" >/etc/security/limits.conf
-      echo "zextras hard nofile 524288" >>/etc/security/limits.conf
+      {
+        echo "zextras soft nofile 524288"
+        echo "zextras hard nofile 524288"
+      } >>/etc/security/limits.conf
       chmod 640 /etc/security/limits.conf
     fi
   fi
@@ -677,32 +684,43 @@ preinst__apt() {
 
 preinst__yum() {
   if [ "$1" -ge "2" ]; then
-    mkdir -p /opt/zextras/.saveconfig/carbonio-openjdk-cacerts
-    cacerts=$(mktemp --tmpdir=/opt/zextras/.saveconfig/carbonio-openjdk-cacerts cacerts.XXXXXX)
-    cp /opt/zextras/common/etc/java/cacerts $cacerts
+    ca_certs_version="$(cat /opt/zextras/common/etc/java/.caversion)"
+    ca_certs_save_dir="/opt/zextras/.saveconfig/carbonio-openjdk-cacerts-${ca_certs_version}"
+    if [ ! -d "${ca_certs_save_dir}" ]; then
+      mkdir -p "${ca_certs_save_dir}"
+    fi
+    cacerts=$(mktemp --tmpdir="${ca_certs_save_dir}" cacerts.XXXXXX 2>/dev/null)
+
+    cp /opt/zextras/common/etc/java/cacerts "$cacerts"
   fi
 
   if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
-    echo "zextras soft nproc 278528" >/etc/security/limits.d/10-zextras.conf
-    echo "zextras hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-    echo "postfix soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-    echo "postfix hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-    echo "root soft nproc 278528" >>/etc/security/limits.d/10-zextras.conf
-    echo "root hard nproc 278528" >>/etc/security/limits.d/10-zextras.conf
+    {
+      echo "zextras soft nproc 278528"
+      echo "zextras hard nproc 278528"
+      echo "postfix soft nproc 278528"
+      echo "postfix hard nproc 278528"
+      echo "root soft nproc 278528"
+      echo "root hard nproc 278528"
+    } >>/etc/security/limits.d/10-zextras.conf
   fi
   if [ -f "/etc/security/limits.conf" ]; then
     limitstmp=$(mktemp -t limitstmp.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
-    grep -E -v -e '^zextras.*nofile' /etc/security/limits.conf >$limitstmp
-    echo "zextras soft nofile 524288" >>$limitstmp
-    echo "zextras hard nofile 524288" >>$limitstmp
-    mv -f $limitstmp /etc/security/limits.conf
+    {
+      grep -E -v -e '^zextras.*nofile' /etc/security/limits.conf
+      echo "zextras soft nofile 524288"
+      echo "zextras hard nofile 524288"
+    } >>"$limitstmp"
+    mv -f "$limitstmp" /etc/security/limits.conf
     chmod 640 /etc/security/limits.conf
   else
-    echo "zextras soft nofile 524288" >/etc/security/limits.conf
-    echo "zextras hard nofile 524288" >>/etc/security/limits.conf
+    {
+      echo "zextras soft nofile 524288"
+      echo "zextras hard nofile 524288"
+    } >>/etc/security/limits.conf
     chmod 640 /etc/security/limits.conf
   fi
 }
@@ -743,26 +761,23 @@ postinst__apt() {
     usermod -a -G postfix,tty zextras
   fi
 
-  H=$(hostname --fqdn)
-  I=$(hostname -i)
-
   chown zextras:zextras /opt/zextras/common/etc/java/cacerts
   chmod 644 /opt/zextras/common/etc/java/cacerts
 
   mailboxd_truststore_password=$(su - zextras -c "zmlocalconfig -s -m nokey mailboxd_truststore_password")
   if [ "$2" != "" ]; then
     if [ -x /opt/zextras/bin/zmcertmgr ]; then
-      if [ $mailboxd_truststore_password != "changeit" ]; then
+      if [ "$mailboxd_truststore_password" != "changeit" ]; then
         su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
       fi
-      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts/*; do
+      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts-[1-9]*; do
         if [ -d "$dir" ]; then
-          chown zextras:zextras $dir/cacerts.*
-          chmod 644 $dir/cacerts.*
-          for cert in $(/opt/zextras/common/bin/keytool -list -keystore $dir/cacerts.* -storepass $mailboxd_truststore_password | grep trustedCertEntry | grep -v 'openjdk-cacerts/build/ubuntu' | grep -v 'tmp/rhel' | grep -Eo "^[^,]*"); do
-            /opt/zextras/common/bin/keytool -exportcert -keystore $dir/cacerts.* -storepass $mailboxd_truststore_password -alias $cert -file $dir/${cert}.crt
-            chown zextras:zextras $dir/${cert}.crt
-            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/${cert}.crt"
+          chown zextras:zextras "$dir/cacerts."*
+          chmod 644 "$dir/cacerts."*
+          for cert in $(/opt/zextras/common/bin/keytool -list -keystore "$dir/cacerts."* -storepass changeit | grep trustedCertEntry | grep -Eo "^[^,]*"); do
+            /opt/zextras/common/bin/keytool -exportcert -keystore "$dir/cacerts."* -storepass changeit -alias "$cert" -file "$dir/$cert"
+            chown zextras:zextras "$dir/$cert"
+            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/$cert"
           done
         fi
       done
@@ -784,7 +799,7 @@ postinst__apt() {
   fi
 
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
-    ln -f -s ca.pem /opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0
+    ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
 
   sed -i -e '/^::1     ip6-localhost ip6-loopback localhost$/!s/::1     ip6-localhost ip6-loopback/::1     ip6-localhost ip6-loopback localhost/' /etc/hosts
@@ -793,18 +808,23 @@ postinst__apt() {
     echo "Failed to create tmpfile"
     exit 1
   }
-  grep -E -v -e '^session[[:space:]]+required[[:space:]]+pam_limits.so' /etc/pam.d/common-session >$pamtmp
-  echo "session	required	pam_limits.so" >>$pamtmp
-  mv -f $pamtmp /etc/pam.d/common-session
+  {
+    grep -E -v -e '^session[[:space:]]+required[[:space:]]+pam_limits.so' /etc/pam.d/common-session >$pamtmp
+    echo "session	required	pam_limits.so"
+  } >>"$pamtmp"
+  mv -f "$pamtmp" /etc/pam.d/common-session
   chmod 640 /etc/pam.d/common-session
   limitstmp=$(mktemp -t zlimtmp.XXXXXX 2>/dev/null) || {
     echo "Failed to create tmpfile"
     exit 1
   }
-  grep -E -v -e '^root.*nofile' /etc/security/limits.conf >$limitstmp
-  echo "root soft nofile 524288" >>$limitstmp
-  echo "root hard nofile 524288" >>$limitstmp
-  mv -f $limitstmp /etc/security/limits.conf
+
+  {
+    grep -E -v -e '^root.*nofile' /etc/security/limits.conf
+    echo "root soft nofile 524288"
+    echo "root hard nofile 524288"
+  } >>"$limitstmp"
+  mv -f "$limitstmp" /etc/security/limits.conf
   chmod 640 /etc/security/limits.conf
   chown -R root:root /opt/zextras/common/lib/perl5/Zimbra
 
@@ -863,16 +883,15 @@ postinst__apt() {
   mkdir -p /opt/zextras/zmstat
   chown zextras:zextras /opt/zextras/zmstat
 
-  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
-  if [ $? = 0 ]; then
+  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
-    mv -f $sudotmp /etc/sudoers
-    chmod $SUDOMODE /etc/sudoers
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
+    mv -f "$sudotmp" /etc/sudoers
+    chmod "$SUDOMODE" /etc/sudoers
   fi
 
   chmod 440 /etc/sudoers.d/carbonio
@@ -927,9 +946,6 @@ postinst__yum() {
     usermod -c "syslog user" syslog
   fi
 
-  H=$(hostname --fqdn)
-  I=$(hostname -i)
-
   if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
     chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
   fi
@@ -945,7 +961,7 @@ postinst__yum() {
   fi
 
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
-    ln -f -s ca.pem /opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0
+    ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
 
   mailboxd_truststore_password=$(/bin/su - zextras -c "zmlocalconfig -s -m nokey mailboxd_truststore_password")
@@ -958,17 +974,17 @@ postinst__yum() {
       su - zextras -c '/opt/zextras/bin/zmcertmgr createca'
       # Run as zextras, update OpenJDK cacerts file with the CA stored in LDAP
       su - zextras -c '/opt/zextras/bin/zmcertmgr deployca --localonly'
-      if [ $mailboxd_truststore_password != "changeit" ]; then
+      if [ "$mailboxd_truststore_password" != "changeit" ]; then
         su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
       fi
-      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts; do
+      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts-[1-9]*; do
         if [ -d "$dir" ]; then
-          chown zextras:zextras $dir/cacerts.*
-          chmod 644 $dir/cacerts.*
-          for cert in $(/opt/zextras/common/bin/keytool -list -keystore $dir/cacerts.* -storepass changeit | grep trustedCertEntry | grep -v 'openjdk-cacerts/build/ubuntu' | grep -v 'tmp/rhel' | grep -v 'openjdk-cacerts/build/rhel' | grep -Eo "^[^,]*"); do
-            /opt/zextras/common/bin/keytool -exportcert -keystore $dir/cacerts.* -storepass changeit -alias $cert -file $dir/${cert}.crt
-            chown zextras:zextras $dir/${cert}.crt
-            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/${cert}.crt"
+          chown zextras:zextras "$dir/cacerts."*
+          chmod 644 "$dir/cacerts."*
+          for cert in $(/opt/zextras/common/bin/keytool -list -keystore "$dir/cacerts."* -storepass changeit | grep trustedCertEntry | grep -Eo "^[^,]*"); do
+            /opt/zextras/common/bin/keytool -exportcert -keystore "$dir/cacerts."* -storepass changeit -alias "$cert" -file "$dir/$cert"
+            chown zextras:zextras "$dir/$cert"
+            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/$cert"
           done
         fi
       done
@@ -1031,22 +1047,21 @@ postinst__yum() {
   mkdir -p /opt/zextras/zmstat
   chown zextras:zextras /opt/zextras/zmstat
 
-  grep -E -q '^%zextras[[:space:]]' /etc/sudoers
-  if [ $? = 0 ]; then
+  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
       echo "Failed to create tmpfile"
       exit 1
     }
     SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >$sudotmp
-    mv -f $sudotmp /etc/sudoers
-    chmod $SUDOMODE /etc/sudoers
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
+    mv -f "$sudotmp" /etc/sudoers
+    chmod "$SUDOMODE" /etc/sudoers
   fi
 
   chmod 440 /etc/sudoers.d/carbonio
   chown root:root /etc/sudoers.d/carbonio
 
-  echo $(date +%s)": INSTALLED carbonio-core" >>/opt/zextras/.install_history
+  echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
