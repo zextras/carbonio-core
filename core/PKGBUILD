@@ -251,7 +251,7 @@ package() {
   install -D mta/saslauthd.conf.in \
     "${pkgdir}/opt/zextras/conf/saslauthd.conf.in"
   install -D mta/zmconfigd/postfix_content_filter.cf \
-      "${pkgdir}/opt/zextras/conf/zmconfigd/postfix_content_filter.cf"
+    "${pkgdir}/opt/zextras/conf/zmconfigd/postfix_content_filter.cf"
   install -D mta/zmconfigd/smtpd_end_of_data_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_end_of_data_restrictions.cf"
   install -D mta/zmconfigd/smtpd_recipient_restrictions.cf \
@@ -487,7 +487,7 @@ package() {
   install -Dm755 src/libexec/zmlogprocess \
     "${pkgdir}/opt/zextras/libexec/zmlogprocess"
   install -Dm755 src/libexec/zmmsgtrace \
-     "${pkgdir}/opt/zextras/libexec/zmmsgtrace"
+    "${pkgdir}/opt/zextras/libexec/zmmsgtrace"
   install -Dm755 src/libexec/zmmtainit \
     "${pkgdir}/opt/zextras/libexec/zmmtainit"
   install -Dm755 src/libexec/zmmtastatus \
@@ -663,7 +663,7 @@ package() {
   install -D junixsocket-native-2.4.0.nar \
     -t "${pkgdir}/opt/zextras/lib"
 
-  echo "24.1.0" > "${pkgdir}"/opt/zextras/.version
+  echo "24.1.0" >"${pkgdir}"/opt/zextras/.version
 
 }
 
@@ -682,20 +682,6 @@ postrm__yum() {
 }
 
 preinst__apt() {
-
-  if [ "$1" = upgrade ]; then
-    if [ "$2" != "" ]; then
-      ca_certs_version="$(cat /opt/zextras/common/etc/java/.caversion)"
-      ca_certs_save_dir="/opt/zextras/.saveconfig/carbonio-openjdk-cacerts-${ca_certs_version}"
-      if [ ! -d "${ca_certs_save_dir}" ]; then
-        mkdir -p "${ca_certs_save_dir}"
-      fi
-      cacerts=$(mktemp --tmpdir="${ca_certs_save_dir}" cacerts.XXXXXX 2>/dev/null)
-
-      cp /opt/zextras/common/etc/java/cacerts "${ca_certs_save_dir}"
-    fi
-  fi
-
   if [ "$1" = configure ]; then
 
     if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
@@ -731,17 +717,6 @@ preinst__apt() {
 }
 
 preinst__yum() {
-  if [ "$1" -ge "2" ]; then
-    ca_certs_version="$(cat /opt/zextras/common/etc/java/.caversion)"
-    ca_certs_save_dir="/opt/zextras/.saveconfig/carbonio-openjdk-cacerts-${ca_certs_version}"
-    if [ ! -d "${ca_certs_save_dir}" ]; then
-      mkdir -p "${ca_certs_save_dir}"
-    fi
-    cacerts=$(mktemp --tmpdir="${ca_certs_save_dir}" cacerts.XXXXXX 2>/dev/null)
-
-    cp /opt/zextras/common/etc/java/cacerts "$cacerts"
-  fi
-
   if [ "$(echo /etc/security/limits.d/*-nproc.conf)" != "/etc/security/limits.d/*-nproc.conf" ]; then
     {
       echo "zextras soft nproc 278528"
@@ -807,29 +782,6 @@ postinst__apt() {
       usermod -c "postfix user" postfix
     fi
     usermod -a -G postfix,tty zextras
-  fi
-
-  chown zextras:zextras /opt/zextras/common/etc/java/cacerts
-  chmod 644 /opt/zextras/common/etc/java/cacerts
-
-  mailboxd_truststore_password=$(su - zextras -c "zmlocalconfig -s -m nokey mailboxd_truststore_password")
-  if [ "$2" != "" ]; then
-    if [ -x /opt/zextras/bin/zmcertmgr ]; then
-      if [ "$mailboxd_truststore_password" != "changeit" ]; then
-        su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
-      fi
-      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts-[1-9]*; do
-        if [ -d "$dir" ]; then
-          chown zextras:zextras "$dir/cacerts."*
-          chmod 644 "$dir/cacerts."*
-          for cert in $(/opt/zextras/common/bin/keytool -list -keystore "$dir/cacerts."* -storepass changeit | grep trustedCertEntry | grep -Eo "^[^,]*"); do
-            /opt/zextras/common/bin/keytool -exportcert -keystore "$dir/cacerts."* -storepass changeit -alias "$cert" -file "$dir/$cert"
-            chown zextras:zextras "$dir/$cert"
-            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/$cert"
-          done
-        fi
-      done
-    fi
   fi
 
   if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
@@ -1010,33 +962,6 @@ postinst__yum() {
 
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
-  fi
-
-  mailboxd_truststore_password=$(/bin/su - zextras -c "zmlocalconfig -s -m nokey mailboxd_truststore_password")
-  chown zextras:zextras /opt/zextras/common/etc/java/cacerts
-  chmod 644 /opt/zextras/common/etc/java/cacerts
-
-  if [ "$1" -ge "2" ]; then
-    if [ -x /opt/zextras/bin/zmcertmgr ]; then
-      # Run as zextras, extract CA to /opt/zextras/conf/ca
-      su - zextras -c '/opt/zextras/bin/zmcertmgr createca'
-      # Run as zextras, update OpenJDK cacerts file with the CA stored in LDAP
-      su - zextras -c '/opt/zextras/bin/zmcertmgr deployca --localonly'
-      if [ "$mailboxd_truststore_password" != "changeit" ]; then
-        su - zextras -c "/opt/zextras/common/bin/keytool -storepasswd -keystore /opt/zextras/common/etc/java/cacerts -storepass changeit -new $mailboxd_truststore_password"
-      fi
-      for dir in /opt/zextras/.saveconfig/carbonio-openjdk-cacerts-[1-9]*; do
-        if [ -d "$dir" ]; then
-          chown zextras:zextras "$dir/cacerts."*
-          chmod 644 "$dir/cacerts."*
-          for cert in $(/opt/zextras/common/bin/keytool -list -keystore "$dir/cacerts."* -storepass changeit | grep trustedCertEntry | grep -Eo "^[^,]*"); do
-            /opt/zextras/common/bin/keytool -exportcert -keystore "$dir/cacerts."* -storepass changeit -alias "$cert" -file "$dir/$cert"
-            chown zextras:zextras "$dir/$cert"
-            su - zextras -c "/opt/zextras/bin/zmcertmgr addcacert $dir/$cert"
-          done
-        fi
-      done
-    fi
   fi
 
   if [ -d /etc/logrotate.d ]; then
