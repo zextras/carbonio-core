@@ -657,7 +657,7 @@ package() {
   cd "${srcdir}"
   install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
   install -D zm-certificate-manager-store-23.2.0.jar \
-    "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
+    "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager/com_zimbra_cert_manager.jar"
 
   # junixsocket-native
   install -D junixsocket-native-2.4.0.nar \
