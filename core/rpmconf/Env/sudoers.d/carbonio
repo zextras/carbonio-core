@@ -11,3 +11,4 @@ Defaults:zextras !requiretty
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmmtastatus
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/amavis-mc
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmmailboxdmgr
+%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/nginx

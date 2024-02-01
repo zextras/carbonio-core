@@ -123,7 +123,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.5"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.24"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.25"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.2"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.3"
   "carbonio-launcher::git+${url}/carbonio-launcher#tag=4.0.1"
