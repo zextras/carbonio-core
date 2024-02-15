@@ -7,3 +7,5 @@ start
 build
 *.target
 *.deb
+*.rpm
+/artifacts/

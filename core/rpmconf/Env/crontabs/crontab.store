@@ -1,0 +1,15 @@
+#
+# crontab.store
+#
+# Log pruning
+#
+30 2 * * * find /opt/zextras/mailboxd/logs/ -type f -name \*log\* -mtime +8 -exec rm {} \; > /dev/null 2>&1
+30 2 * * * find /opt/zextras/log/ -type f -name stacktrace.\* -mtime +8 -exec rm {} \; > /dev/null 2>&1
+#
+# Report on any database inconsistencies
+#
+0 23 * * 7 /opt/zextras/libexec/zmdbintegrityreport -m
+#
+# Invoke "ComputeAggregateQuotaUsageRequest" periodically
+#
+15 2 * * *	/opt/zextras/libexec/zmcomputequotausage > /dev/null 2>&1
