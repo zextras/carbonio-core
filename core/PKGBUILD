@@ -663,7 +663,7 @@ package() {
   install -D junixsocket-native-2.4.0.nar \
     -t "${pkgdir}/opt/zextras/lib"
 
-  echo "24.1.0" >"${pkgdir}"/opt/zextras/.version
+  echo "24.3.0" >"${pkgdir}"/opt/zextras/.version
 
 }
 
