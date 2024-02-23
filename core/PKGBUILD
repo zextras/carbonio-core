@@ -97,6 +97,7 @@ depends__yum=(
   "file"
   "fontconfig"
   "gmp"
+  "initscripts"
   "iproute"
   "libaio"
   "libstdc++"
