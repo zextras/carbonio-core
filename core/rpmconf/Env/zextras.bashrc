@@ -31,10 +31,6 @@ export PERL5LIB
 JYTHONPATH=/opt/zextras/common/lib/jylibs
 export JYTHONPATH
 
-if [ ! -f /.dockerenv ]; then
-  ulimit -n 524288 >/dev/null 2>&1
-fi
-
 umask 0027
 
 unset DISPLAY
