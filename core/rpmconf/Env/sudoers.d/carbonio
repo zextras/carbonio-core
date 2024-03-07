@@ -1,7 +1,6 @@
 Defaults:zextras !requiretty
 
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/amavis-mc
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/nginx
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postalias
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postcat
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postconf
