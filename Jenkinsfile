@@ -25,7 +25,18 @@ pipeline {
                 stash includes: '**', name: 'staging'
             }
         }
-
+        stage('SonarQube analysis') {
+            steps {
+                unstash 'staging'
+                script {
+                    scannerHome = tool 'SonarScanner';
+                }
+                withSonarQubeEnv(credentialsId: 'sonarqube-user-token',
+                    installationName: 'SonarQube instance') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
         stage('Build deb/rpm') {
             parallel {
                 stage('Ubuntu') {
