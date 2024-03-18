@@ -123,7 +123,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.5"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.26"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.27"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.2"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.3"
   "carbonio-launcher::git+${url}/carbonio-launcher#tag=4.0.1"
@@ -386,8 +386,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmsaslauthdctl"
   install -D src/bin/zmshutil \
     "${pkgdir}/opt/zextras/bin/zmshutil"
-  install -D src/bin/zmskindeploy \
-    "${pkgdir}/opt/zextras/bin/zmskindeploy"
   install -D src/bin/zmsoap \
     "${pkgdir}/opt/zextras/bin/zmsoap"
   install -D src/bin/zmsshkeygen \
@@ -809,7 +807,7 @@ postinst__apt() {
     exit 1
   }
   {
-    grep -E -v -e '^session[[:space:]]+required[[:space:]]+pam_limits.so' /etc/pam.d/common-session >$pamtmp
+    grep -E -v -e '^session[[:space:]]+required[[:space:]]+pam_limits.so' /etc/pam.d/common-session >"$pamtmp"
     echo "session	required	pam_limits.so"
   } >>"$pamtmp"
   mv -f "$pamtmp" /etc/pam.d/common-session
