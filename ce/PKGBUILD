@@ -20,11 +20,59 @@ depends=(
   "carbonio-appserver"
   "carbonio-webui"
 )
+source=("${pkgname}.target")
 
 package() {
   cd "${srcdir}"
+
+  # systemd unit
+  mkdir -p "${pkgdir}/lib/systemd/system/${pkgname}.target.wants"
+  install -Dm 644 "${srcdir}/${pkgname}.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target"
+  ## targets hierarchy
+  ln -sf "/lib/systemd/system/carbonio-appserver.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-appserver.target"
+  ln -sf "/lib/systemd/system/carbonio-directory-server.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-directory-server.target"
+  ln -sf "/lib/systemd/system/carbonio-mta.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-mta.target"
+  ln -sf "/lib/systemd/system/carbonio-proxy.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-proxy.target"
+  ## units hierarchy
+  ln -sf "/lib/systemd/system/carbonio-appserver.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-appserver.service"
+  ln -sf "/lib/systemd/system/carbonio-altermime-config.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-altermime-config.service"
+  ln -sf "/lib/systemd/system/carbonio-antivirus.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-antivirus.service"
+  ln -sf "/lib/systemd/system/carbonio-configd.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
+  ln -sf "/lib/systemd/system/carbonio-freshclam.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-freshclam.service"
+  ln -sf "/lib/systemd/system/carbonio-mailthreat.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-mailthreat.service"
+  ln -sf "/lib/systemd/system/carbonio-memcached.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-memcached.service"
+  ln -sf "/lib/systemd/system/carbonio-milter.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-milter.service"
+  ln -sf "/lib/systemd/system/carbonio-nginx.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-nginx.service"
+  ln -sf "/lib/systemd/system/carbonio-opendkim.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-opendkim.service"
+  ln -sf "/lib/systemd/system/carbonio-openldap.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-openldap.service"
+  ln -sf "/lib/systemd/system/carbonio-policyd.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-policyd.service"
+  ln -sf "/lib/systemd/system/carbonio-postfix.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-postfix.service"
+  ln -sf "/lib/systemd/system/carbonio-saslauthd.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-saslauthd.service"
+  ln -sf "/lib/systemd/system/carbonio-stats.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
 }
 
 postinst() {
   /opt/zextras/libexec/zmfixperms
 }
+
+sha256sums=('db532b3d0126a2a3d55400062e79aa68baa2c1c6f54cbbc0aab159533e6fa94c')
