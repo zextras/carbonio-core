@@ -1,0 +1,13 @@
+[Unit]
+Description=Carbonio Stats Daemon
+PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
+
+[Service]
+User=zextras
+Type=forking
+PIDFile=/opt/zextras/zmstat/pid/zmstat-allprocs.pid
+ExecStart=/opt/zextras/bin/zmstatctl start
+ExecStop=/opt/zextras/bin/zmstatctl stop
+
+[Install]
+WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
