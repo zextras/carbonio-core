@@ -75,4 +75,4 @@ postinst() {
   /opt/zextras/libexec/zmfixperms
 }
 
-sha256sums=('db532b3d0126a2a3d55400062e79aa68baa2c1c6f54cbbc0aab159533e6fa94c')
+sha256sums=('b321cd0014a736a46e20eadd50898bc0c79ac9b2d13a18e37bdc6a1afc552a3d')

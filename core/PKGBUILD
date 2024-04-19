@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.1.3"
+pkgver="4.1.4"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -123,7 +123,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.5"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.28"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.29"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.2"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.3"
   "carbonio-launcher::git+${url}/carbonio-launcher#tag=4.0.1"
@@ -145,7 +145,7 @@ sha256sums=(
   'd9628f2126a5cf2b05c0b87945bb60a2f95fb1acfc8401a519f49ebced89fdf8'
   '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
   '61f59f9ff7f1e43e4623e9f595fcef633e525e33796ebf716e6d9e834a9e1484'
-  '0e81d61ab500783156ad82204712e3f56a0780f75a88e390b22070dea0ff44ae'
+  '6a73c0f3b37ae7a4c3b2ab1fbf58e8767127148ab625df3884c7bcc66b8a0c07'
   'adb399bd34d9fff2727921eebefb5f995755cf9c372eb149e3e02ae8f5707a44'
   '544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c')
 
