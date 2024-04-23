@@ -20,7 +20,7 @@ use Time::localtime qw(ctime);
 
 $| = 1; # don't buffer stdout
 
-our $platform = qx(/opt/zextras/libexec/get_plat_tag.sh);
+our $platform = qx(grep -oP '(?<=^ID=).+' /etc/os-release);
 chomp $platform;
 my $logFileName = "zmsetup." . getDateStamp() . ".log";
 my $logfile = "/tmp/" . $logFileName;
@@ -608,7 +608,7 @@ sub isInstalled {
     my $pkgQuery;
 
     my $good = 0;
-    if ($platform =~ /^DEBIAN/ || $platform =~ /^UBUNTU/) {
+    if ($platform =~ /ubuntu/) {
         $pkgQuery = "dpkg -s $pkg";
     }
     else {
@@ -617,7 +617,7 @@ sub isInstalled {
 
     my $rc = 0xffff & system("$pkgQuery > /dev/null 2>&1");
     $rc >>= 8;
-    if (($platform =~ /^DEBIAN/ || $platform =~ /^UBUNTU/) && $rc == 0) {
+    if (($platform =~ /ubuntu/) && $rc == 0) {
         $good = 1;
         $pkgQuery = "dpkg -s $pkg | egrep '^Status: ' | grep 'not-installed'";
         $rc = 0xffff & system("$pkgQuery > /dev/null 2>&1");
@@ -5996,7 +5996,7 @@ sub applyConfig {
     if ($config{STARTSERVERS} eq "yes") {
         if (isEnabled("carbonio-appserver")) {
             qx(chown zextras:zextras /opt/zextras/redolog/redo.log)
-                if (($platform =~ m/DEBIAN/ || $platform =~ m/UBUNTU/) && !$newinstall);
+                if (($platform =~ m/ubuntu/) && !$newinstall);
         }
         progress("Starting servers...");
         runAsZextras("/opt/zextras/bin/zmcontrol stop");
