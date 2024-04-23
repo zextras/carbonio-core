@@ -226,11 +226,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/preinstall.pm"
   install -Dm755 rpmconf/Install/zmsetup.pl \
     "${pkgdir}/opt/zextras/libexec/zmsetup.pl"
-  # Build
-  install -Dm755 rpmconf/Build/get_plat_tag.sh \
-    "${pkgdir}/opt/zextras/libexec/get_plat_tag.sh"
-  install -Dm755 rpmconf/Build/get_plat_tag.sh \
-    "${pkgdir}/opt/zextras/libexec/installer/bin/get_plat_tag.sh"
   # Conf
   install -D rpmconf/Conf/zmssl.cnf.in \
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
