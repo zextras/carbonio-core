@@ -978,45 +978,46 @@ postinst__yum() {
     cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
-  cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
-  chmod 755 /etc/init.d/carbonio
-  if [ -x /sbin/chkconfig ]; then
-    chkconfig --del carbonio
-    chkconfig --add carbonio
-    chkconfig carbonio on
-  else
-    rm -f /etc/rc*.d/S99carbonio
-    rm -f /etc/rc*.d/S89carbonio
-    rm -f /etc/rc*.d/K01carbonio
+  if [ -d /etc/init.d ]; then
+    cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
+    chmod 755 /etc/init.d/carbonio
+    if [ -x /sbin/chkconfig ]; then
+      chkconfig --del carbonio
+      chkconfig --add carbonio
+      chkconfig carbonio on
+    else
+      rm -f /etc/rc*.d/S99carbonio
+      rm -f /etc/rc*.d/S89carbonio
+      rm -f /etc/rc*.d/K01carbonio
 
-    if [ -d /etc/rc0.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc0.d/S89carbonio
-      ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
+      if [ -d /etc/rc0.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc0.d/S89carbonio
+        ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
+      fi
+      if [ -d /etc/rc1.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
+      fi
+      if [ -d /etc/rc2.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
+        ln -s /etc/init.d/carbonio /etc/rc2.d/K01carbonio
+      fi
+      if [ -d /etc/rc3.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
+        ln -s /etc/init.d/carbonio /etc/rc3.d/K01carbonio
+      fi
+      if [ -d /etc/rc4.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
+        ln -s /etc/init.d/carbonio /etc/rc4.d/K01carbonio
+      fi
+      if [ -d /etc/rc5.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
+        ln -s /etc/init.d/carbonio /etc/rc5.d/K01carbonio
+      fi
+      if [ -d /etc/rc6.d ]; then
+        ln -s /etc/init.d/carbonio /etc/rc6.d/S89carbonio
+        ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
+      fi
     fi
-    if [ -d /etc/rc1.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
-    fi
-    if [ -d /etc/rc2.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc2.d/K01carbonio
-    fi
-    if [ -d /etc/rc3.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc3.d/K01carbonio
-    fi
-    if [ -d /etc/rc4.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc4.d/K01carbonio
-    fi
-    if [ -d /etc/rc5.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc5.d/K01carbonio
-    fi
-    if [ -d /etc/rc6.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc6.d/S89carbonio
-      ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
-    fi
-
   fi
 
   mkdir -p /opt/zextras/backup
