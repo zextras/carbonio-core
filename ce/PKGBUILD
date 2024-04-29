@@ -1,5 +1,5 @@
 pkgname="carbonio-ce"
-pkgver="4.1.5"
+pkgver="4.1.6"
 pkgrel="1"
 pkgdesc="The Carbonio Community Edition bootstrap package"
 maintainer="Zextras <packages@zextras.com>"
@@ -61,8 +61,9 @@ package() {
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-opendkim.service"
   ln -sf "/lib/systemd/system/carbonio-openldap.service" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-openldap.service"
-  ln -sf "/lib/systemd/system/carbonio-policyd.service" \
-    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-policyd.service"
+  # cbpolicyd: disabled by default
+  # ln -sf "/lib/systemd/system/carbonio-policyd.service" \
+  #   "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-policyd.service"
   ln -sf "/lib/systemd/system/carbonio-postfix.service" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-postfix.service"
   ln -sf "/lib/systemd/system/carbonio-saslauthd.service" \
