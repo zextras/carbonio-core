@@ -5,7 +5,7 @@
 
 
 # Comment or remove the line below.
-# Example
+#Example
 
 # Uncomment this option to enable logging.
 # LogFile must be writable for the user running daemon.
@@ -56,14 +56,25 @@ LogFacility LOG_LOCAL0
 # Default: no
 #LogRotate yes
 
+# Enable Prelude output.
+# Default: no
+#PreludeEnable yes
+#
+# Set the name of the analyzer used by prelude-admin.
+# Default: ClamAV
+#PreludeAnalyzerName ClamAV
+
 # Log additional information about the infected file, such as its
 # size and hash, together with the virus name.
 #ExtendedDetectionInfo yes
 
 # This option allows you to save a process identifier of the listening
-# daemon (main thread).
+# daemon.
+# This file will be owned by root, as long as clamd was started by root.
+# It is recommended that the directory where this file is stored is
+# also owned by root to keep other users from tampering with it.
 # Default: disabled
-PidFile /opt/zextras/log/clamd.pid
+PidFile /run/carbonio/clamd.pid
 
 # Optional path to the global temporary directory.
 # Default: system specific (usually /tmp or /var/tmp).
@@ -77,12 +88,17 @@ DatabaseDirectory /opt/zextras/data/clamav/db
 # Default: no
 #OfficialDatabaseOnly no
 
-# The daemon can work in local mode, network mode or both. 
+# Return with a nonzero error code if the virus database is older than
+# the specified number of days.
+# Default: -1
+#FailIfCvdOlderThan 7
+
+# The daemon can work in local mode, network mode or both.
 # Due to security reasons we recommend the local mode.
 
 # Path to a local socket file the daemon will listen on.
 # Default: disabled (must be specified by a user)
-LocalSocket /opt/zextras/data/clamav/clamav.sock
+LocalSocket /run/carbonio/clamd.socket
 
 # Sets the group ownership on the unix socket.
 # Default: disabled (the primary group of the user running clamd)
@@ -140,17 +156,20 @@ ReadTimeout %%carbonioClamAVReadTimeout%%
 # Default: 30
 #CommandReadTimeout 30
 
-# This option specifies how long to wait (in miliseconds) if the send buffer is full.
-# Keep this value low to prevent clamd hanging
+# This option specifies how long to wait (in milliseconds) if the send buffer
+# is full.
+# Keep this value low to prevent clamd hanging.
 #
 # Default: 500
 #SendBufTimeout 200
 
-# Maximum number of queued items (including those being processed by MaxThreads threads).
+# Maximum number of queued items (including those being processed by
+# MaxThreads threads).
 # It is recommended to have this value at least twice MaxThreads if possible.
-# WARNING: you shouldn't increase this too much to avoid running out  of file descriptors,
-# the following condition should hold:
-# MaxThreads*MaxRecursion + (MaxQueue - MaxThreads) + 6< RLIMIT_NOFILE (usual max is 1024).
+# WARNING: you shouldn't increase this too much to avoid running out  of file
+# descriptors, the following condition should hold:
+# MaxThreads*MaxRecursion + (MaxQueue - MaxThreads) + 6< RLIMIT_NOFILE (usual
+# max is 1024).
 #
 # Default: 100
 #MaxQueue 200
@@ -206,10 +225,6 @@ MaxDirectoryRecursion 30
 # Default: don't drop privileges
 User zextras
 
-# Initialize supplementary group access (clamd must be started by root).
-# Default: no
-#AllowSupplementaryGroups no
-
 # Stop daemon when libclamav reports out of memory condition.
 #ExitOnOOM yes
 
@@ -242,7 +257,7 @@ User zextras
 #DetectPUA yes
 
 # Exclude a specific PUA category. This directive can be used multiple times.
-# See https://github.com/vrtadmin/clamav-faq/blob/master/faq/faq-pua.md for 
+# See https://github.com/vrtadmin/clamav-faq/blob/master/faq/faq-pua.md for
 # the complete list of PUA categories.
 # Default: Load all categories (if DetectPUA is activated)
 #ExcludePUA NetTool
@@ -254,6 +269,23 @@ User zextras
 #IncludePUA Spy
 #IncludePUA Scanner
 #IncludePUA RAT
+
+# This option causes memory or nested map scans to dump the content to disk.
+# If you turn on this option, more data is written to disk and is available
+# when the LeaveTemporaryFiles option is enabled.
+#ForceToDisk yes
+
+# This option allows you to disable the caching feature of the engine. By
+# default, the engine will store an MD5 in a cache of any files that are
+# not flagged as virus or that hit limits checks. Disabling the cache will
+# have a negative performance impact on large scans.
+# Default: no
+#DisableCache yes
+
+# This option allows you to set the number of entries the cache can store.
+# The value should be a square number or will be rounded up to the nearest
+# square number.
+#CacheSize 65536
 
 # In some cases (eg. complex malware, exploits in graphic files, and others),
 # ClamAV uses special algorithms to detect abnormal patterns and behaviors that
@@ -327,25 +359,13 @@ User zextras
 #AlertPartitionIntersection yes
 
 
-# This option causes memory or nested map scans to dump the content to disk.
-# If you turn on this option, more data is written to disk and is available
-# when the LeaveTemporaryFiles option is enabled.
-#ForceToDisk yes
-
-# This option allows you to disable the caching feature of the engine. By
-# default, the engine will store an MD5 in a cache of any files that are
-# not flagged as virus or that hit limits checks. Disabling the cache will
-# have a negative performance impact on large scans.
-# Default: no
-#DisableCache yes
-
 ##
 ## Executable files
 ##
 
 # PE stands for Portable Executable - it's an executable file format used
-# in all 32 and 64-bit versions of Windows operating systems. This option allows
-# ClamAV to perform a deeper analysis of executable files and it's also
+# in all 32 and 64-bit versions of Windows operating systems. This option
+# allows ClamAV to perform a deeper analysis of executable files and it's also
 # required for decompression of popular executable packers such as UPX, FSG,
 # and Petite. If you turn off this option, the original files will still be
 # scanned, but without additional processing.
@@ -381,7 +401,6 @@ User zextras
 # Default: yes
 #ScanOLE2 yes
 
-
 # This option enables scanning within PDF files.
 # If you turn off this option, the original files will still be scanned, but
 # without decoding and additional processing.
@@ -406,6 +425,7 @@ User zextras
 # Default: yes
 #ScanHWP3 yes
 
+
 ##
 ## Mail files
 ##
@@ -417,7 +437,8 @@ User zextras
 #ScanMail yes
 
 # Scan RFC1341 messages split over many emails.
-# You will need to periodically clean up $TemporaryDirectory/clamav-partial directory.
+# You will need to periodically clean up $TemporaryDirectory/clamav-partial
+# directory.
 # WARNING: This option may open your system to a DoS attack.
 #	   Never use it on loaded servers.
 # Default: no
@@ -426,12 +447,13 @@ User zextras
 # With this option enabled ClamAV will try to detect phishing attempts by using
 # HTML.Phishing and Email.Phishing NDB signatures.
 # Default: yes
-#PhishingSignatures yes
+#PhishingSignatures no
 
 # With this option enabled ClamAV will try to detect phishing attempts by
 # analyzing URLs found in emails using WDB and PDB signature databases.
 # Default: yes
-#PhishingScanURLs yes
+#PhishingScanURLs no
+
 
 ##
 ## Data Loss Prevention (DLP)
@@ -488,8 +510,6 @@ User zextras
 # Default: yes
 #ScanArchive yes
 
-# See 'Heuristic Alerts' config for more settings
-
 
 ##
 ## Limits
@@ -508,9 +528,9 @@ User zextras
 # Default: 120000
 #MaxScanTime 300000
 
-# This option sets the maximum amount of data to be scanned for each input file.
-# Archives and other containers are recursively extracted and scanned up to this
-# value.
+# This option sets the maximum amount of data to be scanned for each input
+# file. Archives and other containers are recursively extracted and scanned
+# up to this value.
 # Value of 0 disables the limit
 # Note: disabling this limit or setting it too high may result in severe damage
 # to the system.
@@ -523,6 +543,8 @@ MaxScanSize %%zimbraMtaMaxMessageSize%%
 # Value of 0 disables the limit.
 # Note: disabling this limit or setting it too high may result in severe damage
 # to the system.
+# Technical design limitations prevent ClamAV from scanning files greater than
+# 2 GB at this time.
 # Default: 100M
 MaxFileSize %%zimbraMtaMaxMessageSize%%
 
@@ -576,17 +598,21 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 # Default: 1M
 #MaxZipTypeRcg 1M
 
-# This option sets the maximum number of partitions of a raw disk image to be scanned.
-# Raw disk images with more partitions than this value will have up to the value number
-# partitions scanned. Negative values are not allowed.
-# Note: setting this limit too high may result in severe damage or impact performance.
+# This option sets the maximum number of partitions of a raw disk image to be
+# scanned.
+# Raw disk images with more partitions than this value will have up to
+# the value number partitions scanned. Negative values are not allowed.
+# Note: setting this limit too high may result in severe damage or impact
+# performance.
 # Default: 50
 #MaxPartitions 128
 
 # This option sets the maximum number of icons within a PE to be scanned.
-# PE files with more icons than this value will have up to the value number icons scanned.
+# PE files with more icons than this value will have up to the value number
+# icons scanned.
 # Negative values are not allowed.
-# WARNING: setting this limit too high may result in severe damage or impact performance.
+# WARNING: setting this limit too high may result in severe damage or impact
+# performance.
 # Default: 100
 #MaxIconsPE 200
 
@@ -601,27 +627,33 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 # Default: 16
 #MaxRecHWP3 16
 
-# This option sets the maximum calls to the PCRE match function during an instance of regex matching.
-# Instances using more than this limit will be terminated and alert the user but the scan will continue.
+# This option sets the maximum calls to the PCRE match function during
+# an instance of regex matching.
+# Instances using more than this limit will be terminated and alert the user
+# but the scan will continue.
 # For more information on match_limit, see the PCRE documentation.
 # Negative values are not allowed.
 # WARNING: setting this limit too high may severely impact performance.
 # Default: 100000
 #PCREMatchLimit 20000
 
-# This option sets the maximum recursive calls to the PCRE match function during an instance of regex matching.
-# Instances using more than this limit will be terminated and alert the user but the scan will continue.
+# This option sets the maximum recursive calls to the PCRE match function
+# during an instance of regex matching.
+# Instances using more than this limit will be terminated and alert the user
+# but the scan will continue.
 # For more information on match_limit_recursion, see the PCRE documentation.
 # Negative values are not allowed and values > PCREMatchLimit are superfluous.
 # WARNING: setting this limit too high may severely impact performance.
 # Default: 2000
 #PCRERecMatchLimit 10000
 
-# This option sets the maximum filesize for which PCRE subsigs will be executed.
-# Files exceeding this limit will not have PCRE subsigs executed unless a subsig is encompassed to a smaller buffer.
+# This option sets the maximum filesize for which PCRE subsigs will be
+# executed. Files exceeding this limit will not have PCRE subsigs executed
+# unless a subsig is encompassed to a smaller buffer.
 # Negative values are not allowed.
 # Setting this value to zero disables the limit.
-# WARNING: setting this limit too high or disabling it may severely impact performance.
+# WARNING: setting this limit too high or disabling it may severely impact
+# performance.
 # Default: 100M
 #PCREMaxFileSize 400M
 
@@ -634,12 +666,6 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 ##
 ## On-access Scan Settings
 ##
-
-# Enable on-access scanning. Currently, this is supported via fanotify.
-# Clamuko/Dazuko support has been deprecated.
-# Default: no
-#ScanOnAccess yes
-
 
 # Don't scan files larger than OnAccessMaxFileSize
 # Value of 0 disables the limit.
@@ -660,21 +686,21 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 # Default: 5000 (5 seconds)
 # OnAccessCurlTimeout 10000
 
+# Toggles dynamic directory determination. Allows for recursively watching
+# include paths.
+# Default: no
+#OnAccessDisableDDD yes
+
 # Set the include paths (all files inside them will be scanned). You can have
 # multiple OnAccessIncludePath directives but each directory must be added
-# in a separate line. (On-access scan only)
+# in a separate line.
 # Default: disabled
 #OnAccessIncludePath /home
 #OnAccessIncludePath /students
 
 # Set the exclude paths. All subdirectories are also excluded.
 # Default: disabled
-#OnAccessExcludePath /home/bofh
-
-
-# Toggles dynamic directory determination. Allows for recursively watching include paths.
-# Default: no
-#OnAccessDisableDDD yes
+#OnAccessExcludePath /home/user
 
 # Modifies fanotify blocking behaviour when handling permission events.
 # If off, fanotify will only notify if the file scanned is a virus,
@@ -690,7 +716,8 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 # Default: no
 #OnAccessDenyOnError yes
 
-# Toggles extra scanning and notifications when a file or directory is created or moved.
+# Toggles extra scanning and notifications when a file or directory is
+# created or moved.
 # Requires the  DDD system to kick-off extra scans.
 # Default: no
 #OnAccessExtraScanning yes
@@ -731,7 +758,7 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 # OnAccessExcludeUID is not *guaranteed* to prevent every access by the
 # specified uid from triggering a scan (unless OnAccessPrevention is enabled).
 # Default: disabled
-#OnAccessExcludeUID 0
+#OnAccessExcludeUID -1
 
 # This option allows exclusions via user names when using the on-access
 # scanning client. It can be used multiple times.
@@ -744,7 +771,6 @@ MaxFileSize %%zimbraMtaMaxMessageSize%%
 # connection problems (or other issues).
 # Default: 0
 #OnAccessRetryAttempts 3
-
 
 ##
 ## Bytecode
