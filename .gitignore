@@ -7,5 +7,7 @@ start
 build
 *.target
 *.deb
+*.jar
+*.nar
 *.rpm
 /artifacts/

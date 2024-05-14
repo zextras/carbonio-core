@@ -47,7 +47,7 @@ pipeline {
                     }
                     steps {
                         unstash 'staging'
-                        sh 'sudo yap build ubuntu . -s'
+                        sh 'yap build ubuntu . -s'
                         stash includes: 'artifacts/', name: 'artifacts-deb'
                     }
                     post {
@@ -65,7 +65,7 @@ pipeline {
                     }
                     steps {
                         unstash 'staging'
-                        sh 'sudo yap build rocky-8 . -s'
+                        sh 'yap build rocky-8 . -s'
                         stash includes: 'artifacts/x86_64/*el8*.rpm', name: 'artifacts-rhel8'
                     }
                     post {
@@ -82,7 +82,7 @@ pipeline {
                     }
                     steps {
                         unstash 'staging'
-                        sh 'sudo yap build rocky-9 . -s'
+                        sh 'yap build rocky-9 . -s'
                         stash includes: 'artifacts/x86_64/*el9*.rpm', name: 'artifacts-rhel9'
                     }
                     post {
