@@ -123,11 +123,10 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.5"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.29"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.30"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.2"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.3"
   "carbonio-launcher::git+${url}/carbonio-launcher#tag=4.0.1"
-  "carbonio-ldap-utilities::git+${url}/carbonio-ldap-utilities#tag=4.0.17"
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "carbonio-bootstrap"
@@ -136,7 +135,6 @@ source=(
   "mini_alue_ce"
 )
 sha256sums=(
-  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -565,6 +563,47 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
   install -Dm644 conf/zmlogrotate \
     "${pkgdir}/opt/zextras/conf/zmlogrotate"
+  # ldap scripts
+  install -Dm755 src/libexec/zmstat-ldap \
+    "${pkgdir}/opt/zextras/libexec/zmstat-ldap"
+  install -Dm755 src/libexec/zmldapanon \
+    "${pkgdir}/opt/zextras/libexec/zmldapanon"
+  install -Dm755 src/libexec/zmreplchk \
+    "${pkgdir}/opt/zextras/libexec/zmreplchk"
+  install -Dm755 src/libexec/zmslapadd \
+    "${pkgdir}/opt/zextras/libexec/zmslapadd"
+  install -Dm755 src/libexec/zmslapcat \
+    "${pkgdir}/opt/zextras/libexec/zmslapcat"
+  install -Dm755 src/libexec/zmslapd \
+    "${pkgdir}/opt/zextras/libexec/zmslapd"
+  install -Dm755 src/libexec/zmslapindex \
+    "${pkgdir}/opt/zextras/libexec/zmslapindex"
+  install -Dm755 src/libexec/zmldapapplyldif \
+    "${pkgdir}/opt/zextras/libexec/zmldapapplyldif"
+  install -Dm755 src/libexec/zmldapenable-mmr \
+    "${pkgdir}/opt/zextras/libexec/zmldapenable-mmr"
+  install -Dm755 src/libexec/zmldapenablereplica \
+    "${pkgdir}/opt/zextras/libexec/zmldapenablereplica"
+  install -Dm755 src/libexec/zmldapinit \
+    "${pkgdir}/opt/zextras/libexec/zmldapinit"
+  install -Dm755 src/libexec/zmldapmmrtool \
+    "${pkgdir}/opt/zextras/libexec/zmldapmmrtool"
+  install -Dm755 src/libexec/zmldapmonitordb \
+    "${pkgdir}/opt/zextras/libexec/zmldapmonitordb"
+  install -Dm755 src/libexec/zmldappromote-replica-mmr \
+    "${pkgdir}/opt/zextras/libexec/zmldappromote-replica-mmr"
+  install -Dm755 src/libexec/zmldapreplicatool \
+    "${pkgdir}/opt/zextras/libexec/zmldapreplicatool"
+  install -Dm755 src/libexec/zmldapschema \
+    "${pkgdir}/opt/zextras/libexec/zmldapschema"
+  install -Dm755 src/libexec/zmldapupdateldif \
+    "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
+  install -Dm755 src/libexec/ldapattributeupdate \
+    "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
+  install -D conf/zmconfigd.cf \
+    "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
+  install -D conf/zmconfigd.log4j.properties \
+    "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
 
   # jython
   cd "${srcdir}/carbonio-jython"
@@ -606,49 +645,6 @@ package() {
   cd "${srcdir}/carbonio-freshclam"
   install -D freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
-
-  # carbonio-ldap-utilities
-  cd "${srcdir}/carbonio-ldap-utilities"
-  install -Dm755 src/libexec/zmstat-ldap \
-    "${pkgdir}/opt/zextras/libexec/zmstat-ldap"
-  install -Dm755 src/libexec/zmldapanon \
-    "${pkgdir}/opt/zextras/libexec/zmldapanon"
-  install -Dm755 src/libexec/zmreplchk \
-    "${pkgdir}/opt/zextras/libexec/zmreplchk"
-  install -Dm755 src/libexec/zmslapadd \
-    "${pkgdir}/opt/zextras/libexec/zmslapadd"
-  install -Dm755 src/libexec/zmslapcat \
-    "${pkgdir}/opt/zextras/libexec/zmslapcat"
-  install -Dm755 src/libexec/zmslapd \
-    "${pkgdir}/opt/zextras/libexec/zmslapd"
-  install -Dm755 src/libexec/zmslapindex \
-    "${pkgdir}/opt/zextras/libexec/zmslapindex"
-  install -Dm755 src/libexec/zmldapapplyldif \
-    "${pkgdir}/opt/zextras/libexec/zmldapapplyldif"
-  install -Dm755 src/libexec/zmldapenable-mmr \
-    "${pkgdir}/opt/zextras/libexec/zmldapenable-mmr"
-  install -Dm755 src/libexec/zmldapenablereplica \
-    "${pkgdir}/opt/zextras/libexec/zmldapenablereplica"
-  install -Dm755 src/libexec/zmldapinit \
-    "${pkgdir}/opt/zextras/libexec/zmldapinit"
-  install -Dm755 src/libexec/zmldapmmrtool \
-    "${pkgdir}/opt/zextras/libexec/zmldapmmrtool"
-  install -Dm755 src/libexec/zmldapmonitordb \
-    "${pkgdir}/opt/zextras/libexec/zmldapmonitordb"
-  install -Dm755 src/libexec/zmldappromote-replica-mmr \
-    "${pkgdir}/opt/zextras/libexec/zmldappromote-replica-mmr"
-  install -Dm755 src/libexec/zmldapreplicatool \
-    "${pkgdir}/opt/zextras/libexec/zmldapreplicatool"
-  install -Dm755 src/libexec/zmldapschema \
-    "${pkgdir}/opt/zextras/libexec/zmldapschema"
-  install -Dm755 src/libexec/zmldapupdateldif \
-    "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
-  install -Dm755 src/libexec/ldapattributeupdate \
-    "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
-  install -D conf/zmconfigd.cf \
-    "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
-  install -D conf/zmconfigd.log4j.properties \
-    "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
 
   # carbonio-launcher
   cd "${srcdir}/carbonio-launcher"
