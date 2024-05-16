@@ -1,7 +1,7 @@
 UserID                zextras:zextras
 UMask                 022
 Socket                %%zimbraInetMode%%:8465@[%%zimbraLocalBindAddress%%]
-PidFile               /opt/zextras/log/opendkim.pid
+PidFile               /run/carbonio/opendkim.pid
 
 LDAPBindUser		uid=zmpostfix,cn=appaccts,cn=zimbra
 LDAPBindPassword	@@ldap_postfix_password@@

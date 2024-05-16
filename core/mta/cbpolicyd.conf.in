@@ -26,7 +26,7 @@ user=@@zimbra_user@@
 group=@@zimbra_user@@
 
 # Filename to store pid of parent process
-pid_file=@@cbpolicyd_pid_file@@
+pid_file=/run/carbonio/cbpolicyd.pid
 
 # Cache file
 cache_file=@@cbpolicyd_cache_file@@

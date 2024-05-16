@@ -112,7 +112,7 @@ sub waitUntilNiceRoundSecond($) {
 }
 
 sub getPidFileDir() {
-    return getZmstatRoot() . "/pid";
+    return "/run/carbonio/stats";
 }
 
 sub readPidFile($) {
