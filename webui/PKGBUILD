@@ -1,7 +1,7 @@
 pkgname="carbonio-webui"
-pkgver="4.1.7"
+pkgver="4.1.8"
 pkgrel="1"
-pkgdesc="Carbonio WebUI shiny and gorgeous UI"
+pkgdesc="A modern Web UI for carbonio (meta-package)"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 copyright=(

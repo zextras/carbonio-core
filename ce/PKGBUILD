@@ -1,7 +1,7 @@
 pkgname="carbonio-ce"
-pkgver="4.1.7"
+pkgver="4.1.8"
 pkgrel="1"
-pkgdesc="The Carbonio Community Edition bootstrap package"
+pkgdesc="The Carbonio Community Edition bootstrap package (meta-package)"
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
   "2022-2024, Zextras <https://www.zextras.com>"
