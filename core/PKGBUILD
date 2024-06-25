@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.1.8"
+pkgver="4.1.9"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
@@ -122,7 +122,7 @@ optdepends=(
   "carbonio-common-appserver-docs"
 )
 source=(
-  "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.6"
+  "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
   "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.34"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.4"
