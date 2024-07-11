@@ -1843,8 +1843,7 @@ sub setDefaultsFromLocalConfig {
     if (isEnabled("carbonio-appserver")) {
         $config{mailboxd_server} = "jetty"
             if ($config{mailboxd_server} eq "");
-        $config{mailboxd_keystore} = "$config{mailboxd_directory}/etc/keystore"
-            if ($config{mailboxd_keystore} eq "" || $config{mailboxd_keystore} == "/opt/zextras/conf/keystore");
+        $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
     }
 
     if ($options{d}) {
