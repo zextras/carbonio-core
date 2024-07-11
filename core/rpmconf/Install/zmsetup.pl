@@ -1415,14 +1415,7 @@ sub setDefaults {
     $config{ldap_dit_base_dn_config} = "cn=zimbra"
         if ($config{ldap_dit_base_dn_config} eq "");
 
-    $config{mailboxd_directory} = "/opt/zextras/mailboxd";
-    if (-f "/opt/zextras/common/jetty_home/start.jar") {
-        $config{mailboxd_server} = "jetty";
-        $config{mailboxd_keystore} = "$config{mailboxd_directory}/etc/keystore";
-    }
-    else {
-        $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
-    }
+    $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
     $config{mailboxd_truststore} = "/opt/zextras/common/lib/jvm/java/lib/security/cacerts";
     $config{mailboxd_keystore_password} = genRandomPass();
     $config{mailboxd_truststore_password} = "changeit";
