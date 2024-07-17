@@ -1415,7 +1415,14 @@ sub setDefaults {
     $config{ldap_dit_base_dn_config} = "cn=zimbra"
         if ($config{ldap_dit_base_dn_config} eq "");
 
-    $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
+    $config{mailboxd_directory} = "/opt/zextras/mailboxd";
+    if (-d "/opt/zextras/mailboxd") {
+        $config{mailboxd_server} = "jetty";
+        $config{mailboxd_keystore} = "$config{mailboxd_directory}/etc/keystore";
+    }
+    else {
+        $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
+    }
     $config{mailboxd_truststore} = "/opt/zextras/common/lib/jvm/java/lib/security/cacerts";
     $config{mailboxd_keystore_password} = genRandomPass();
     $config{mailboxd_truststore_password} = "changeit";
@@ -1757,6 +1764,8 @@ sub setDefaultsFromLocalConfig {
     $config{ZIMBRASQLPASS} = getLocalConfig("zimbra_mysql_password");
     $config{MAILBOXDMEMORY} = getLocalConfig("mailboxd_java_heap_size");
 
+    $config{mailboxd_directory} = getLocalConfig("mailboxd_directory");
+
     # do not set empty mailboxd_keystore
     $config{mailboxd_keystore} = getLocalConfig("mailboxd_keystore")
         if (getLocalConfig("mailboxd_keystore") ne "");
@@ -1841,7 +1850,8 @@ sub setDefaultsFromLocalConfig {
     if (isEnabled("carbonio-appserver")) {
         $config{mailboxd_server} = "jetty"
             if ($config{mailboxd_server} eq "");
-        $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
+        $config{mailboxd_keystore} = "$config{mailboxd_directory}/etc/keystore"
+            if ($config{mailboxd_keystore} eq "" || $config{mailboxd_keystore} == "/opt/zextras/conf/keystore");
     }
 
     if ($options{d}) {
@@ -4500,6 +4510,7 @@ sub configLCValues {
     setLocalConfig("ssl_default_digest", $config{ssl_default_digest});
 
     setLocalConfig("mailboxd_java_heap_size", $config{MAILBOXDMEMORY});
+    setLocalConfig("mailboxd_directory", $config{mailboxd_directory});
     setLocalConfig("mailboxd_keystore", $config{mailboxd_keystore});
     setLocalConfig("mailboxd_server", $config{mailboxd_server});
     setLocalConfig("mailboxd_truststore", "$config{mailboxd_truststore}");
@@ -4884,6 +4895,11 @@ sub configCreateCert {
 
     if (isInstalled("carbonio-appserver")) {
         if (!-f "$config{mailboxd_keystore}" && !-f "/opt/zextras/ssl/carbonio/server/server.crt") {
+            if (!-d "$config{mailboxd_directory}") {
+                qx(mkdir -p $config{mailboxd_directory}/etc);
+                qx(chown -R zextras:zextras $config{mailboxd_directory});
+                qx(chmod 744 $config{mailboxd_directory}/etc);
+            }
             progress("Creating SSL carbonio-appserver certificate...");
             $rc = runAsZextras("/opt/zextras/bin/zmcertmgr createcrt $needNewCert");
             if ($rc != 0) {
