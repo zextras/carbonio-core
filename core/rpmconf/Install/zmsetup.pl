@@ -87,9 +87,7 @@ my %packageServiceMap = (
     service            => "carbonio-appserver",
 );
 
-my @webappList = (
-    "service",
-);
+my $serviceWebApp = "service";
 
 my %installedPackages = ();
 our %installedWebapps = ();
@@ -462,20 +460,19 @@ sub getInstalledPackages {
 
 sub getInstalledWebapps {
     detail("Determining installed web applications");
-    my $webappsDir = "/opt/zextras/jetty/webapps";
-    foreach my $app (@webappList) {
-        if (($newinstall && -d "$webappsDir/$app") ||
-            (!$newinstall && isServiceEnabled($app))) {
-            $installedWebapps{$app} = "Enabled";
-            detail("Web application $app is enabled.");
+    # E.g.: installedWebapps = {"service": "Enabled"}
+    if (($newinstall && isEnabled("carbonio-appserver")) ||
+        (!$newinstall && isServiceEnabled($serviceWebApp))) {
+        $installedWebapps{$serviceWebApp} = "Enabled";
+        detail("Web application $serviceWebApp is enabled.");
         }
         else {
             # to enable webapps on configured installation
-            if ($newinstall != 1 && $installedWebapps{$app} ne "Enabled") {
-                $installedWebapps{$app} = "Enabled";
+        if ($newinstall != 1 && $installedWebapps{$serviceWebApp} ne "Enabled") {
+            $installedWebapps{$serviceWebApp} = "Enabled";
             }
         }
-    }
+    # updates global config map putting the app if Enabled
     if (!$newinstall && !defined($config{INSTALL_WEBAPPS})) {
         foreach my $app (keys %installedWebapps) {
             if ($installedWebapps{$app} eq "Enabled") {
@@ -2233,11 +2230,6 @@ sub setCreateAdmin {
 }
 
 sub removeUnusedWebapps {
-    my $webAppsDir = "/opt/zextras/jetty/webapps";
-    if ($config{SERVICEWEBAPP} eq "no") {
-        system("rm -rf $webAppsDir/service")
-            if (-d "$webAppsDir/service");
-    }
     defineInstallWebapps();
     getInstalledWebapps();
 }
@@ -5806,10 +5798,8 @@ sub configSetEnabledServices {
             if ($p eq "appserver") {
                 $p = "mailbox";
                 # Add carbonio-appserver webapps to service list
-                foreach my $app (@webappList) {
-                    if ($installedWebapps{$app} eq "Enabled") {
-                        push(@enabledServiceList, 'zimbraServiceEnabled', "$app");
-                    }
+                if ($installedWebapps{$serviceWebApp} eq "Enabled") {
+                    push(@enabledServiceList, 'zimbraServiceEnabled', "$serviceWebApp");
                 }
             }
             # do not push antivirus if already exists, required to enable support for single & multi-node installs
