@@ -87,9 +87,7 @@ my %packageServiceMap = (
     service            => "carbonio-appserver",
 );
 
-my @webappList = (
-    "service",
-);
+my $serviceWebApp = "service";
 
 my %installedPackages = ();
 our %installedWebapps = ();
@@ -462,20 +460,19 @@ sub getInstalledPackages {
 
 sub getInstalledWebapps {
     detail("Determining installed web applications");
-    my $webappsDir = "/opt/zextras/jetty/webapps";
-    foreach my $app (@webappList) {
-        if (($newinstall && -d "$webappsDir/$app") ||
-            (!$newinstall && isServiceEnabled($app))) {
-            $installedWebapps{$app} = "Enabled";
-            detail("Web application $app is enabled.");
+    # E.g.: installedWebapps = {"service": "Enabled"}
+    if (($newinstall && isEnabled("carbonio-appserver")) ||
+        (!$newinstall && isServiceEnabled($serviceWebApp))) {
+        $installedWebapps{$serviceWebApp} = "Enabled";
+        detail("Web application $serviceWebApp is enabled.");
         }
         else {
             # to enable webapps on configured installation
-            if ($newinstall != 1 && $installedWebapps{$app} ne "Enabled") {
-                $installedWebapps{$app} = "Enabled";
+        if ($newinstall != 1 && $installedWebapps{$serviceWebApp} ne "Enabled") {
+            $installedWebapps{$serviceWebApp} = "Enabled";
             }
         }
-    }
+    # updates global config map putting the app if Enabled
     if (!$newinstall && !defined($config{INSTALL_WEBAPPS})) {
         foreach my $app (keys %installedWebapps) {
             if ($installedWebapps{$app} eq "Enabled") {
@@ -1415,7 +1412,14 @@ sub setDefaults {
     $config{ldap_dit_base_dn_config} = "cn=zimbra"
         if ($config{ldap_dit_base_dn_config} eq "");
 
-    $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
+    $config{mailboxd_directory} = "/opt/zextras/mailboxd";
+    if (-d "/opt/zextras/mailboxd") {
+        $config{mailboxd_server} = "jetty";
+        $config{mailboxd_keystore} = "$config{mailboxd_directory}/etc/keystore";
+    }
+    else {
+        $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
+    }
     $config{mailboxd_truststore} = "/opt/zextras/common/lib/jvm/java/lib/security/cacerts";
     $config{mailboxd_keystore_password} = genRandomPass();
     $config{mailboxd_truststore_password} = "changeit";
@@ -1757,6 +1761,8 @@ sub setDefaultsFromLocalConfig {
     $config{ZIMBRASQLPASS} = getLocalConfig("zimbra_mysql_password");
     $config{MAILBOXDMEMORY} = getLocalConfig("mailboxd_java_heap_size");
 
+    $config{mailboxd_directory} = getLocalConfig("mailboxd_directory");
+
     # do not set empty mailboxd_keystore
     $config{mailboxd_keystore} = getLocalConfig("mailboxd_keystore")
         if (getLocalConfig("mailboxd_keystore") ne "");
@@ -1841,7 +1847,8 @@ sub setDefaultsFromLocalConfig {
     if (isEnabled("carbonio-appserver")) {
         $config{mailboxd_server} = "jetty"
             if ($config{mailboxd_server} eq "");
-        $config{mailboxd_keystore} = "/opt/zextras/conf/keystore";
+        $config{mailboxd_keystore} = "$config{mailboxd_directory}/etc/keystore"
+            if ($config{mailboxd_keystore} eq "" || $config{mailboxd_keystore} == "/opt/zextras/conf/keystore");
     }
 
     if ($options{d}) {
@@ -2223,11 +2230,6 @@ sub setCreateAdmin {
 }
 
 sub removeUnusedWebapps {
-    my $webAppsDir = "/opt/zextras/jetty/webapps";
-    if ($config{SERVICEWEBAPP} eq "no") {
-        system("rm -rf $webAppsDir/service")
-            if (-d "$webAppsDir/service");
-    }
     defineInstallWebapps();
     getInstalledWebapps();
 }
@@ -4500,6 +4502,7 @@ sub configLCValues {
     setLocalConfig("ssl_default_digest", $config{ssl_default_digest});
 
     setLocalConfig("mailboxd_java_heap_size", $config{MAILBOXDMEMORY});
+    setLocalConfig("mailboxd_directory", $config{mailboxd_directory});
     setLocalConfig("mailboxd_keystore", $config{mailboxd_keystore});
     setLocalConfig("mailboxd_server", $config{mailboxd_server});
     setLocalConfig("mailboxd_truststore", "$config{mailboxd_truststore}");
@@ -4884,6 +4887,11 @@ sub configCreateCert {
 
     if (isInstalled("carbonio-appserver")) {
         if (!-f "$config{mailboxd_keystore}" && !-f "/opt/zextras/ssl/carbonio/server/server.crt") {
+            if (!-d "$config{mailboxd_directory}") {
+                qx(mkdir -p $config{mailboxd_directory}/etc);
+                qx(chown -R zextras:zextras $config{mailboxd_directory});
+                qx(chmod 744 $config{mailboxd_directory}/etc);
+            }
             progress("Creating SSL carbonio-appserver certificate...");
             $rc = runAsZextras("/opt/zextras/bin/zmcertmgr createcrt $needNewCert");
             if ($rc != 0) {
@@ -5790,10 +5798,8 @@ sub configSetEnabledServices {
             if ($p eq "appserver") {
                 $p = "mailbox";
                 # Add carbonio-appserver webapps to service list
-                foreach my $app (@webappList) {
-                    if ($installedWebapps{$app} eq "Enabled") {
-                        push(@enabledServiceList, 'zimbraServiceEnabled', "$app");
-                    }
+                if ($installedWebapps{$serviceWebApp} eq "Enabled") {
+                    push(@enabledServiceList, 'zimbraServiceEnabled', "$serviceWebApp");
                 }
             }
             # do not push antivirus if already exists, required to enable support for single & multi-node installs
