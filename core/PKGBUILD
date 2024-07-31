@@ -133,6 +133,7 @@ source=(
   "carbonio-configd.service"
   "carbonio-stats.service"
   "carbonio-tmpfile.conf"
+  "carbonio.sysctl.conf"
   "mini_alue_ce"
 )
 sha256sums=(
@@ -147,6 +148,7 @@ sha256sums=(
   "6a73c0f3b37ae7a4c3b2ab1fbf58e8767127148ab625df3884c7bcc66b8a0c07"
   "d10ca641e5cfb01c5ce72e7cf17fb440d97ef440423cfe15788d67575ba31ede"
   "c259063d1823a9b301195f091d98b646b9bf720270f105489c352493b45c42e0"
+  "9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98"
   "544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c"
 )
 
@@ -664,6 +666,8 @@ package() {
     "${pkgdir}/lib/systemd/system/carbonio-configd.service"
   install -Dm 644 "${srcdir}/carbonio-stats.service" \
     "${pkgdir}/lib/systemd/system/carbonio-stats.service"
+  install -Dm 644 "${srcdir}/carbonio.sysctl.conf" \
+    "${pkgdir}/lib/sysctl.d/60-carbonio.conf"
   install -Dm 644 "${srcdir}/carbonio-tmpfile.conf" \
     "${pkgdir}/usr/lib/tmpfiles.d/carbonio.conf"
 }
@@ -805,6 +809,7 @@ postinst__apt() {
   mkdir -p /opt/zextras/zmstat
   chown zextras:zextras /opt/zextras/zmstat
   systemd-tmpfiles --create
+  /usr/lib/systemd/systemd-sysctl
 
   if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
@@ -944,6 +949,7 @@ postinst__yum() {
   mkdir -p /opt/zextras/zmstat
   chown zextras:zextras /opt/zextras/zmstat
   systemd-tmpfiles --create
+  /usr/lib/systemd/systemd-sysctl
 
   if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
     sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
