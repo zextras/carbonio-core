@@ -87,6 +87,15 @@ my %packageServiceMap = (
 
 my $serviceWebApp = "service";
 
+# Array of systemd targets to check and start
+my @systemd_targets = (
+    "carbonio-directory-server",
+    "carbonio-appserver",
+    "carbonio-proxy",
+    "carbonio-mta",
+);
+my $systemdStatus = 0;
+
 my %installedPackages = ();
 our %installedWebapps = ();
 my %prevInstalledPackages = ();
@@ -136,8 +145,8 @@ my $debug = $options{d};
 
 usage() if ($options{h});
 
+isSystemdEnabled();
 getInstallStatus();
-
 my $bootStrapMode = ($newinstall) ? "new install" : "existing install";
 
 progress("\nBootstrap mode: $bootStrapMode\n");
@@ -595,6 +604,57 @@ sub isEnabled {
     return ($enabledPackages{$package} eq "Enabled" ? 1 : 0);
 }
 
+sub isSystemdActiveUnit {
+    my ($unitName) = @_;
+
+    # Execute the systemctl command to get the status of the unit
+    my $status = `systemctl is-active $unitName 2>&1`;
+    chomp($status);  # Remove trailing newline\
+
+    if ($status eq 'active') {
+        return 0;  # The unit is running
+    } else {
+        return 1;  # The unit is not running
+    }
+}
+
+sub isSystemdEnabled {
+    # Check if any of the systemd targets are enabled
+    foreach my $target (@systemd_targets) {
+        if (isSystemdEnabledTarget($target)) {
+            $systemdStatus = 1;  # At least one target is enabled
+        }
+    }
+}
+
+sub isSystemdEnabledTarget {
+    my ($unitName) = @_;
+
+    # Construct the command to check if the unit is enabled
+    my $command = "systemctl is-enabled $unitName.target 2>&1";
+
+    # Execute the command and capture the output
+    my $output = `$command`;
+    my $rc = $? >> 8;  # Get the exit status of the command
+
+    # Check the exit status
+    if ($rc == 0) {
+        return 1;  # The unit is enabled
+    } elsif ($rc == 1) {
+        return 0;  # The unit is not enabled
+    } else {
+        return undef;  # An error occurred
+    }
+}
+
+sub stopLdapOutOfSystemd {
+    # zmldapupdateldif restart slapd out of systemd domain...
+    my $ldapPID = `pidof /opt/zextras/common/libexec/slapd 2>&1`;
+    chomp $ldapPID;
+    # ... for this reason a forced kill is needed
+    kill 'TERM', $ldapPID;
+}
+
 sub isInstalled {
     my $pkg = shift;
 
@@ -632,18 +692,21 @@ sub genRandomPass {
 }
 
 sub getSystemStatus {
+    my $rc;
     if (isEnabled("carbonio-directory-server")) {
         if (-f "/opt/zextras/data/ldap/mdb/db/data.mdb") {
             $ldapConfigured = 1;
-            $ldapRunning = 0xffff & system("/opt/zextras/bin/ldap status > /dev/null 2>&1");
-            if ($ldapRunning) {
+            if ($systemdStatus) {
+                $rc = isSystemdActiveUnit("carbonio-openldap.service");
+            } else {
+                $rc = 0xffff & system("/opt/zextras/bin/ldap status > /dev/null 2>&1");
+            }
+            if ($rc) {
                 $ldapRunning = 0;
             }
             else {
                 $ldapRunning = 1;
             }
-            # Mac on x86 choked on this line?
-            #$ldapRunning = ($ldapRunning)?0:1;
         }
         else {
             $config{DOCREATEDOMAIN} = "yes";
@@ -1685,13 +1748,6 @@ sub getInstallStatus {
             elsif ($op eq "CONFIGURED") {
                 $configStatus{$stage} = $op;
             }
-        }
-
-        if (!exists $installStatus{"carbonio-core"}) {
-            progress("\nERROR:\n");
-            progress("carbonio-core does not seem to be installed.\n");
-            progress("Please install required components first. Exiting.\n\n");
-            exit(1);
         }
 
         if (($installStatus{"carbonio-core"}{op} eq "INSTALLED") &&
@@ -4614,6 +4670,11 @@ sub updatePasswordsInLocalConfig {
         }
         else {
             progress("Stopping ldap...");
+            if ($systemdStatus) {
+                system("systemctl stop carbonio-openldap.service");
+            } else {
+                runAsZextras("/opt/zextras/bin/ldap stop");
+            }
             runAsZextras("/opt/zextras/bin/ldap stop");
             progress("done.\n");
             startLdap();
@@ -4754,7 +4815,11 @@ sub configSetupLdap {
                     if ($ldapMasterUrl !~ /\/$/) {
                         $ldapMasterUrl = $ldapMasterUrl . "/";
                     }
-                    runAsZextras("/opt/zextras/bin/ldap start");
+                    if ($systemdStatus) {
+                        system("systemctl start carbonio-openldap.service");
+                    } else {
+                        runAsZextras("/opt/zextras/bin/ldap start");
+                    }
                     $rc = runAsZextras("/opt/zextras/libexec/zmldapenable-mmr -s $config{LDAPSERVERID} -m $ldapMasterUrl");
                 }
                 else {
@@ -5947,10 +6012,27 @@ sub applyConfig {
             qx(chown zextras:zextras /opt/zextras/redolog/redo.log)
                 if (($platform =~ m/ubuntu/) && !$newinstall);
         }
-        progress("Starting servers...");
-        runAsZextras("/opt/zextras/bin/zmcontrol stop");
-        runAsZextras("/opt/zextras/bin/zmcontrol start");
-        qx($SU "/opt/zextras/bin/zmcontrol status");
+        progress("Starting servers...\n");
+        if ($systemdStatus) {
+            foreach my $target (@systemd_targets) {
+                if (isSystemdEnabledTarget($target)) {
+                    print "\tstopping $target...";
+                    system("systemctl stop $target.target");
+                    print "Done.\n";
+                }
+            }
+            foreach my $target (@systemd_targets) {
+                if (isSystemdEnabledTarget($target)) {
+                    print "\tstarting $target...";
+                    system("systemctl start $target.target");
+                    print "Done.\n";
+                }
+            }
+        } else {
+            runAsZextras("/opt/zextras/bin/zmcontrol stop");
+            runAsZextras("/opt/zextras/bin/zmcontrol start");
+            qx($SU "/opt/zextras/bin/zmcontrol status");
+        }
         progress("done.\n");
 
         # Initialize application server specific items
@@ -6153,21 +6235,33 @@ sub stopLdap {
 }
 
 sub startLdap {
+    my $rc;
     detail("Checking ldap status....");
-    my $rc = runAsZextras("/opt/zextras/bin/ldap status");
+    if ($systemdStatus) {
+        $rc = isSystemdActiveUnit("carbonio-openldap.service");
+    } else {
+        $rc = runAsZextras("/opt/zextras/bin/ldap status");
+    }
     detail(($rc == 0) ? "already running.\n" : "not running.\n");
 
     if ($rc) {
         progress("Checking ldap status....");
-        $rc = runAsZextras("/opt/zextras/bin/ldap status");
+        if ($systemdStatus) {
+            $rc = isSystemdActiveUnit("carbonio-openldap.service");
+        } else {
+            $rc = runAsZextras("/opt/zextras/bin/ldap status");
+        }
         progress(($rc == 0) ? "already running.\n" : "not running.\n");
 
         if ($rc) {
             progress("Starting ldap...");
-            $rc = runAsZextras("/opt/zextras/bin/ldap start");
+            if ($systemdStatus) {
+                $rc = system("systemctl start carbonio-openldap.service");
+            } else {
+                $rc = runAsZextras("/opt/zextras/bin/ldap start");
+            }
             progress(($rc == 0) ? "done.\n" : "failed with exit code: $rc.\n");
             if ($rc) {
-                system("$SU \"/opt/zextras/bin/ldap start 2>&1 | grep failed\"");
                 return $rc;
             }
         }
