@@ -63,7 +63,6 @@ my @packageList = (
     "carbonio-core",
     "carbonio-clamav",
     "carbonio-directory-server",
-    "carbonio-logger",
     "carbonio-mta",
     "carbonio-appserver",
     "carbonio-memcached",
@@ -77,7 +76,6 @@ my %packageServiceMap = (
     opendkim           => "carbonio-mta",
     cbpolicyd          => "carbonio-mta",
     mta                => "carbonio-mta",
-    logger             => "carbonio-logger",
     mailbox            => "carbonio-appserver",
     'directory-server' => "carbonio-directory-server",
     'service-discover' => "carbonio-core",
@@ -112,8 +110,6 @@ my $haveSetLdapSchemaVersion = 0;
 my $ldapRunning = 0;
 my $sqlConfigured = 0;
 my $sqlRunning = 0;
-my $loggerSqlConfigured = 0;
-my $loggerSqlRunning = 0;
 my @installedServiceList = ();
 my @enabledServiceList = ();
 
@@ -636,7 +632,6 @@ sub genRandomPass {
 }
 
 sub getSystemStatus {
-
     if (isEnabled("carbonio-directory-server")) {
         if (-f "/opt/zextras/data/ldap/mdb/db/data.mdb") {
             $ldapConfigured = 1;
@@ -664,15 +659,6 @@ sub getSystemStatus {
         if ($newinstall) {
             $config{DOCREATEADMIN} = "yes";
             $config{DOTRAINSA} = "yes";
-        }
-    }
-
-    if (isEnabled("carbonio-logger")) {
-        if (-d "/opt/zextras/logger/db/data/zimbra_logger") {
-            $loggerSqlConfigured = 1;
-            $loggerSqlRunning = 0xffff &
-                system("/opt/zextras/bin/logmysqladmin status > /dev/null 2>&1");
-            $loggerSqlRunning = ($loggerSqlRunning) ? 0 : 1;
         }
     }
 
@@ -3816,16 +3802,6 @@ sub createMainMenu {
         if ($package eq "carbonio-memcached") {next;}
 
         if (defined($installedPackages{$package})) {
-            if ($package =~ /logger/) {
-                $mm{menuitems}{$i} = {
-                    "prompt"   => "$package:",
-                    "var"      => \$enabledPackages{$package},
-                    "callback" => \&toggleEnabled,
-                    "arg"      => $package
-                };
-                $i++;
-                next;
-            }
             # override "prompt" of carbonio-clamav package menu
             if ($package eq "carbonio-clamav") {
                 $mm{menuitems}{$i} = {
@@ -5670,21 +5646,6 @@ sub configInitSql {
     }
 }
 
-sub configInitLogger {
-
-    if ($configStatus{configInitLogger} eq "CONFIGURED") {
-        configLog("configInitLogger");
-        return 0;
-    }
-
-    if (isEnabled("carbonio-logger")) {
-        setLdapGlobalConfig("zimbraLogHostname", $config{HOSTNAME});
-        setLocalConfig("smtp_source", $config{SMTPSOURCE});
-        setLocalConfig("smtp_destination", $config{SMTPDEST});
-        configLog("configInitLogger");
-    }
-}
-
 sub configInitCore {
 
     if ($configStatus{configInitCore} eq "CONFIGURED") {
@@ -5963,8 +5924,6 @@ sub applyConfig {
 
     configInitSql();
 
-    configInitLogger();
-
     configInitGALSyncAccts();
 
     setupSyslog();
@@ -6102,11 +6061,6 @@ sub setupCrontab {
     if (isEnabled("carbonio-appserver")) {
         detail("crontab: Adding carbonio-appserver specific crontab entries");
         qx(cat /opt/zextras/conf/crontabs/crontab.store >> /tmp/crontab.zextras 2>> $logfile);
-    }
-
-    if (isEnabled("carbonio-logger")) {
-        detail("crontab: Adding carbonio-logger specific crontab entries");
-        qx(cat /opt/zextras/conf/crontabs/crontab.logger >> /tmp/crontab.zextras 2>> $logfile);
     }
 
     if (isEnabled("carbonio-mta")) {
