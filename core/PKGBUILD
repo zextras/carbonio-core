@@ -650,8 +650,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
   install -Dm755 src/libexec/ldapattributeupdate \
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
-  install -Dm755 src/libexec/ldapmoduleconfupdate \
-    "${pkgdir}/opt/zextras/libexec/ldapmoduleconfupdate"
   install -D conf/zmconfigd.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
   install -D conf/zmconfigd.log4j.properties \
