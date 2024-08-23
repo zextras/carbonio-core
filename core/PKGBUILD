@@ -279,10 +279,6 @@ package() {
   install -D rpmconf/Env/crontabs/crontab.store \
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
   # Install
-  install -Dm755 rpmconf/Install/postinstall.pm \
-    "${pkgdir}/opt/zextras/libexec/postinstall.pm"
-  install -Dm755 rpmconf/Install/preinstall.pm \
-    "${pkgdir}/opt/zextras/libexec/preinstall.pm"
   install -Dm755 rpmconf/Install/zmsetup.pl \
     "${pkgdir}/opt/zextras/libexec/zmsetup.pl"
   # Conf
@@ -473,6 +469,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/carbonio"
   install -Dm755 src/libexec/certbot \
     "${pkgdir}/opt/zextras/libexec/certbot"
+  install -Dm755 src/libexec/ldapinit.pm \
+    "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
   install -Dm755 src/libexec/zmaltermimeconfig \
     "${pkgdir}/opt/zextras/libexec/zmaltermimeconfig"
   install -Dm755 src/libexec/zmantispamdbinit \
@@ -614,6 +612,8 @@ package() {
   install -Dm644 conf/zmlogrotate \
     "${pkgdir}/opt/zextras/conf/zmlogrotate"
   # ldap scripts
+  install -Dm755 src/libexec/ldapinit.pm \
+    "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
   install -Dm755 src/libexec/zmstat-ldap \
     "${pkgdir}/opt/zextras/libexec/zmstat-ldap"
   install -Dm755 src/libexec/zmldapanon \
@@ -634,8 +634,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmldapenable-mmr"
   install -Dm755 src/libexec/zmldapenablereplica \
     "${pkgdir}/opt/zextras/libexec/zmldapenablereplica"
-  install -Dm755 src/libexec/zmldapinit \
-    "${pkgdir}/opt/zextras/libexec/zmldapinit"
   install -Dm755 src/libexec/zmldapmmrtool \
     "${pkgdir}/opt/zextras/libexec/zmldapmmrtool"
   install -Dm755 src/libexec/zmldapmonitordb \

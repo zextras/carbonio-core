@@ -48,8 +48,7 @@ if ($user ne "zextras") {
     exit(1);
 }
 
-use preinstall;
-use postinstall;
+use ldapinit;
 use Getopt::Std;
 use Net::DNS::Resolver;
 use NetAddr::IP;
@@ -3881,7 +3880,7 @@ sub createMainMenu {
             #push @mm, "$package not installed";
         }
     }
-    $i = &preinstall::mainMenuExtensions(\%mm, $i);
+    $i = mainMenuExtensions(\%mm, $i);
     #  $mm{menuitems}{r} = {
     #    "prompt" => "Start servers after configuration",
     #    "callback" => \&toggleYN,
@@ -4736,7 +4735,15 @@ sub configSetupLdap {
 
     if (!$ldapConfigured && isEnabled("carbonio-directory-server") && !-f "/opt/zextras/.enable_replica" && $newinstall && ($config{LDAPHOST} eq $config{HOSTNAME})) {
         progress("Initializing ldap...");
-        if (my $rc = runAsZextras("/opt/zextras/libexec/zmldapinit \'$config{LDAPROOTPASS}\' \'$config{LDAPADMINPASS}\'")) {
+        ldapinit->preLdapStart($config{LDAPROOTPASS}, $config{LDAPADMINPASS});
+        if ($systemdStatus) {
+            system("systemctl start carbonio-openldap.service");
+            sleep 5;
+        } else {
+            runAsZextras("/opt/zextras/bin/ldap start");
+        }
+
+        if (my $rc = ldapinit->postLdapStart()) {
             progress("failed. ($rc)\n");
             failConfig();
         }
@@ -6284,6 +6291,11 @@ sub dumpConfig {
     foreach my $key (sort keys %config) {
         print "\tDEBUG: $key=$config{$key}\n";
     }
+}
+
+sub mainMenuExtensions {
+	my ($mm, $i) = (@_);
+	return $i;
 }
 
 ### end subs
