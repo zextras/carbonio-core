@@ -9,11 +9,11 @@ fi
 
 ########## Start utility functions
 bordered_title() {
-  title="| $1 |"
-  edge=$(echo "$title" | sed 's/./-/g')
-  echo "${edge}"
-  echo "${title}"
-  echo "${edge}"
+  local title="| $1 |"
+  local edge="${title//?/−}"
+  echo "$edge"
+  echo "$title"
+  echo "$edge"
 }
 
 # concat $2 $1 times and print
@@ -46,7 +46,7 @@ if [[ -z "$1" ]] || [[ "$1" = "-c" ]]; then
 fi
 
 # Bootstrap and start C services
-/opt/zextras/libexec/zmsetup.pl "${@}"
+/opt/zextras/libexec/setup.pl "${@}"
 
 # Fix permission after services starting
 /opt/zextras/libexec/zmfixperms
