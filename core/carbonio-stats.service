@@ -6,8 +6,8 @@ PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target carbonio-dir
 User=zextras
 Type=forking
 PIDFile=/run/carbonio/stats/allprocs.pid
-ExecStart=/opt/zextras/bin/zmstatctl start
-ExecStop=/opt/zextras/bin/zmstatctl stop
+ExecStart=/opt/zextras/bin/zmstatctl start-systemd
+ExecStop=/opt/zextras/bin/zmstatctl stop-systemd
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
