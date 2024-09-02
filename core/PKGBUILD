@@ -585,8 +585,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmstat-allprocs"
   install -Dm755 src/libexec/zmstat-cleanup \
     "${pkgdir}/opt/zextras/libexec/zmstat-cleanup"
-  install -Dm755 src/libexec/zmstat-convertd \
-    "${pkgdir}/opt/zextras/libexec/zmstat-convertd"
   install -Dm755 src/libexec/zmstat-cpu \
     "${pkgdir}/opt/zextras/libexec/zmstat-cpu"
   install -Dm755 src/libexec/zmstat-df \
