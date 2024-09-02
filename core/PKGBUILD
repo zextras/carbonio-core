@@ -320,6 +320,8 @@ package() {
   # REPOS
   # core-utils
   cd "${srcdir}/carbonio-core-utils"
+  install -D src/bin/advanced_status \
+    "${pkgdir}/opt/zextras/bin/advanced_status"
   install -D src/bin/antispam-mysql \
     "${pkgdir}/opt/zextras/bin/antispam-mysql"
   install -D src/bin/antispam-mysql.server \
@@ -404,8 +406,6 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmmailbox"
   install -D src/bin/zmmailboxdctl \
     "${pkgdir}/opt/zextras/bin/zmmailboxdctl"
-  install -D src/bin/advanced_status \
-    "${pkgdir}/opt/zextras/bin/advanced_status"
   install -D src/bin/zmmemcachedctl \
     "${pkgdir}/opt/zextras/bin/zmmemcachedctl"
   install -D src/bin/zmmetadump \
