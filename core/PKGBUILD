@@ -44,6 +44,7 @@ depends__apt=(
   "file"
   "fontconfig"
   "iproute2"
+  "jq"
   "libaio1"
   "libexpat1"
   "libgmp10"
@@ -97,6 +98,7 @@ depends__ubuntu_noble=(
   "file"
   "fontconfig"
   "iproute2"
+  "jq"
   "libaio1t64"
   "libexpat1"
   "libgmp10"
@@ -151,6 +153,7 @@ depends__yum=(
   "fontconfig"
   "gmp"
   "iproute"
+  "jq"
   "libaio"
   "libstdc++"
   "net-tools"
@@ -317,6 +320,8 @@ package() {
   # REPOS
   # core-utils
   cd "${srcdir}/carbonio-core-utils"
+  install -D src/bin/advanced_status \
+    "${pkgdir}/opt/zextras/bin/advanced_status"
   install -D src/bin/antispam-mysql \
     "${pkgdir}/opt/zextras/bin/antispam-mysql"
   install -D src/bin/antispam-mysql.server \
