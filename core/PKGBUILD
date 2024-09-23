@@ -176,7 +176,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.37"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.38"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.4"
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
@@ -325,7 +325,7 @@ package() {
     "${pkgdir}/opt/zextras/bin/antispam-mysqladmin"
   install -D src/bin/carbonio \
     "${pkgdir}/opt/zextras/bin/carbonio"
-  install -D src/bin/ldap.production \
+  install -D src/bin/ldap \
     "${pkgdir}/opt/zextras/bin/ldap"
   install -D src/bin/mysql \
     "${pkgdir}/opt/zextras/bin/mysql"
