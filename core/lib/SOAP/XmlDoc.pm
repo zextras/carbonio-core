@@ -4,11 +4,11 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 # 
-package Zimbra::SOAP::XmlDoc;
+package Zextras::SOAP::XmlDoc;
 
 use strict;
 use warnings;
-use Zimbra::SOAP::XmlElement;
+use Zextras::SOAP::XmlElement;
 
 BEGIN {
     use Exporter   ();
@@ -43,7 +43,7 @@ sub start {
     my $self = shift;
     my $name = shift;
     my $ns = shift;
-    my $element = new Zimbra::SOAP::XmlElement($name, $ns);
+    my $element = new Zextras::SOAP::XmlElement($name, $ns);
     if (@_) {
 	my $attrs = shift;
 	$element->attrs($attrs) if defined($attrs);

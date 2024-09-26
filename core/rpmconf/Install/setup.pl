@@ -10,8 +10,8 @@ use strict;
 
 use lib "/opt/zextras/libexec";
 use lib "/opt/zextras/common/lib/perl5";
-use Zimbra::Util::Common;
-use Zimbra::Util::Timezone;
+use Zextras::Util::Common;
+use Zextras::Util::Timezone;
 use FileHandle;
 use Net::LDAP;
 use IPC::Open3;
@@ -1561,7 +1561,7 @@ sub setDefaults {
     chomp($tzname);
 
     detail("Local timezone detected as $tzname\n");
-    my $tzdata = Zimbra::Util::Timezone->parse;
+    my $tzdata = Zextras::Util::Timezone->parse;
     my $tz     = $tzdata->gettzbyname($tzname);
     $config{zimbraPrefTimeZoneId} = $tz->tzid if ( defined $tz );
     $config{zimbraPrefTimeZoneId} = 'America/Los_Angeles'
@@ -2965,7 +2965,7 @@ sub setTimeZone {
     my $timezones = "/opt/zextras/conf/timezones.ics";
     if ( -f $timezones ) {
         detail("Loading default list of timezones.\n");
-        my $tz = new Zimbra::Util::Timezone;
+        my $tz = new Zextras::Util::Timezone;
         $tz->parse;
 
         my $new;
@@ -3002,7 +3002,7 @@ sub setTimeZone {
 
 sub setIPMode {
     while (1) {
-        my $new = askPassword( "IP Mode for Zimbra (ipv4, both, ipv6):", $config{zimbraIPMode} );
+        my $new = askPassword( "IP Mode (ipv4, both, ipv6):", $config{zimbraIPMode} );
         if ( $new eq "ipv4" || $new eq "both" || $new eq "ipv6" ) {
             if ( $config{zimbraIPMode} ne $new ) {
                 $config{zimbraIPMode} = $new;
