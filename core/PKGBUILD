@@ -184,7 +184,7 @@ source=(
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "10-carbonio.conf"
-  "carbonio-bootstrap"
+  "carbonio-bootstrap.sh"
   "carbonio-configd.service"
   "carbonio-stats.service"
   "carbonio-tmpfile.conf"
@@ -215,7 +215,7 @@ package() {
   cd "${srcdir}/.."
   install -Dm640 10-carbonio.conf \
     "${pkgdir}/etc/security/limits.d/10-carbonio.conf"
-  install -Dm755 carbonio-bootstrap \
+  install -Dm755 carbonio-bootstrap.sh \
     "${pkgdir}/usr/bin/carbonio-bootstrap"
   install -Dm755 mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
@@ -231,8 +231,8 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Logger.pm"
   install -D lib/Mon/LoggerSchema.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/LoggerSchema.pm"
-  install -D lib/Mon/Zmstat.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Zmstat.pm"
+  install -D lib/Mon/Stat.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Mon/Stat.pm"
   install lib/SMTP.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/SMTP.pm"
   install -D lib/SOAP/Soap.pm \
@@ -251,8 +251,6 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/LDAP.pm"
   install -D lib/Util/Timezone.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/Util/Timezone.pm"
-  install -D lib/ZmClient.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zimbra/ZmClient.pm"
   # rpmconf
   # sudoers
   install -D rpmconf/Env/sudoers.d/carbonio \
@@ -303,360 +301,360 @@ package() {
     "${pkgdir}/opt/zextras/conf/sasl2/smtpd.conf.in"
   install -D mta/saslauthd.conf.in \
     "${pkgdir}/opt/zextras/conf/saslauthd.conf.in"
-  install -D mta/zmconfigd/postfix_content_filter.cf \
+  install -D mta/configd/postfix_content_filter.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/postfix_content_filter.cf"
-  install -D mta/zmconfigd/smtpd_end_of_data_restrictions.cf \
+  install -D mta/configd/smtpd_end_of_data_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_end_of_data_restrictions.cf"
-  install -D mta/zmconfigd/smtpd_recipient_restrictions.cf \
+  install -D mta/configd/smtpd_recipient_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_recipient_restrictions.cf"
-  install -D mta/zmconfigd/smtpd_relay_restrictions.cf \
+  install -D mta/configd/smtpd_relay_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_relay_restrictions.cf"
-  install -D mta/zmconfigd/smtpd_sender_login_maps.cf \
+  install -D mta/configd/smtpd_sender_login_maps.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_sender_login_maps.cf"
-  install -D mta/zmconfigd/smtpd_sender_restrictions.cf \
+  install -D mta/configd/smtpd_sender_restrictions.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd/smtpd_sender_restrictions.cf"
 
   # REPOS
   # core-utils
   cd "${srcdir}/carbonio-core-utils"
-  install -D src/bin/advanced_status \
+  install -D src/bin/advanced_status.sh \
     "${pkgdir}/opt/zextras/bin/advanced_status"
-  install -D src/bin/antispam-mysql \
+  install -D src/bin/antispam-mysql.sh \
     "${pkgdir}/opt/zextras/bin/antispam-mysql"
-  install -D src/bin/antispam-mysql.server \
+  install -D src/bin/antispam-mysql.server.sh \
     "${pkgdir}/opt/zextras/bin/antispam-mysql.server"
-  install -D src/bin/antispam-mysqladmin \
+  install -D src/bin/antispam-mysqladmin.sh \
     "${pkgdir}/opt/zextras/bin/antispam-mysqladmin"
-  install -D src/bin/carbonio \
+  install -D src/bin/carbonio.sh \
     "${pkgdir}/opt/zextras/bin/carbonio"
-  install -D src/bin/ldap \
+  install -D src/bin/ldap.sh \
     "${pkgdir}/opt/zextras/bin/ldap"
-  install -D src/bin/mysql \
+  install -D src/bin/mysql.sh \
     "${pkgdir}/opt/zextras/bin/mysql"
-  install -D src/bin/mysql.server \
+  install -D src/bin/mysql.server.sh \
     "${pkgdir}/opt/zextras/bin/mysql.server"
-  install -D src/bin/mysqladmin \
+  install -D src/bin/mysqladmin.sh \
     "${pkgdir}/opt/zextras/bin/mysqladmin"
-  install -D src/bin/postconf \
+  install -D src/bin/postconf.sh \
     "${pkgdir}/opt/zextras/bin/postconf"
-  install -D src/bin/postfix \
+  install -D src/bin/postfix.sh \
     "${pkgdir}/opt/zextras/bin/postfix"
-  install -D src/bin/qshape \
+  install -D src/bin/qshape.sh \
     "${pkgdir}/opt/zextras/bin/qshape"
-  install -D src/bin/zmaccts \
+  install -D src/bin/accts.pl \
     "${pkgdir}/opt/zextras/bin/zmaccts"
-  install -D src/bin/zmamavisdctl \
+  install -D src/bin/amavisdctl.sh \
     "${pkgdir}/opt/zextras/bin/zmamavisdctl"
-  install -D src/bin/zmantispamctl \
+  install -D src/bin/antispamctl.sh \
     "${pkgdir}/opt/zextras/bin/zmantispamctl"
-  install -D src/bin/zmantispamdbpasswd \
+  install -D src/bin/antispamdbpasswd.sh \
     "${pkgdir}/opt/zextras/bin/zmantispamdbpasswd"
-  install -D src/bin/zmantivirusctl \
+  install -D src/bin/antivirusctl.sh \
     "${pkgdir}/opt/zextras/bin/zmantivirusctl"
-  install -D src/bin/zmblobchk \
+  install -D src/bin/blobchk.sh \
     "${pkgdir}/opt/zextras/bin/zmblobchk"
-  install -D src/bin/zmcaldebug \
+  install -D src/bin/caldebug.pl \
     "${pkgdir}/opt/zextras/bin/zmcaldebug"
-  install -D src/bin/zmcbpadmin \
+  install -D src/bin/cbpadmin.pl \
     "${pkgdir}/opt/zextras/bin/zmcbpadmin"
-  install -D src/bin/zmcbpolicydctl \
+  install -D src/bin/cbpolicydctl.sh \
     "${pkgdir}/opt/zextras/bin/zmcbpolicydctl"
-  install -D src/bin/zmcertmgr \
+  install -D src/bin/certmgr.pl \
     "${pkgdir}/opt/zextras/bin/zmcertmgr"
-  install -D src/bin/zmclamdctl \
+  install -D src/bin/clamdctl.sh \
     "${pkgdir}/opt/zextras/bin/zmclamdctl"
-  install -D src/bin/zmconfigdctl \
+  install -D src/bin/configdctl.sh \
     "${pkgdir}/opt/zextras/bin/zmconfigdctl"
-  install -D src/bin/zmcontactbackup \
+  install -D src/bin/contactbackup.pl \
     "${pkgdir}/opt/zextras/bin/zmcontactbackup"
-  install -D src/bin/zmcontrol \
+  install -D src/bin/control.pl \
     "${pkgdir}/opt/zextras/bin/zmcontrol"
-  install -D src/bin/zmdedupe \
+  install -D src/bin/dedupe.sh \
     "${pkgdir}/opt/zextras/bin/zmdedupe"
-  install -D src/bin/zmdhparam \
+  install -D src/bin/dhparam.pl \
     "${pkgdir}/opt/zextras/bin/zmdhparam"
-  install -D src/bin/zmdumpenv \
+  install -D src/bin/dumpenv.sh \
     "${pkgdir}/opt/zextras/bin/zmdumpenv"
-  install -D src/bin/zmfixcalendtime \
+  install -D src/bin/fixcalendtime.sh \
     "${pkgdir}/opt/zextras/bin/zmfixcalendtime"
-  install -D src/bin/zmfixcalprio \
+  install -D src/bin/fixcalprio.sh \
     "${pkgdir}/opt/zextras/bin/zmfixcalprio"
-  install -D src/bin/zmfreshclamctl \
+  install -D src/bin/freshclamctl.sh \
     "${pkgdir}/opt/zextras/bin/zmfreshclamctl"
-  install -D src/bin/zmgsautil \
+  install -D src/bin/gsautil.sh \
     "${pkgdir}/opt/zextras/bin/zmgsautil"
-  install -D src/bin/zmhostname \
+  install -D src/bin/hostname.sh \
     "${pkgdir}/opt/zextras/bin/zmhostname"
-  install -D src/bin/zminnotop \
+  install -D src/bin/innotop.sh \
     "${pkgdir}/opt/zextras/bin/zminnotop"
-  install -D src/bin/zmitemdatafile \
+  install -D src/bin/itemdatafile.sh \
     "${pkgdir}/opt/zextras/bin/zmitemdatafile"
-  install -D src/bin/zmjava \
+  install -D src/bin/java.sh \
     "${pkgdir}/opt/zextras/bin/zmjava"
-  install -D src/bin/zmjavaext \
+  install -D src/bin/javaext.sh \
     "${pkgdir}/opt/zextras/bin/zmjavaext"
-  install -D src/bin/zmldappasswd \
+  install -D src/bin/ldappasswd.pl \
     "${pkgdir}/opt/zextras/bin/zmldappasswd"
-  install -D src/bin/zmlmtpinject \
+  install -D src/bin/lmtpinject.sh \
     "${pkgdir}/opt/zextras/bin/zmlmtpinject"
-  install -D src/bin/zmlocalconfig \
+  install -D src/bin/localconfig.sh \
     "${pkgdir}/opt/zextras/bin/zmlocalconfig"
-  install -D src/bin/zmmailbox \
+  install -D src/bin/mailbox.sh \
     "${pkgdir}/opt/zextras/bin/zmmailbox"
-  install -D src/bin/zmmailboxdctl \
+  install -D src/bin/mailboxdctl.sh \
     "${pkgdir}/opt/zextras/bin/zmmailboxdctl"
-  install -D src/bin/zmmemcachedctl \
+  install -D src/bin/memcachedctl.sh \
     "${pkgdir}/opt/zextras/bin/zmmemcachedctl"
-  install -D src/bin/zmmetadump \
+  install -D src/bin/metadump.sh \
     "${pkgdir}/opt/zextras/bin/zmmetadump"
-  install -D src/bin/zmmigrateattrs \
+  install -D src/bin/migrateattrs.sh \
     "${pkgdir}/opt/zextras/bin/zmmigrateattrs"
-  install -D src/bin/zmmilterctl \
+  install -D src/bin/milterctl.sh \
     "${pkgdir}/opt/zextras/bin/zmmilterctl"
-  install -D src/bin/zmmtactl \
+  install -D src/bin/mtactl.sh \
     "${pkgdir}/opt/zextras/bin/zmmtactl"
-  install -D src/bin/zmmypasswd \
+  install -D src/bin/mypasswd.sh \
     "${pkgdir}/opt/zextras/bin/zmmypasswd"
-  install -D src/bin/zmmysqlstatus \
+  install -D src/bin/mysqlstatus.pl \
     "${pkgdir}/opt/zextras/bin/zmmysqlstatus"
-  install -D src/bin/zmmytop \
+  install -D src/bin/mytop.sh \
     "${pkgdir}/opt/zextras/bin/zmmytop"
-  install -D src/bin/zmopendkimctl \
+  install -D src/bin/opendkimctl.sh \
     "${pkgdir}/opt/zextras/bin/zmopendkimctl"
-  install -D src/bin/zmplayredo \
+  install -D src/bin/playredo.sh \
     "${pkgdir}/opt/zextras/bin/zmplayredo"
-  install -D src/bin/zmprov \
+  install -D src/bin/prov.sh \
     "${pkgdir}/opt/zextras/bin/zmprov"
-  install -D src/bin/zmproxyconf \
+  install -D src/bin/proxyconf.pl \
     "${pkgdir}/opt/zextras/bin/zmproxyconf"
-  install -D src/bin/zmproxyctl \
+  install -D src/bin/proxyctl.sh \
     "${pkgdir}/opt/zextras/bin/zmproxyctl"
-  install -D src/bin/zmpython \
+  install -D src/bin/python.sh \
     "${pkgdir}/opt/zextras/bin/zmpython"
-  install -D src/bin/zmredodump \
+  install -D src/bin/redodump.sh \
     "${pkgdir}/opt/zextras/bin/zmredodump"
-  install -D src/bin/zmresolverctl \
+  install -D src/bin/resolverctl.sh \
     "${pkgdir}/opt/zextras/bin/zmresolverctl"
-  install -D src/bin/zmsaslauthdctl \
+  install -D src/bin/saslauthdctl.sh \
     "${pkgdir}/opt/zextras/bin/zmsaslauthdctl"
-  install -D src/bin/zmshutil \
+  install -D src/bin/shutil.sh \
     "${pkgdir}/opt/zextras/bin/zmshutil"
-  install -D src/bin/zmsoap \
+  install -D src/bin/soap.sh \
     "${pkgdir}/opt/zextras/bin/zmsoap"
-  install -D src/bin/zmsshkeygen \
+  install -D src/bin/sshkeygen.sh \
     "${pkgdir}/opt/zextras/bin/zmsshkeygen"
-  install -D src/bin/zmstat-chart \
+  install -D src/bin/stat-chart.sh \
     "${pkgdir}/opt/zextras/bin/zmstat-chart"
-  install -D src/bin/zmstat-chart-config \
+  install -D src/bin/stat-chart-config.pl \
     "${pkgdir}/opt/zextras/bin/zmstat-chart-config"
-  install -D src/bin/zmstatctl \
+  install -D src/bin/statctl.pl \
     "${pkgdir}/opt/zextras/bin/zmstatctl"
-  install -D src/bin/zmstorectl \
+  install -D src/bin/storectl.sh \
     "${pkgdir}/opt/zextras/bin/zmstorectl"
-  install -D src/bin/zmthrdump \
+  install -D src/bin/thrdump.pl \
     "${pkgdir}/opt/zextras/bin/zmthrdump"
-  install -D src/bin/zmtlsctl \
+  install -D src/bin/tlsctl.sh \
     "${pkgdir}/opt/zextras/bin/zmtlsctl"
-  install -D src/bin/zmtotp \
+  install -D src/bin/totp.sh \
     "${pkgdir}/opt/zextras/bin/zmtotp"
-  install -D src/bin/zmtrainsa \
+  install -D src/bin/trainsa.sh \
     "${pkgdir}/opt/zextras/bin/zmtrainsa"
-  install -D src/bin/zmtzupdate \
+  install -D src/bin/tzupdate.sh \
     "${pkgdir}/opt/zextras/bin/zmtzupdate"
-  install -D src/bin/zmupdateauthkeys \
+  install -D src/bin/updateauthkeys.sh \
     "${pkgdir}/opt/zextras/bin/zmupdateauthkeys"
-  install -D src/bin/zmvolume \
+  install -D src/bin/volume.sh \
     "${pkgdir}/opt/zextras/bin/zmvolume"
-  install -Dm755 src/libexec/zcs \
+  install -Dm755 src/libexec/zcs.pl \
     "${pkgdir}/opt/zextras/libexec/zcs"
-  install -Dm755 src/libexec/carbonio \
+  install -Dm755 src/libexec/carbonio.sh \
     "${pkgdir}/opt/zextras/libexec/carbonio"
-  install -Dm755 src/libexec/certbot \
+  install -Dm755 src/libexec/certbot.sh \
     "${pkgdir}/opt/zextras/libexec/certbot"
-  install -Dm755 src/libexec/ldapinit.pm \
+  install -Dm755 src/libexec/ldapinit.pm.sh \
     "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
-  install -Dm755 src/libexec/zmaltermimeconfig \
+  install -Dm755 src/libexec/altermimeconfig.pl \
     "${pkgdir}/opt/zextras/libexec/zmaltermimeconfig"
-  install -Dm755 src/libexec/zmantispamdbinit \
+  install -Dm755 src/libexec/antispamdbinit.sh \
     "${pkgdir}/opt/zextras/libexec/zmantispamdbinit"
-  install -Dm755 src/libexec/zmantispammycnf \
+  install -Dm755 src/libexec/antispammycnf.sh \
     "${pkgdir}/opt/zextras/libexec/zmantispammycnf"
-  install -Dm755 src/libexec/zmcbpolicydinit \
+  install -Dm755 src/libexec/cbpolicydinit.sh \
     "${pkgdir}/opt/zextras/libexec/zmcbpolicydinit"
-  install -Dm755 src/libexec/zmcheckexpiredcerts \
+  install -Dm755 src/libexec/checkexpiredcerts.pl \
     "${pkgdir}/opt/zextras/libexec/zmcheckexpiredcerts"
-  install -Dm755 src/libexec/zmcleantmp \
+  install -Dm755 src/libexec/cleantmp.sh \
     "${pkgdir}/opt/zextras/libexec/zmcleantmp"
-  install -Dm755 src/libexec/zmclientcertmgr \
+  install -Dm755 src/libexec/clientcertmgr.sh \
     "${pkgdir}/opt/zextras/libexec/zmclientcertmgr"
-  install -Dm755 src/libexec/zmcompresslogs \
+  install -Dm755 src/libexec/compresslogs.pl \
     "${pkgdir}/opt/zextras/libexec/zmcompresslogs"
-  install -Dm755 src/libexec/zmcomputequotausage \
+  install -Dm755 src/libexec/computequotausage.sh \
     "${pkgdir}/opt/zextras/libexec/zmcomputequotausage"
-  install -Dm755 src/libexec/zmconfigd \
+  install -Dm755 src/libexec/configd.sh \
     "${pkgdir}/opt/zextras/libexec/zmconfigd"
-  install -Dm755 src/libexec/zmcpustat \
+  install -Dm755 src/libexec/cpustat.pl \
     "${pkgdir}/opt/zextras/libexec/zmcpustat"
-  install -Dm755 src/libexec/zmdailyreport \
+  install -Dm755 src/libexec/dailyreport.pl \
     "${pkgdir}/opt/zextras/libexec/zmdailyreport"
-  install -Dm755 src/libexec/zmdbintegrityreport \
+  install -Dm755 src/libexec/dbintegrityreport.pl \
     "${pkgdir}/opt/zextras/libexec/zmdbintegrityreport"
-  install -Dm755 src/libexec/zmdiaglog \
+  install -Dm755 src/libexec/diaglog.pl \
     "${pkgdir}/opt/zextras/libexec/zmdiaglog"
-  install -Dm755 src/libexec/zmdkimkeyutil \
+  install -Dm755 src/libexec/dkimkeyutil.pl \
     "${pkgdir}/opt/zextras/libexec/zmdkimkeyutil"
-  install -Dm755 src/libexec/zmdomaincertmgr \
+  install -Dm755 src/libexec/domaincertmgr.sh \
     "${pkgdir}/opt/zextras/libexec/zmdomaincertmgr"
-  install -Dm755 src/libexec/zmexplainslow \
+  install -Dm755 src/libexec/explainslow.sh \
     "${pkgdir}/opt/zextras/libexec/zmexplainslow"
-  install -Dm755 src/libexec/zmexplainsql \
+  install -Dm755 src/libexec/explainsql.pl \
     "${pkgdir}/opt/zextras/libexec/zmexplainsql"
-  install -Dm755 src/libexec/zmextractsql \
+  install -Dm755 src/libexec/extractsql.pl \
     "${pkgdir}/opt/zextras/libexec/zmextractsql"
-  install -Dm755 src/libexec/zmfixperms \
+  install -Dm755 src/libexec/fixperms.sh \
     "${pkgdir}/opt/zextras/libexec/zmfixperms"
-  install -Dm755 src/libexec/zmfixreminder \
+  install -Dm755 src/libexec/fixreminder.pl \
     "${pkgdir}/opt/zextras/libexec/zmfixreminder"
-  install -Dm755 src/libexec/zmgsaupdate \
+  install -Dm755 src/libexec/gsaupdate.sh \
     "${pkgdir}/opt/zextras/libexec/zmgsaupdate"
-  install -Dm755 src/libexec/zmhspreport \
+  install -Dm755 src/libexec/hspreport.pl \
     "${pkgdir}/opt/zextras/libexec/zmhspreport"
-  install -Dm755 src/libexec/zminiutil \
+  install -Dm755 src/libexec/iniutil.pl \
     "${pkgdir}/opt/zextras/libexec/zminiutil"
-  install -Dm755 src/libexec/zmiostat \
+  install -Dm755 src/libexec/iostat.pl \
     "${pkgdir}/opt/zextras/libexec/zmiostat"
-  install -Dm755 src/libexec/zmiptool \
+  install -Dm755 src/libexec/iptool.pl \
     "${pkgdir}/opt/zextras/libexec/zmiptool"
-  install -Dm755 src/libexec/zmjavawatch \
+  install -Dm755 src/libexec/javawatch.pl \
     "${pkgdir}/opt/zextras/libexec/zmjavawatch"
-  install -Dm755 src/libexec/zmjsprecompile \
+  install -Dm755 src/libexec/jsprecompile.sh \
     "${pkgdir}/opt/zextras/libexec/zmjsprecompile"
-  install -Dm755 src/libexec/600.zimbra \
+  install -Dm755 src/libexec/600.zimbra.sh \
     "${pkgdir}/opt/zextras/libexec/600.zimbra"
-  install -Dm755 src/libexec/configrewrite \
+  install -Dm755 src/libexec/configrewrite.sh \
     "${pkgdir}/opt/zextras/libexec/configrewrite"
-  install -Dm755 src/libexec/icalmig \
+  install -Dm755 src/libexec/icalmig.pl \
     "${pkgdir}/opt/zextras/libexec/icalmig"
-  install -D src/contrib/zmfetchercfg \
+  install -D src/contrib/fetchercfg.pl \
     "${pkgdir}/opt/zextras/contrib/zmfetchercfg"
-  install -Dm755 src/libexec/zmlogprocess \
+  install -Dm755 src/libexec/logprocess.pl \
     "${pkgdir}/opt/zextras/libexec/zmlogprocess"
-  install -Dm755 src/libexec/zmmsgtrace \
+  install -Dm755 src/libexec/msgtrace.pl \
     "${pkgdir}/opt/zextras/libexec/zmmsgtrace"
-  install -Dm755 src/libexec/zmmtainit \
+  install -Dm755 src/libexec/mtainit.sh \
     "${pkgdir}/opt/zextras/libexec/zmmtainit"
-  install -Dm755 src/libexec/zmmtastatus \
+  install -Dm755 src/libexec/mtastatus.pl \
     "${pkgdir}/opt/zextras/libexec/zmmtastatus"
-  install -Dm755 src/libexec/zmmycnf \
+  install -Dm755 src/libexec/mycnf.sh \
     "${pkgdir}/opt/zextras/libexec/zmmycnf"
-  install -Dm755 src/libexec/zmmyinit \
+  install -Dm755 src/libexec/myinit.sh \
     "${pkgdir}/opt/zextras/libexec/zmmyinit"
-  install -Dm755 src/libexec/zmpostfixpolicyd \
+  install -Dm755 src/libexec/postfixpolicyd.pl \
     "${pkgdir}/opt/zextras/libexec/zmpostfixpolicyd"
-  install -Dm755 src/libexec/zmproxyconfgen \
+  install -Dm755 src/libexec/proxyconfgen.sh \
     "${pkgdir}/opt/zextras/libexec/zmproxyconfgen"
-  install -Dm755 src/libexec/zmproxyconfig \
+  install -Dm755 src/libexec/proxyconfig.pl \
     "${pkgdir}/opt/zextras/libexec/zmproxyconfig"
-  install -Dm755 src/libexec/zmproxypurge \
+  install -Dm755 src/libexec/proxypurge.sh \
     "${pkgdir}/opt/zextras/libexec/zmproxypurge"
-  install -Dm755 src/libexec/zmqaction \
+  install -Dm755 src/libexec/qaction.pl \
     "${pkgdir}/opt/zextras/libexec/zmqaction"
-  install -Dm755 src/libexec/zmqstat \
+  install -Dm755 src/libexec/qstat.pl \
     "${pkgdir}/opt/zextras/libexec/zmqstat"
-  install -Dm755 src/libexec/zmqueuelog \
+  install -Dm755 src/libexec/queuelog.pl \
     "${pkgdir}/opt/zextras/libexec/zmqueuelog"
-  install -Dm755 src/libexec/zmrc \
+  install -Dm755 src/libexec/rc.pl \
     "${pkgdir}/opt/zextras/libexec/zmrc"
-  install -Dm755 src/libexec/zmrcd \
+  install -Dm755 src/libexec/rcd.pl \
     "${pkgdir}/opt/zextras/libexec/zmrcd"
-  install -Dm755 src/libexec/zmresetmysqlpassword \
+  install -Dm755 src/libexec/resetmysqlpassword.sh \
     "${pkgdir}/opt/zextras/libexec/zmresetmysqlpassword"
-  install -Dm755 src/libexec/zmsacompile \
+  install -Dm755 src/libexec/sacompile.sh \
     "${pkgdir}/opt/zextras/libexec/zmsacompile"
-  install -Dm755 src/libexec/zmsaupdate \
+  install -Dm755 src/libexec/saupdate.sh \
     "${pkgdir}/opt/zextras/libexec/zmsaupdate"
-  install -Dm755 src/libexec/zmserverips \
+  install -Dm755 src/libexec/serverips.pl \
     "${pkgdir}/opt/zextras/libexec/zmserverips"
-  install -Dm755 src/libexec/zmsetservername \
+  install -Dm755 src/libexec/setservername.pl \
     "${pkgdir}/opt/zextras/libexec/zmsetservername"
-  install -Dm755 src/libexec/zmspamextract \
+  install -Dm755 src/libexec/spamextract.sh \
     "${pkgdir}/opt/zextras/libexec/zmspamextract"
-  install -Dm755 src/libexec/zmstat-allprocs \
+  install -Dm755 src/libexec/stat-allprocs.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-allprocs"
-  install -Dm755 src/libexec/zmstat-cleanup \
+  install -Dm755 src/libexec/stat-cleanup.sh \
     "${pkgdir}/opt/zextras/libexec/zmstat-cleanup"
-  install -Dm755 src/libexec/zmstat-cpu \
+  install -Dm755 src/libexec/stat-cpu.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-cpu"
-  install -Dm755 src/libexec/zmstat-df \
+  install -Dm755 src/libexec/stat-df.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-df"
-  install -Dm755 src/libexec/zmstat-fd \
+  install -Dm755 src/libexec/stat-fd.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-fd"
-  install -Dm755 src/libexec/zmstat-io \
+  install -Dm755 src/libexec/stat-io.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-io"
-  install -Dm755 src/libexec/zmstat-mtaqueue \
+  install -Dm755 src/libexec/stat-mtaqueue.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-mtaqueue"
-  install -Dm755 src/libexec/postfix-prometheus \
+  install -Dm755 src/libexec/postfix-prometheus.pl \
     "${pkgdir}/opt/zextras/libexec/postfix-prometheus"
-  install -Dm755 src/libexec/zmstat-mysql \
+  install -Dm755 src/libexec/stat-mysql.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-mysql"
-  install -Dm755 src/libexec/zmstat-nginx \
+  install -Dm755 src/libexec/stat-nginx.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-nginx"
-  install -Dm755 src/libexec/zmstat-proc \
+  install -Dm755 src/libexec/stat-proc.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-proc"
-  install -Dm755 src/libexec/zmstat-vm \
+  install -Dm755 src/libexec/stat-vm.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-vm"
-  install -Dm755 src/libexec/zmstatuslog \
+  install -Dm755 src/libexec/statuslog.pl \
     "${pkgdir}/opt/zextras/libexec/zmstatuslog"
-  install -Dm755 src/libexec/zmsyslogsetup \
+  install -Dm755 src/libexec/syslogsetup.pl \
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
-  install -Dm755 src/libexec/zmthreadcpu \
+  install -Dm755 src/libexec/threadcpu.pl \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
-  install -Dm644 conf/zmlogrotate \
+  install -Dm644 conf/zmlogrotate.sh \
     "${pkgdir}/opt/zextras/conf/zmlogrotate"
   # ldap scripts
   install -Dm755 src/libexec/ldapinit.pm \
     "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
-  install -Dm755 src/libexec/zmstat-ldap \
+  install -Dm755 src/libexec/stat-ldap.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-ldap"
-  install -Dm755 src/libexec/zmldapanon \
+  install -Dm755 src/libexec/ldapanon.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapanon"
-  install -Dm755 src/libexec/zmreplchk \
+  install -Dm755 src/libexec/replchk.pl \
     "${pkgdir}/opt/zextras/libexec/zmreplchk"
-  install -Dm755 src/libexec/zmslapadd \
+  install -Dm755 src/libexec/slapadd.sh \
     "${pkgdir}/opt/zextras/libexec/zmslapadd"
-  install -Dm755 src/libexec/zmslapcat \
+  install -Dm755 src/libexec/slapcat.sh \
     "${pkgdir}/opt/zextras/libexec/zmslapcat"
-  install -Dm755 src/libexec/zmslapd \
+  install -Dm755 src/libexec/slapd.sh \
     "${pkgdir}/opt/zextras/libexec/zmslapd"
-  install -Dm755 src/libexec/zmslapindex \
+  install -Dm755 src/libexec/slapindex.sh \
     "${pkgdir}/opt/zextras/libexec/zmslapindex"
-  install -Dm755 src/libexec/zmldapapplyldif \
+  install -Dm755 src/libexec/ldapapplyldif.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapapplyldif"
-  install -Dm755 src/libexec/zmldapenable-mmr \
+  install -Dm755 src/libexec/ldapenable-mmr.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapenable-mmr"
-  install -Dm755 src/libexec/zmldapenablereplica \
+  install -Dm755 src/libexec/ldapenablereplica.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapenablereplica"
-  install -Dm755 src/libexec/zmldapmmrtool \
+  install -Dm755 src/libexec/ldapmmrtool.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapmmrtool"
-  install -Dm755 src/libexec/zmldapmonitordb \
+  install -Dm755 src/libexec/ldapmonitordb.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapmonitordb"
-  install -Dm755 src/libexec/zmldappromote-replica-mmr \
+  install -Dm755 src/libexec/ldappromote-replica-mmr.pl \
     "${pkgdir}/opt/zextras/libexec/zmldappromote-replica-mmr"
-  install -Dm755 src/libexec/zmldapreplicatool \
+  install -Dm755 src/libexec/ldapreplicatool.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapreplicatool"
-  install -Dm755 src/libexec/zmldapschema \
+  install -Dm755 src/libexec/ldapschema.sh \
     "${pkgdir}/opt/zextras/libexec/zmldapschema"
-  install -Dm755 src/libexec/zmldapupdateldif \
+  install -Dm755 src/libexec/ldapupdateldif.pl \
     "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
-  install -Dm755 src/libexec/ldapattributeupdate \
+  install -Dm755 src/libexec/ldapattributeupdate.pl \
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
-  install -D conf/zmconfigd.cf \
+  install -D conf/configd.cf.sh \
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
-  install -D conf/zmconfigd.log4j.properties \
+  install -D conf/configd.log4j.properties.sh \
     "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
   # systemd env script
   # it generates /opt/zextras/data/systemd.env
-  install -Dm755 src/bin/systemd-envscript \
+  install -Dm755 src/bin/systemd-envscript.sh \
     "${pkgdir}/opt/zextras/bin/systemd-envscript"
 
   # jython
