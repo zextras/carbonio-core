@@ -1,4 +1,4 @@
-package Zimbra::LocalConfig;
+package Zextras::LocalConfig;
 
 use strict;
 use warnings;
@@ -9,12 +9,12 @@ my $ERROR;
 
 =head1 NAME
 
-Zimbra::LocalConfig - Read access to all Zimbra local config values
+Zextras::LocalConfig - Read access to all local config values
 
 =head1 SYNOPSIS
 
-  use Zimbra::LocalConfig;
-  my $zlc = Zimbra::LocalConfig->new;
+  use Zextras::LocalConfig;
+  my $zlc = Zextras::LocalConfig->new;
   print $zlc->get('ldap_url'), "\n";
 
 =head1 DESCRIPTION
@@ -25,10 +25,10 @@ Perl API for accessing zimbra local config values.
 
 =head2 new
 
-Creates new instance of Zimbra::LocalConfig.
+Creates new instance of Zextras::LocalConfig.
 
-  my $zlc = Zimbra::LocalConfig->new;
-  my $zlc = Zimbra::LocalConfig->new(file=>"my zimbra config xml file");
+  my $zlc = Zextras::LocalConfig->new;
+  my $zlc = Zextras::LocalConfig->new(file=>"my zimbra config xml file");
 
 =cut
 
@@ -57,7 +57,7 @@ sub new {
 
 Returns last error message.
 
-  print Zimbra::LocalConfig->error, "\n";
+  print Zextras::LocalConfig->error, "\n";
   print $zlc->error,                "\n";
 
 =cut

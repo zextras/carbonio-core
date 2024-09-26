@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 # 
-package Zimbra::DB::DB;
+package Zextras::DB::DB;
 
 use strict;
 
@@ -49,7 +49,7 @@ sub runSql(@) {
     # close(LASTSCRIPT);
 
     if ($logSql) {
-	Zimbra::DB::DB::log($script);
+	Zextras::DB::DB::log($script);
     }
 
     # Run the mysql command and redirect output to a temp file

@@ -6,7 +6,7 @@
 # 
 #!/usr/bin/perl
 
-package Zimbra::Mon::Logger;
+package Zextras::Mon::Logger;
 
 use strict;
 

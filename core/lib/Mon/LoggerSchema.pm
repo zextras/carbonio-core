@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 # 
-package Zimbra::Mon::LoggerSchema;
+package Zextras::Mon::LoggerSchema;
 use strict;
 
 require Exporter;

@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 
-package Zimbra::Util::LDAP; 
+package Zextras::Util::LDAP; 
 use strict;
 use Net::LDAP;
 

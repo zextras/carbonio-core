@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 # 
-package Zimbra::SOAP::XmlElement;
+package Zextras::SOAP::XmlElement;
 
 use strict;
 use warnings;
@@ -326,7 +326,7 @@ sub XPStart {
   my $expat = shift;
   my $tag = shift;
 
-  my $element = new Zimbra::SOAP::XmlElement($tag, $expat->namespace($tag));
+  my $element = new Zextras::SOAP::XmlElement($tag, $expat->namespace($tag));
 
   if ($#_ >= 0) {
       $element->attrs({@_});

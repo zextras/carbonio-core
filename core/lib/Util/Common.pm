@@ -5,21 +5,19 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 
-package Zimbra::Util::Common; 
+package Zextras::Util::Common; 
 use strict;
 
 
-# Zimbra Specfic library locations
+# Library locations
 use lib "/opt/zextras/common/lib/perl5";
-use lib "/opt/zextras/common/lib/perl5/Zimbra/SOAP";
-use lib "/opt/zextras/common/lib/perl5/Zimbra/Mon";
-use lib "/opt/zextras/common/lib/perl5/Zimbra/DB";
-foreach my $arch (qw(i386 x86_64 i486 i586 i686 darwin)) {
-  foreach my $type (qw(linux-thread-multi linux-gnu-thread-multi linux thread-multi thread-multi-2level)) {
-    my $dir = "/opt/zextras/common/lib/perl5/${arch}-${type}";
-    unshift(@INC, "$dir") 
-      if (-d "$dir");
-  }
+use lib "/opt/zextras/common/lib/perl5/Zextras/SOAP";
+use lib "/opt/zextras/common/lib/perl5/Zextras/Mon";
+use lib "/opt/zextras/common/lib/perl5/Zextras/DB";
+foreach my $type (qw(linux-thread-multi linux-gnu-thread-multi linux thread-multi thread-multi-2level)) {
+  my $dir = "/opt/zextras/common/lib/perl5/x86_64-${type}";
+  unshift(@INC, "$dir") 
+    if (-d "$dir");
 }
 
 1

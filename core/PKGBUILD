@@ -471,8 +471,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/carbonio"
   install -Dm755 src/libexec/certbot.sh \
     "${pkgdir}/opt/zextras/libexec/certbot"
-  install -Dm755 src/libexec/ldapinit.pm.sh \
-    "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
   install -Dm755 src/libexec/altermimeconfig.pl \
     "${pkgdir}/opt/zextras/libexec/zmaltermimeconfig"
   install -Dm755 src/libexec/antispamdbinit.sh \
@@ -491,7 +489,7 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmcompresslogs"
   install -Dm755 src/libexec/computequotausage.sh \
     "${pkgdir}/opt/zextras/libexec/zmcomputequotausage"
-  install -Dm755 src/libexec/configd.sh \
+  install -Dm755 src/libexec/configd.py \
     "${pkgdir}/opt/zextras/libexec/zmconfigd"
   install -Dm755 src/libexec/cpustat.pl \
     "${pkgdir}/opt/zextras/libexec/zmcpustat"
@@ -505,7 +503,7 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmdkimkeyutil"
   install -Dm755 src/libexec/domaincertmgr.sh \
     "${pkgdir}/opt/zextras/libexec/zmdomaincertmgr"
-  install -Dm755 src/libexec/explainslow.sh \
+  install -Dm755 src/libexec/explainslow.pl \
     "${pkgdir}/opt/zextras/libexec/zmexplainslow"
   install -Dm755 src/libexec/explainsql.pl \
     "${pkgdir}/opt/zextras/libexec/zmexplainsql"
@@ -529,7 +527,7 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmjavawatch"
   install -Dm755 src/libexec/jsprecompile.sh \
     "${pkgdir}/opt/zextras/libexec/zmjsprecompile"
-  install -Dm755 src/libexec/600.zimbra.sh \
+  install -Dm755 src/libexec/600.sh \
     "${pkgdir}/opt/zextras/libexec/600.zimbra"
   install -Dm755 src/libexec/configrewrite.sh \
     "${pkgdir}/opt/zextras/libexec/configrewrite"
@@ -571,7 +569,7 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmresetmysqlpassword"
   install -Dm755 src/libexec/sacompile.sh \
     "${pkgdir}/opt/zextras/libexec/zmsacompile"
-  install -Dm755 src/libexec/saupdate.sh \
+  install -Dm755 src/libexec/saupdate.pl \
     "${pkgdir}/opt/zextras/libexec/zmsaupdate"
   install -Dm755 src/libexec/serverips.pl \
     "${pkgdir}/opt/zextras/libexec/zmserverips"
@@ -609,7 +607,7 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
   install -Dm755 src/libexec/threadcpu.pl \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
-  install -Dm644 conf/zmlogrotate.sh \
+  install -Dm644 conf/logrotate \
     "${pkgdir}/opt/zextras/conf/zmlogrotate"
   # ldap scripts
   install -Dm755 src/libexec/ldapinit.pm \
@@ -648,9 +646,9 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
   install -Dm755 src/libexec/ldapattributeupdate.pl \
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
-  install -D conf/configd.cf.sh \
+  install -D conf/configd.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
-  install -D conf/configd.log4j.properties.sh \
+  install -D conf/configd.log4j.properties \
     "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
   # systemd env script
   # it generates /opt/zextras/data/systemd.env

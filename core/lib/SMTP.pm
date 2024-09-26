@@ -1,9 +1,9 @@
-package Zimbra::SMTP;
+package Zextras::SMTP;
 
 use strict;
 use warnings;
 
-use Zimbra::LDAP;
+use Zextras::LDAP;
 use Net::SMTP;
 use Net::DNS;
 
@@ -11,11 +11,11 @@ my $ERROR;
 
 =head1 NAME
 
-Zimbra::SMTP - Access to Zimbra SMTP mail servers
+Zextras::SMTP - Access to SMTP mail servers
 
 =head1 SYNOPSIS
 
-  my $zs = Zimbra::SMTP->new;
+  my $zs = Zextras::SMTP->new;
   $zs->send(
       to      => 'abc@zimbra.com',
       from    => 'xyz@zimbra.com',
@@ -25,15 +25,15 @@ Zimbra::SMTP - Access to Zimbra SMTP mail servers
 
 =head1 DESCRIPTION
 
-Perl API for sending SMTP messages through Zimbra MTA.
+Perl API for sending SMTP messages through MTA.
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
-Creates new instance of Zimbra::SMTP.
+Creates new instance of Zextras::SMTP.
 
-  my $zs = Zimbra::SMTP->new;
+  my $zs = Zextras::SMTP->new;
 
 =cut
 
@@ -51,7 +51,7 @@ sub new {
 
 Returns last error message.
 
-  print Zimbra::SMTP->error, "\n";
+  print Zextras::SMTP->error, "\n";
   print $zs->error,          "\n";
 
 =cut
@@ -63,7 +63,7 @@ sub error {
 
 =head2 ldap
 
-Returns the Zimbra::LDAP object.
+Returns the Zextras::LDAP object.
 
   print $zs->ldap->config->get("ldap_url"), "\n";
 
@@ -71,8 +71,8 @@ Returns the Zimbra::LDAP object.
 
 sub ldap {
     unless ( exists( $_[0]->{_ldap} ) ) {
-        unless ( $_[0]->{_ldap} = Zimbra::LDAP->new ) {
-            $_[0]->error( "failed to connect to LDAP: " . Zimbra::LDAP->error );
+        unless ( $_[0]->{_ldap} = Zextras::LDAP->new ) {
+            $_[0]->error( "failed to connect to LDAP: " . Zextras::LDAP->error );
             return;
         }
     }
@@ -210,7 +210,7 @@ sub send {
 
 =head2 SEE ALSO
 
-L<Zimbra::LDAP>, L<Net::SMTP>, L<Net::DNS>
+L<Zextras::LDAP>, L<Net::SMTP>, L<Net::DNS>
 
 =cut
 
