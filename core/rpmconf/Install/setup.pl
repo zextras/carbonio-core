@@ -87,7 +87,12 @@ my %packageServiceMap = (
 my $serviceWebApp = "service";
 
 # Array of systemd targets to check and start
-my @systemd_targets = ( "carbonio-directory-server", "carbonio-appserver", "carbonio-proxy", "carbonio-mta", );
+my @systemd_targets = (
+    "carbonio-directory-server.target",
+    "carbonio-appserver.target",
+    "carbonio-proxy.target",
+    "carbonio-mta.target",
+);
 my $systemdStatus   = 0;
 
 my %installedPackages = ();
@@ -141,7 +146,7 @@ my $debug = $options{d};
 
 usage() if ( $options{h} );
 
-isSystemdEnabled();
+isSystemd();
 getInstallStatus();
 my $bootStrapMode = ($newinstall) ? "new install" : "existing install";
 
@@ -608,6 +613,16 @@ sub isEnabled {
     return ( $enabledPackages{$package} eq "Enabled" ? 1 : 0 );
 }
 
+sub isSystemd {
+
+    # Check if any of the systemd targets are enabled
+    foreach my $target (@systemd_targets) {
+        if ( isSystemdEnabledUnit($target) ) {
+            $systemdStatus = 1;    # At least one target is enabled
+        }
+    }
+}
+
 sub isSystemdActiveUnit {
     my ($unitName) = @_;
 
@@ -623,21 +638,11 @@ sub isSystemdActiveUnit {
     }
 }
 
-sub isSystemdEnabled {
-
-    # Check if any of the systemd targets are enabled
-    foreach my $target (@systemd_targets) {
-        if ( isSystemdEnabledTarget($target) ) {
-            $systemdStatus = 1;    # At least one target is enabled
-        }
-    }
-}
-
-sub isSystemdEnabledTarget {
+sub isSystemdEnabledUnit {
     my ($unitName) = @_;
 
     # Construct the command to check if the unit is enabled
-    my $command = "systemctl is-enabled $unitName.target 2>&1";
+    my $command = "systemctl is-enabled $unitName 2>&1";
 
     # Execute the command and capture the output
     my $output = `$command`;
@@ -5954,16 +5959,16 @@ sub applyConfig {
         progress("Starting servers...\n");
         if ($systemdStatus) {
             foreach my $target (@systemd_targets) {
-                if ( isSystemdEnabledTarget($target) ) {
+                if ( isSystemdEnabledUnit($target) ) {
                     print "\tstopping $target...";
-                    system("systemctl stop $target.target");
+                    system("systemctl stop $target");
                     print "Done.\n";
                 }
             }
             foreach my $target (@systemd_targets) {
-                if ( isSystemdEnabledTarget($target) ) {
+                if ( isSystemdEnabledUnit($target) ) {
                     print "\tstarting $target...";
-                    system("systemctl start $target.target");
+                    system("systemctl start $target");
                     print "Done.\n";
                 }
             }
