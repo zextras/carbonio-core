@@ -251,39 +251,37 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Util/LDAP.pm"
   install -D lib/Util/Timezone.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Util/Timezone.pm"
-  # rpmconf
-  # sudoers
-  install -D rpmconf/Env/sudoers.d/carbonio \
+  # conf
+  install -D conf/sudoers.d/carbonio \
     "${pkgdir}/etc/sudoers.d/carbonio"
-  # Env
-  install -D rpmconf/Env/zextras.bash_profile \
+  install -D conf/zextras.bash_profile \
     "${pkgdir}/opt/zextras/.bash_profile"
-  install -D rpmconf/Env/zextras.bashrc \
+  install -D conf/zextras.bashrc \
     "${pkgdir}/opt/zextras/.bashrc"
-  install -D rpmconf/Env/zextras.exrc \
+  install -D conf/zextras.exrc \
     "${pkgdir}/opt/zextras/.exrc"
-  install -D rpmconf/Env/zextras.ldaprc \
+  install -D conf/zextras.ldaprc \
     "${pkgdir}/opt/zextras/.ldaprc"
-  install -D rpmconf/Env/zextras.platform \
+  install -D conf/zextras.platform \
     "${pkgdir}/opt/zextras/.platform"
-  install -D rpmconf/Env/zextras.viminfo \
+  install -D conf/zextras.viminfo \
     "${pkgdir}/opt/zextras/.viminfo"
-  install -D rpmconf/Env/crontabs/crontab \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab"
-  install -D rpmconf/Env/crontabs/crontab.ldap \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.ldap"
-  install -D rpmconf/Env/crontabs/crontab.logger \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.logger"
-  install -D rpmconf/Env/crontabs/crontab.mta \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
-  install -D rpmconf/Env/crontabs/crontab.store \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
-  # Install
-  install -Dm755 rpmconf/Install/setup.pl \
-    "${pkgdir}/opt/zextras/libexec/setup.pl"
-  # Conf
-  install -D rpmconf/Conf/zmssl.cnf.in \
+  install -D conf/zmssl.cnf.in \
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
+  install -D conf/crontabs/crontab \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab"
+  install -D conf/crontabs/crontab.ldap \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.ldap"
+  install -D conf/crontabs/crontab.logger \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.logger"
+  install -D conf/crontabs/crontab.mta \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
+  install -D conf/crontabs/crontab.store \
+    "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
+  # Installer
+  install -Dm755 conf/install/setup.pl \
+    "${pkgdir}/opt/zextras/libexec/setup.pl"
+
   # mta
   install -D mta/cbpolicyd.conf.in \
     "${pkgdir}/opt/zextras/conf/cbpolicyd.conf.in"

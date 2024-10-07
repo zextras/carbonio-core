@@ -1,3 +1,0 @@
-ignore /DEBUG/
-watchfor /.*/
-	pipe /opt/zextras/libexec/zmlogger,MESSAGE=$_\n,KEEP_OPEN=1
