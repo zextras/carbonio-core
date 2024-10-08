@@ -278,9 +278,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
   install -D conf/crontabs/crontab.store \
     "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
-  # Installer
-  install -Dm755 conf/install/setup.pl \
-    "${pkgdir}/opt/zextras/libexec/setup.pl"
 
   # mta
   install -D mta/cbpolicyd.conf.in \
@@ -573,6 +570,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmserverips"
   install -Dm755 src/libexec/setservername.pl \
     "${pkgdir}/opt/zextras/libexec/zmsetservername"
+  install -Dm755 src/libexec/setup.pl \
+    "${pkgdir}/opt/zextras/libexec/setup.pl"
   install -Dm755 src/libexec/spamextract.sh \
     "${pkgdir}/opt/zextras/libexec/zmspamextract"
   install -Dm755 src/libexec/stat-allprocs.pl \
