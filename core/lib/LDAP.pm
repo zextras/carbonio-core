@@ -1,9 +1,9 @@
-package Zimbra::LDAP;
+package Zextras::LDAP;
 
 use strict;
 use warnings;
 
-use Zimbra::LocalConfig;
+use Zextras::LocalConfig;
 use Net::LDAP;
 
 my $ERROR;
@@ -12,11 +12,11 @@ my $CAPATH    = "/opt/zextras/conf/ca";
 
 =head1 NAME
 
-Zimbra::LDAP - Access to Zimbra LDAP directory
+Zextras::LDAP - Access to LDAP directory
 
 =head1 SYNOPSIS
 
-  my $zl     = Zimbra::LDAP->new;
+  my $zl     = Zextras::LDAP->new;
   my $global = $zl->global;
   my $server = $zl->server('mail.zimbra.com');
   my $admin  = $zl->mail('admin@mail.zimbra.com');
@@ -27,12 +27,12 @@ Zimbra::LDAP - Access to Zimbra LDAP directory
   
   
   # when default settings are not what you need
-  use Zimbra::LocalConfig;
-  use Zimbra::LDAP;
+  use Zextras::LocalConfig;
+  use Zextras::LDAP;
    
-  my $zlc = Zimbra::LocalConfig->new( file => "some non-default file" )
+  my $zlc = Zextras::LocalConfig->new( file => "some non-default file" )
     ;    # when working with multiple environments create multiple objects
-  my $zl = Zimbra::LDAP->new(
+  my $zl = Zextras::LDAP->new(
       dn       => $zlc->get('my local config dn'),          # grab from config
       password => $zlc->get('my local config password'),    # grab from config
       config => $zlc,                  # pass in custom local config
@@ -42,13 +42,13 @@ Zimbra::LDAP - Access to Zimbra LDAP directory
 
 =head1 DESCRIPTION
 
-Perl API for interacting with the Zimbra LDAP server.
+Perl API for interacting with the LDAP server.
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
-Creates new instance of Zimbra::LDAP.
+Creates new instance of Zextras::LDAP.
 
 New supports passing in the following values:
 
@@ -66,8 +66,8 @@ New supports passing in the following values:
 
 See each of the above methods for more details about each value.
 
-  my $zl = Zimbra::LDAP->new;
-  my $zl = Zimbra::LDAP->new( dn => "my dn", password => "my dn password" );
+  my $zl = Zextras::LDAP->new;
+  my $zl = Zextras::LDAP->new( dn => "my dn", password => "my dn password" );
 
 =cut
 
@@ -96,7 +96,7 @@ sub new {
 
 Returns last error message.
 
-  print Zimbra::LDAP->error, "\n";
+  print Zextras::LDAP->error, "\n";
   print $zl->error,          "\n";
 
 =cut
@@ -108,7 +108,7 @@ sub error {
 
 =head2 config
 
-Returns the Zimbra::LocalConfig object.
+Returns the Zextras::LocalConfig object.
 
   print $zl->config->get("ldap_url"), "\n";
 
@@ -117,9 +117,9 @@ Returns the Zimbra::LocalConfig object.
 sub config {
     $_[0]->{_config} = $_[1] if ($#_);    # allow new to assign value
     unless ( exists( $_[0]->{_config} ) ) {
-        unless ( $_[0]->{_config} = Zimbra::LocalConfig->new ) {
+        unless ( $_[0]->{_config} = Zextras::LocalConfig->new ) {
             $_[0]->error(
-                "Zimbra::LocalConfig error: " . Zimbra::LocalConfig->error );
+                "Zextras::LocalConfig error: " . Zextras::LocalConfig->error );
             return;
         }
     }
@@ -227,7 +227,7 @@ sub ldap {
 
 =head2 global
 
-Returns Net::LDAP::Entry for the Zimbra global config LDAP entry.
+Returns Net::LDAP::Entry for the global config LDAP entry.
 
   print $zl->global->get_value("zimbraSmtpHostname"), "\n";
 
@@ -301,7 +301,7 @@ sub server {
 
 =head1 SEE ALSO
 
-L<Zimbra::LocalConfig>, L<Net::LDAP>
+L<Zextras::LocalConfig>, L<Net::LDAP>
 
 =cut
 

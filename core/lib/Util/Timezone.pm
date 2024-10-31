@@ -1,4 +1,4 @@
-package Zimbra::Util::Timezone;
+package Zextras::Util::Timezone;
 use strict;
 our %TIMEZONES;
 our $_PARSED=0;

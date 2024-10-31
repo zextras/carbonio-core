@@ -4,13 +4,13 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 # 
-package Zimbra::SOAP::Soap11;
+package Zextras::SOAP::Soap11;
 
 use strict;
 use warnings;
 
 use XML::Parser;
-use Zimbra::SOAP::XmlElement;
+use Zextras::SOAP::XmlElement;
 
 #use overload '""' => \&to_string;
 
@@ -20,7 +20,7 @@ BEGIN {
 
     # set the version for version checking
     $VERSION     = 1.00;
-    @ISA         = qw(Exporter Zimbra::SOAP::Soap);
+    @ISA         = qw(Exporter Zextras::SOAP::Soap);
     @EXPORT      = qw();
     %EXPORT_TAGS = ( );     # eg: TAG => [ qw!name1 name2! ],
 
@@ -48,13 +48,13 @@ sub soapEnvelope {
     my $self = shift;
     my $e = shift;
     my $context = shift;
-    my $env = new Zimbra::SOAP::XmlElement("Envelope", $NS);
+    my $env = new Zextras::SOAP::XmlElement("Envelope", $NS);
     if ($context) {
-	    my $header= new Zimbra::SOAP::XmlElement("Header", $NS);
+	    my $header= new Zextras::SOAP::XmlElement("Header", $NS);
 	    $header->add_child($context);
 	    $env->add_child($header);
     }    
-    my $body = new Zimbra::SOAP::XmlElement("Body", $NS);
+    my $body = new Zextras::SOAP::XmlElement("Body", $NS);
     $body->add_child($e);
     $env->add_child($body);
     return $env;

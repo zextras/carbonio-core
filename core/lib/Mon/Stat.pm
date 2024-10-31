@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # 
 
-package Zimbra::Mon::Zmstat;
+package Zextras::Mon::Stat;
 
 use Exporter;
 @ISA = qw(Exporter);
