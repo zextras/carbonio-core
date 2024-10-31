@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.2.7"
+pkgver="4.2.8"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
