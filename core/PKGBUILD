@@ -229,8 +229,6 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LocalConfig.pm"
   install -D lib/Mon/Logger.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Mon/Logger.pm"
-  install -D lib/Mon/LoggerSchema.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Mon/LoggerSchema.pm"
   install -D lib/Mon/Stat.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Mon/Stat.pm"
   install lib/SMTP.pm \
@@ -598,8 +596,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmstat-proc"
   install -Dm755 src/libexec/stat-vm.pl \
     "${pkgdir}/opt/zextras/libexec/zmstat-vm"
-  install -Dm755 src/libexec/statuslog.pl \
-    "${pkgdir}/opt/zextras/libexec/zmstatuslog"
   install -Dm755 src/libexec/syslogsetup.pl \
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
   install -Dm755 src/libexec/threadcpu.pl \
