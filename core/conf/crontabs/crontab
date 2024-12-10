@@ -21,7 +21,6 @@ SHELL=/bin/bash
 #
 # Status logging
 #
-*/2 * * * * /opt/zextras/libexec/zmstatuslog >/dev/null 2>&1
 #*/10 * * * * /opt/zextras/libexec/zmdisklog > /dev/null 2>&1
 #
 # SSL Certificate Expiration Checks
