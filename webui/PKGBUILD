@@ -1,5 +1,5 @@
 pkgname="carbonio-webui"
-pkgver="4.3.4"
+pkgver="4.3.5"
 pkgrel="1"
 pkgdesc="A modern Web UI for carbonio (meta-package)"
 arch=('x86_64')
@@ -12,15 +12,16 @@ license=(
 )
 url="https://github.com/zextras"
 depends=(
+  "carbonio-admin-console-ui"
+  "carbonio-admin-login-ui"
+  "carbonio-admin-ui"
   "carbonio-auth-ui"
   "carbonio-calendars-ui"
   "carbonio-contacts-ui"
   "carbonio-login-ui"
   "carbonio-mails-ui"
+  "carbonio-search-ui"
   "carbonio-shell-ui"
-  "carbonio-admin-login-ui"
-  "carbonio-admin-console-ui"
-  "carbonio-admin-ui"
 )
 section="mail"
 priority="optional"
