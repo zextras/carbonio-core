@@ -178,7 +178,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.0.42"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#branch=devel"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.4"
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
@@ -222,35 +222,6 @@ package() {
   install -Dm755 mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
 
-  # lib
-  install -D lib/DB/DB.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/DB/DB.pm"
-  install -D lib/LDAP.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LDAP.pm"
-  install -D lib/LocalConfig.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LocalConfig.pm"
-  install -D lib/Mon/Logger.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Mon/Logger.pm"
-  install -D lib/Mon/Stat.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Mon/Stat.pm"
-  install lib/SMTP.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/SMTP.pm"
-  install -D lib/SOAP/Soap.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/SOAP/Soap.pm"
-  install -D lib/SOAP/Soap11.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/SOAP/Soap11.pm"
-  install -D lib/SOAP/Soap12.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/SOAP/Soap12.pm"
-  install -D lib/SOAP/XmlDoc.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/SOAP/XmlDoc.pm"
-  install -D lib/SOAP/XmlElement.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/SOAP/XmlElement.pm"
-  install -D lib/Util/Common.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Util/Common.pm"
-  install -D lib/Util/LDAP.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Util/LDAP.pm"
-  install -D lib/Util/Timezone.pm \
-    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/Util/Timezone.pm"
   # conf
   install -D conf/sudoers.d/carbonio \
     "${pkgdir}/etc/sudoers.d/carbonio"
@@ -460,6 +431,12 @@ package() {
     "${pkgdir}/opt/zextras/bin/zmupdateauthkeys"
   install -D src/bin/volume.sh \
     "${pkgdir}/opt/zextras/bin/zmvolume"
+
+  # perl modules
+  install -d "${pkgdir}/opt/zextras/common/lib/perl5"
+  cp -r src/common/lib/perl5/Zextras \
+    "${pkgdir}/opt/zextras/common/lib/perl5/"
+
   install -Dm755 src/libexec/zcs.pl \
     "${pkgdir}/opt/zextras/libexec/zcs"
   install -Dm755 src/libexec/carbonio.sh \
