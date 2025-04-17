@@ -1,6 +1,6 @@
 [Unit]
 Description=Carbonio Config Daemon
-PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target carbonio-ce.target carbonio.target
+PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
 User=zextras
@@ -13,4 +13,4 @@ RestartSec=3
 Restart=on-failure
 
 [Install]
-WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target carbonio-ce.target carbonio.target
+WantedBy=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target

@@ -1,7 +1,7 @@
 [Unit]
 Description=Carbonio CE
 Documentation=man:systemd.special(7)
-Requires=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target multi-user.target
+Wants=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target multi-user.target
 After=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target multi-user.target
 AllowIsolate=yes
 

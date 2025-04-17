@@ -189,6 +189,7 @@ source=(
   "carbonio-stats.service"
   "carbonio-tmpfile.conf"
   "carbonio.sysctl.conf"
+  "carbonio.target"
   "mini_alue_ce"
 )
 sha256sums=(
@@ -196,15 +197,16 @@ sha256sums=(
   'SKIP'
   'SKIP'
   'SKIP'
-  "d9628f2126a5cf2b05c0b87945bb60a2f95fb1acfc8401a519f49ebced89fdf8"
-  "6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97"
-  "54c6ebe00b43c80246a95a29252be11b04207cb21d1d64f324b4ad3f72eec711"
-  "525f96392b46a0ae38acd6a1a637f31597f1e76e3efc35a168e8066692b74d22"
-  "6a73c0f3b37ae7a4c3b2ab1fbf58e8767127148ab625df3884c7bcc66b8a0c07"
-  "b83dd5a7c9c70b4707bd13a897042832a15250aeca0e8743de79e1cf1e0aeb47"
-  "c259063d1823a9b301195f091d98b646b9bf720270f105489c352493b45c42e0"
-  "9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98"
-  "544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c"
+  'd9628f2126a5cf2b05c0b87945bb60a2f95fb1acfc8401a519f49ebced89fdf8'
+  '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
+  '54c6ebe00b43c80246a95a29252be11b04207cb21d1d64f324b4ad3f72eec711'
+  '525f96392b46a0ae38acd6a1a637f31597f1e76e3efc35a168e8066692b74d22'
+  '3e61e74320f0aa69bc76f5eb356063b419eddf1a34ca8cb59da41a2b0dbd39ba'
+  '958300c229f0042909e4281c5f91942733e7316f00c1cdc6094efa96329c3d60'
+  'c259063d1823a9b301195f091d98b646b9bf720270f105489c352493b45c42e0'
+  '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
+  '404450759e6c400cef9a624b92645dc01f7b8f3e03c8618ebb4d42646e516bc1'
+  '544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c'
 )
 
 package() {
@@ -701,11 +703,15 @@ package() {
 
   echo "25.6.0" >"${pkgdir}"/opt/zextras/.version
 
-  # systemd resources
+  # systemd units
+  mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
+  install -Dm 644 "${srcdir}/carbonio.target" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.target"
   install -Dm 644 "${srcdir}/carbonio-configd.service" \
-    "${pkgdir}/lib/systemd/system/carbonio-configd.service"
+    "${pkgdir}/usr/lib/systemd/system/carbonio-configd.service"
   install -Dm 644 "${srcdir}/carbonio-stats.service" \
-    "${pkgdir}/lib/systemd/system/carbonio-stats.service"
+    "${pkgdir}/usr/lib/systemd/system/carbonio-stats.service"
+
   install -Dm 644 "${srcdir}/carbonio.sysctl.conf" \
     "${pkgdir}/lib/sysctl.d/60-carbonio.conf"
   install -Dm 644 "${srcdir}/carbonio-tmpfile.conf" \
