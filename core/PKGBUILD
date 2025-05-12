@@ -783,42 +783,23 @@ postinst__apt() {
 
   cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
   chmod 755 /etc/init.d/carbonio
-  if [ -x /usr/sbin/update-rc.d ]; then
-    update-rc.d -f carbonio remove
-    update-rc.d carbonio start 99 3 5 . stop 01 0 1 6 .
-  else
-    rm -f /etc/rc*.d/S99carbonio
-    rm -f /etc/rc*.d/S89carbonio
-    rm -f /etc/rc*.d/K01carbonio
+  rm -f /etc/rc*.d/S01carbonio
+  rm -f /etc/rc*.d/K01carbonio
 
-    if [ -d /etc/rc0.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc0.d/S89carbonio
-      ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
-    fi
-    if [ -d /etc/rc1.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
-    fi
-    if [ -d /etc/rc2.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc2.d/K01carbonio
-    fi
-    if [ -d /etc/rc3.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc3.d/K01carbonio
-    fi
-    if [ -d /etc/rc4.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc4.d/K01carbonio
-    fi
-    if [ -d /etc/rc5.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
-      ln -s /etc/init.d/carbonio /etc/rc5.d/K01carbonio
-    fi
-    if [ -d /etc/rc6.d ]; then
-      ln -s /etc/init.d/carbonio /etc/rc6.d/S89carbonio
-      ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
-    fi
-
+  if [ -d /etc/rc0.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
+  fi
+  if [ -d /etc/rc1.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
+  fi
+  if [ -d /etc/rc3.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc3.d/S01carbonio
+  fi
+  if [ -d /etc/rc5.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc5.d/S01carbonio
+  fi
+  if [ -d /etc/rc6.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
   fi
 
   mkdir -p /opt/zextras/backup
@@ -928,6 +909,11 @@ postinst__ubuntu_noble() {
     cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
+  # Remove old init scripts on upgrade
+  rm -f /etc/init.d/carbonio
+  rm -f /etc/rc*.d/S01carbonio
+  rm -f /etc/rc*.d/K01carbonio
+
   mkdir -p /opt/zextras/backup
   chown zextras:zextras /opt/zextras/backup
   mkdir -p /opt/zextras/log
@@ -1026,47 +1012,134 @@ postinst__yum() {
     cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
-  if [ -d /etc/init.d ]; then
-    cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
-    chmod 755 /etc/init.d/carbonio
-    if [ -x /sbin/chkconfig ]; then
-      chkconfig --del carbonio
-      chkconfig --add carbonio
-      chkconfig carbonio on
-    else
-      rm -f /etc/rc*.d/S99carbonio
-      rm -f /etc/rc*.d/S89carbonio
-      rm -f /etc/rc*.d/K01carbonio
+  cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
+  chmod 755 /etc/init.d/carbonio
+  rm -f /etc/rc*.d/S99carbonio
+  rm -f /etc/rc*.d/K01carbonio
 
-      if [ -d /etc/rc0.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc0.d/S89carbonio
-        ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
-      fi
-      if [ -d /etc/rc1.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
-      fi
-      if [ -d /etc/rc2.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
-        ln -s /etc/init.d/carbonio /etc/rc2.d/K01carbonio
-      fi
-      if [ -d /etc/rc3.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
-        ln -s /etc/init.d/carbonio /etc/rc3.d/K01carbonio
-      fi
-      if [ -d /etc/rc4.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
-        ln -s /etc/init.d/carbonio /etc/rc4.d/K01carbonio
-      fi
-      if [ -d /etc/rc5.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
-        ln -s /etc/init.d/carbonio /etc/rc5.d/K01carbonio
-      fi
-      if [ -d /etc/rc6.d ]; then
-        ln -s /etc/init.d/carbonio /etc/rc6.d/S89carbonio
-        ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
-      fi
-    fi
+  if [ -d /etc/rc0.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc0.d/K01carbonio
   fi
+  if [ -d /etc/rc1.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc1.d/K01carbonio
+  fi
+  if [ -d /etc/rc2.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc2.d/S99carbonio
+  fi
+  if [ -d /etc/rc3.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc3.d/S99carbonio
+  fi
+  if [ -d /etc/rc4.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc4.d/S99carbonio
+  fi
+  if [ -d /etc/rc5.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc5.d/S99carbonio
+  fi
+  if [ -d /etc/rc6.d ]; then
+    ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
+  fi
+
+  mkdir -p /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/backup
+  mkdir -p /opt/zextras/log
+  chown zextras:zextras /opt/zextras/log
+  mkdir -p /opt/zextras/ssl
+  chown zextras:zextras /opt/zextras/ssl
+  mkdir -p /opt/zextras/.ssh
+  chown zextras:zextras /opt/zextras/.ssh
+  mkdir -p /opt/zextras/zmstat
+  chown zextras:zextras /opt/zextras/zmstat
+  systemd-tmpfiles --create
+  /usr/lib/systemd/systemd-sysctl
+
+  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
+    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
+      echo "Failed to create tmpfile"
+      exit 1
+    }
+    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
+    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
+    mv -f "$sudotmp" /etc/sudoers
+    chmod "$SUDOMODE" /etc/sudoers
+  fi
+
+  chmod 440 /etc/sudoers.d/carbonio
+  chown root:root /etc/sudoers.d/carbonio
+
+  echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+}
+
+postinst__rocky_9() {
+  # creating zextras group if it isn't already there
+  if ! getent group zextras >/dev/null; then
+    groupadd --system zextras >/dev/null
+  fi
+  # creating zextras user if it isn't already there
+  if ! getent passwd zextras >/dev/null; then
+    useradd --system \
+      -g zextras \
+      -d /opt/zextras \
+      --shell /bin/bash \
+      zextras >/dev/null
+    usermod -c "zextras user" zextras
+  fi
+
+  # creating postfix and postdrop groups if aren't already there
+  if ! getent group postdrop >/dev/null; then
+    groupadd --system postdrop >/dev/null
+  fi
+  if ! getent group postfix >/dev/null; then
+    groupadd --system postfix >/dev/null
+  fi
+
+  # creating postfix user if it isn't already there
+  if ! getent passwd postfix >/dev/null; then
+    useradd --system \
+      -g postfix \
+      -d /opt/zextras/postfix \
+      postfix
+    usermod -c "postfix user" postfix
+  fi
+  usermod -a -G postfix,tty zextras
+
+  # creating postfix user if it isn't already there
+  if ! getent passwd syslog >/dev/null; then
+    useradd --system \
+      -g adm \
+      syslog
+    usermod -c "syslog user" syslog
+  fi
+
+  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
+    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
+  fi
+
+  if [ ! -d "/opt/zextras/common/conf" ]; then
+    mkdir -p /opt/zextras/common/conf
+    chown -R zextras:zextras /opt/zextras/common/conf
+  fi
+
+  if [ ! -d "/opt/zextras/conf/ca" ]; then
+    mkdir -p /opt/zextras/conf/ca
+    chown -R zextras:zextras /opt/zextras/conf/ca
+  fi
+
+  if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
+    ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
+  fi
+
+  if [ -d /etc/logrotate.d ]; then
+    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
+  fi
+
+  # Remove old init scripts on upgrade
+  rm -f /etc/init.d/carbonio
+  rm -f /etc/rc*.d/S99carbonio
+  rm -f /etc/rc*.d/K01carbonio
 
   mkdir -p /opt/zextras/backup
   chown zextras:zextras /opt/zextras/backup
