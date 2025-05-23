@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.4.0"
+pkgver="4.4.1"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
@@ -178,7 +178,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.0"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.1"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.4"
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
@@ -205,7 +205,7 @@ sha256sums=(
   '958300c229f0042909e4281c5f91942733e7316f00c1cdc6094efa96329c3d60'
   'c259063d1823a9b301195f091d98b646b9bf720270f105489c352493b45c42e0'
   '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
-  '404450759e6c400cef9a624b92645dc01f7b8f3e03c8618ebb4d42646e516bc1'
+  'b554c91b0341af5192603c7183c75684f0852a5a0e5a0443ae712787e7689dc4'
   '544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c'
 )
 
