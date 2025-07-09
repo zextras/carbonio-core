@@ -15,7 +15,6 @@ pipeline {
         }
     }
     environment {
-        NETWORK_OPTS = '--network ci_agent'
         ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
     }
     stages {
