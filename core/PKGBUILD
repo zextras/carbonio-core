@@ -180,7 +180,7 @@ source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
   "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.2"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
-  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.4"
+  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.5"
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "10-carbonio.conf"
