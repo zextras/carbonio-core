@@ -8,6 +8,8 @@ Type=forking
 PIDFile=/run/carbonio/stats/allprocs.pid
 ExecStart=/opt/zextras/bin/zmstatctl start-systemd
 ExecStop=/opt/zextras/bin/zmstatctl stop-systemd
+RestartSec=3
+Restart=on-failure
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
