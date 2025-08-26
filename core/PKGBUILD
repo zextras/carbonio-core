@@ -669,6 +669,7 @@ package() {
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
 
   # junixsocket-native
+  cd "${srcdir}"
   install -D junixsocket-native-2.4.0.nar \
     -t "${pkgdir}/opt/zextras/lib"
 
