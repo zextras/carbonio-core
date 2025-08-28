@@ -183,7 +183,6 @@ source=(
   "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.3"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.5"
-  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-certificate-manager-store/23.2.0/zm-certificate-manager-store-23.2.0.jar"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "10-carbonio.conf"
   "carbonio-bootstrap.sh"
@@ -199,7 +198,6 @@ sha256sums=(
   'SKIP'
   'SKIP'
   'SKIP'
-  'd9628f2126a5cf2b05c0b87945bb60a2f95fb1acfc8401a519f49ebced89fdf8'
   '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
   '54c6ebe00b43c80246a95a29252be11b04207cb21d1d64f324b4ad3f72eec711'
   '525f96392b46a0ae38acd6a1a637f31597f1e76e3efc35a168e8066692b74d22'
@@ -670,13 +668,8 @@ package() {
   install -D freshclam.conf.in \
     "${pkgdir}/opt/zextras/conf/freshclam.conf.in"
 
-  # carbonio-certificate-manager
-  cd "${srcdir}"
-  install -Ddm755 "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager"
-  install -D zm-certificate-manager-store-23.2.0.jar \
-    "${pkgdir}/opt/zextras/lib/ext/com_zimbra_cert_manager/com_zimbra_cert_manager.jar"
-
   # junixsocket-native
+  cd "${srcdir}"
   install -D junixsocket-native-2.4.0.nar \
     -t "${pkgdir}/opt/zextras/lib"
 
