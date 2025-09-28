@@ -1,5 +1,5 @@
 library(
-    identifier: 'jenkins-packages-build-library@1.0.2',
+    identifier: 'jenkins-packages-build-library@1.0.4',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
@@ -20,7 +20,6 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
-        parallelsAlwaysFailFast()
         skipDefaultCheckout()
         timeout(time: 3, unit: 'HOURS')
     }
