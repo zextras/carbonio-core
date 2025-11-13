@@ -14,7 +14,6 @@ url="https://github.com/zextras"
 depends=(
   "carbonio-admin-console-ui"
   "carbonio-admin-login-ui"
-  "carbonio-admin-ui"
   "carbonio-auth-ui"
   "carbonio-calendars-ui"
   "carbonio-contacts-ui"
