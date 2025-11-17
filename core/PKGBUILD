@@ -838,9 +838,8 @@ postinst__apt() {
   # Configure post-apt hook for node_packages.sh
   if [ -x /usr/local/sbin/node_packages.sh ]; then
     mkdir -p /etc/apt/apt.conf.d
-    cat >/etc/apt/apt.conf.d/100post-apt <<'EOF'
-DPkg::Post-Invoke {"/usr/local/sbin/node_packages.sh";};
-EOF
+    echo 'DPkg::Post-Invoke {"/usr/local/sbin/node_packages.sh";};' \
+      > /etc/apt/apt.conf.d/100post-apt
     chmod 644 /etc/apt/apt.conf.d/100post-apt
   fi
 
@@ -956,12 +955,11 @@ postinst__ubuntu_noble() {
     /opt/zextras/libexec/zmfixperms
   fi
 
-  # Configure post-apt hook for node_packages.sh (Ubuntu Noble)
+  # configuring post-apt hook for node_packages.sh (Ubuntu Noble)
   if [ -x /usr/local/sbin/node_packages.sh ]; then
     mkdir -p /etc/apt/apt.conf.d
-    cat >/etc/apt/apt.conf.d/100post-apt <<'EOF'
-DPkg::Post-Invoke {"/usr/local/sbin/node_packages.sh";};
-EOF
+    echo 'DPkg::Post-Invoke {"/usr/local/sbin/node_packages.sh";};' \
+      > /etc/apt/apt.conf.d/100post-apt
     chmod 644 /etc/apt/apt.conf.d/100post-apt
   fi
 
@@ -1090,12 +1088,11 @@ postinst__yum() {
     /opt/zextras/libexec/zmfixperms
   fi
 
-  # Configure DNF post-transaction hook for node_packages.sh (RHEL/Rocky via yum/dnf)
+  # configuring DNF post-transaction hook for node_packages.sh
   if [ -x /usr/local/sbin/node_packages.sh ]; then
     mkdir -p /etc/dnf/plugins/post-transaction-actions.d
-    cat >/etc/dnf/plugins/post-transaction-actions.d/post-dnf.action <<'EOF'
-*:in:/usr/local/sbin/node_packages.sh
-EOF
+    echo '*:in:/usr/local/sbin/node_packages.sh' \
+      > /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
     chmod 644 /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
   fi
 
@@ -1202,12 +1199,11 @@ postinst__rocky_9() {
     /opt/zextras/libexec/zmfixperms
   fi
 
-  # Configure DNF post-transaction hook for node_packages.sh (Rocky 9)
+  # configuring DNF post-transaction hook for node_packages.sh
   if [ -x /usr/local/sbin/node_packages.sh ]; then
     mkdir -p /etc/dnf/plugins/post-transaction-actions.d
-    cat >/etc/dnf/plugins/post-transaction-actions.d/post-dnf.action <<'EOF'
-*:in:/usr/local/sbin/node_packages.sh
-EOF
+    echo '*:in:/usr/local/sbin/node_packages.sh' \
+      > /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
     chmod 644 /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
   fi
 
