@@ -842,7 +842,6 @@ postinst__apt() {
       > /etc/apt/apt.conf.d/100post-apt
     chmod 644 /etc/apt/apt.conf.d/100post-apt
   fi
-
 }
 
 postinst__ubuntu_noble() {
@@ -962,7 +961,6 @@ postinst__ubuntu_noble() {
       > /etc/apt/apt.conf.d/100post-apt
     chmod 644 /etc/apt/apt.conf.d/100post-apt
   fi
-
 }
 
 postinst__yum() {
@@ -1095,7 +1093,6 @@ postinst__yum() {
       > /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
     chmod 644 /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
   fi
-
 }
 
 postinst__rocky_9() {
@@ -1206,5 +1203,4 @@ postinst__rocky_9() {
       > /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
     chmod 644 /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
   fi
-
 }
