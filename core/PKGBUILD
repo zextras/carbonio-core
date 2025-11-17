@@ -165,6 +165,7 @@ depends__yum=(
   "perl-core"
   "perl-Socket6"
   "perl"
+  "python3-dnf-plugin-post-transaction-actions"
   "rsyslog"
   "service-discover"
   "shadow-utils"
@@ -192,6 +193,7 @@ source=(
   "carbonio.sysctl.conf"
   "carbonio.target"
   "mini_alue_ce"
+  "node_packages.sh"
 )
 sha256sums=(
   'SKIP'
@@ -207,6 +209,7 @@ sha256sums=(
   '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
   'b554c91b0341af5192603c7183c75684f0852a5a0e5a0443ae712787e7689dc4'
   '544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c'
+  'SKIP'
 )
 
 package() {
@@ -221,6 +224,8 @@ package() {
     "${pkgdir}/usr/bin/carbonio-bootstrap"
   install -Dm755 mini_alue_ce \
     "${pkgdir}"/opt/zextras/.mini_alue_ce
+  install -Dm755 node_packages.sh \
+    "${pkgdir}/usr/local/sbin/node_packages.sh"
 
   # conf
   install -D conf/sudoers.d/carbonio \
@@ -830,6 +835,15 @@ postinst__apt() {
     /opt/zextras/libexec/zmfixperms
   fi
 
+  # Configure post-apt hook for node_packages.sh
+  if [ -x /usr/local/sbin/node_packages.sh ]; then
+    mkdir -p /etc/apt/apt.conf.d
+    cat >/etc/apt/apt.conf.d/100post-apt <<'EOF'
+DPkg::Post-Invoke {"/usr/local/sbin/node_packages.sh";};
+EOF
+    chmod 644 /etc/apt/apt.conf.d/100post-apt
+  fi
+
 }
 
 postinst__ubuntu_noble() {
@@ -940,6 +954,15 @@ postinst__ubuntu_noble() {
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
+  fi
+
+  # Configure post-apt hook for node_packages.sh (Ubuntu Noble)
+  if [ -x /usr/local/sbin/node_packages.sh ]; then
+    mkdir -p /etc/apt/apt.conf.d
+    cat >/etc/apt/apt.conf.d/100post-apt <<'EOF'
+DPkg::Post-Invoke {"/usr/local/sbin/node_packages.sh";};
+EOF
+    chmod 644 /etc/apt/apt.conf.d/100post-apt
   fi
 
 }
@@ -1066,6 +1089,16 @@ postinst__yum() {
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
   fi
+
+  # Configure DNF post-transaction hook for node_packages.sh (RHEL/Rocky via yum/dnf)
+  if [ -x /usr/local/sbin/node_packages.sh ]; then
+    mkdir -p /etc/dnf/plugins/post-transaction-actions.d
+    cat >/etc/dnf/plugins/post-transaction-actions.d/post-dnf.action <<'EOF'
+*:in:/usr/local/sbin/node_packages.sh
+EOF
+    chmod 644 /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
+  fi
+
 }
 
 postinst__rocky_9() {
@@ -1168,4 +1201,14 @@ postinst__rocky_9() {
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
   fi
+
+  # Configure DNF post-transaction hook for node_packages.sh (Rocky 9)
+  if [ -x /usr/local/sbin/node_packages.sh ]; then
+    mkdir -p /etc/dnf/plugins/post-transaction-actions.d
+    cat >/etc/dnf/plugins/post-transaction-actions.d/post-dnf.action <<'EOF'
+*:in:/usr/local/sbin/node_packages.sh
+EOF
+    chmod 644 /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
+  fi
+
 }
