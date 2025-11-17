@@ -694,6 +694,20 @@ package() {
 }
 
 postrm__apt() {
+  # removing the created hook when removing the package
+  rm -f /etc/apt/apt.conf.d/100post-apt
+
+  if [ "$1" = purge ]; then
+    if crontab -l -u "zextras" >"/dev/null"; then
+      crontab -r -u "zextras"
+    fi
+  fi
+}
+
+postrm__ubuntu_noble() {
+  # removing the created hook when removing the package
+  rm -f /etc/apt/apt.conf.d/100post-apt
+
   if [ "$1" = purge ]; then
     if crontab -l -u "zextras" >"/dev/null"; then
       crontab -r -u "zextras"
@@ -702,6 +716,18 @@ postrm__apt() {
 }
 
 postrm__yum() {
+  # removing the created hook when removing the package
+  rm -f /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
+
+  if crontab -l -u "zextras" >"/dev/null"; then
+    crontab -r -u "zextras"
+  fi
+}
+
+postrm__rocky_9() {
+  # removing the created hook when removing the package
+  rm -f /etc/dnf/plugins/post-transaction-actions.d/post-dnf.action
+
   if crontab -l -u "zextras" >"/dev/null"; then
     crontab -r -u "zextras"
   fi
