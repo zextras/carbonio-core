@@ -3,7 +3,8 @@ umask 0027
 
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
-        . ~/.bashrc
+  # shellcheck source=/dev/null
+  . ~/.bashrc
 fi
 
 # User specific environment and startup programs

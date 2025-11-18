@@ -10,6 +10,7 @@ alias j='jobs'
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
+  # shellcheck source=/dev/null
   . /etc/bashrc
 fi
 
@@ -21,7 +22,7 @@ export PATH
 
 unset LD_LIBRARY_PATH
 
-eval $(/usr/bin/perl -V:archname)
+eval "$(/usr/bin/perl -V:archname)"
 PERLLIB=/opt/zextras/common/lib/perl5/$archname:/opt/zextras/common/lib/perl5
 export PERLLIB
 
