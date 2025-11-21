@@ -1,5 +1,5 @@
 pkgname="carbonio-core"
-pkgver="4.4.4"
+pkgver="4.4.5"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
@@ -673,7 +673,7 @@ package() {
   install -D junixsocket-native-2.4.0.nar \
     -t "${pkgdir}/opt/zextras/lib"
 
-  echo "25.12.0" >"${pkgdir}"/opt/zextras/.version
+  echo "26.3.0" >"${pkgdir}"/opt/zextras/.version
 
   # systemd units
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
