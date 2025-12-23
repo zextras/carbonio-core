@@ -182,7 +182,7 @@ source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
   "carbonio-core-utils::git+${url}/carbonio-core-utils#branch=devel"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
-  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.5"
+  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.6"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "10-carbonio.conf"
   "carbonio-bootstrap.sh"
