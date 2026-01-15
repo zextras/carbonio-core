@@ -66,6 +66,7 @@ depends__apt=(
   "service-discover"
   "sudo"
   "sysstat"
+  "systemd"
   "unzip"
 )
 depends__ubuntu_noble=(
@@ -120,6 +121,7 @@ depends__ubuntu_noble=(
   "service-discover"
   "sudo"
   "sysstat"
+  "systemd"
   "unzip"
 )
 depends__yum=(
@@ -165,11 +167,13 @@ depends__yum=(
   "perl-core"
   "perl-Socket6"
   "perl"
+  "procps-ng"
   "rsyslog"
   "service-discover"
   "shadow-utils"
   "sudo"
   "sysstat"
+  "systemd-udev"
   "unzip"
 )
 provides__yum=(
@@ -183,30 +187,32 @@ source=(
   "carbonio-core-utils::git+${url}/carbonio-core-utils#branch=devel"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.6"
-  "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
-  "10-carbonio.conf"
   "carbonio-bootstrap.sh"
   "carbonio-configd.service"
   "carbonio-stats.service"
-  "carbonio-tmpfile.conf"
-  "carbonio.sysctl.conf"
   "carbonio.target"
+  "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "mini_alue_ce"
+  "security-limits.conf"
+  "sysctl.conf"
+  "systemd-sysuser.conf"
+  "systemd-tmpfile.conf"
 )
 sha256sums=(
   'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
-  '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
-  '54c6ebe00b43c80246a95a29252be11b04207cb21d1d64f324b4ad3f72eec711'
-  '525f96392b46a0ae38acd6a1a637f31597f1e76e3efc35a168e8066692b74d22'
+  '951cb8ac851137e54241cbed2ed9ea0dcb759f43248db4bc95e188735c64f2c6'
   '3e61e74320f0aa69bc76f5eb356063b419eddf1a34ca8cb59da41a2b0dbd39ba'
   'dd1e872a58b8ff397603f67d64743f172869030da18facf11104093f48e895cb'
-  'c259063d1823a9b301195f091d98b646b9bf720270f105489c352493b45c42e0'
-  '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
   'b554c91b0341af5192603c7183c75684f0852a5a0e5a0443ae712787e7689dc4'
+  '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
   '544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c'
+  '54c6ebe00b43c80246a95a29252be11b04207cb21d1d64f324b4ad3f72eec711'
+  '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
+  'f8628d767a047740b5d76aef105c1a4ad3a23ddf4a83deaabe5662210b03607b'
+  'e60b7302c21e2614ea8b66036414153b779440269506532c825dda6bde2b2db3'
 )
 
 package() {
@@ -215,7 +221,7 @@ package() {
 
   # srcdir is /tmp/core/src, yap creates src with sources but cannot move nested directories, only flat files
   cd "${srcdir}/.."
-  install -Dm640 10-carbonio.conf \
+  install -Dm640 security-limits.conf \
     "${pkgdir}/etc/security/limits.d/10-carbonio.conf"
   install -Dm755 carbonio-bootstrap.sh \
     "${pkgdir}/usr/bin/carbonio-bootstrap"
@@ -223,7 +229,7 @@ package() {
     "${pkgdir}"/opt/zextras/.mini_alue_ce
 
   # conf
-  install -D conf/sudoers.d/carbonio \
+  install -Dm440 conf/sudoers.d/carbonio \
     "${pkgdir}/etc/sudoers.d/carbonio"
   install -D conf/zextras.bash_profile \
     "${pkgdir}/opt/zextras/.bash_profile"
@@ -481,8 +487,6 @@ package() {
     "${pkgdir}/opt/zextras/libexec/zmexplainsql"
   install -Dm755 src/libexec/extractsql.pl \
     "${pkgdir}/opt/zextras/libexec/zmextractsql"
-  install -Dm755 src/libexec/fixperms.sh \
-    "${pkgdir}/opt/zextras/libexec/zmfixperms"
   install -Dm755 src/libexec/fixreminder.pl \
     "${pkgdir}/opt/zextras/libexec/zmfixreminder"
   install -Dm755 src/libexec/gsaupdate.sh \
@@ -677,17 +681,22 @@ package() {
 
   # systemd units
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
-  install -Dm 644 "${srcdir}/carbonio.target" \
+  install -Dm644 "${srcdir}/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
-  install -Dm 644 "${srcdir}/carbonio-configd.service" \
+  install -Dm644 "${srcdir}/carbonio-configd.service" \
     "${pkgdir}/usr/lib/systemd/system/carbonio-configd.service"
-  install -Dm 644 "${srcdir}/carbonio-stats.service" \
+  install -Dm644 "${srcdir}/carbonio-stats.service" \
     "${pkgdir}/usr/lib/systemd/system/carbonio-stats.service"
 
-  install -Dm 644 "${srcdir}/carbonio.sysctl.conf" \
+  install -Dm644 "${srcdir}/sysctl.conf" \
     "${pkgdir}/lib/sysctl.d/60-carbonio.conf"
-  install -Dm 644 "${srcdir}/carbonio-tmpfile.conf" \
-    "${pkgdir}/usr/lib/tmpfiles.d/carbonio.conf"
+
+  # systemd sysusers.d
+  install -Dm644 "${srcdir}/systemd-sysuser.conf" \
+    "${pkgdir}/usr/lib/sysusers.d/${pkgname}.conf"
+  # systemd tmpfiles.d
+  install -Dm644 "${srcdir}/systemd-tmpfile.conf" \
+    "${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf"
 }
 
 postrm__apt() {
@@ -705,55 +714,6 @@ postrm__yum() {
 }
 
 postinst__apt() {
-  if [ "$1" = "configure" ]; then
-    # creating zextras group if it isn't already there
-    if ! getent group zextras >/dev/null; then
-      addgroup --system --force-badname --quiet zextras
-    fi
-
-    # creating zextras user if it isn't already there
-    if ! getent passwd zextras >/dev/null; then
-      adduser --system --force-badname --quiet \
-        --ingroup zextras \
-        --home /opt/zextras \
-        --shell /bin/bash \
-        zextras
-      usermod -c "zextras user" zextras
-    fi
-
-    # creating postfix and postdrop groups if aren't already there
-    if ! getent group postdrop >/dev/null; then
-      addgroup --system --force-badname --quiet postdrop
-    fi
-    if ! getent group postfix >/dev/null; then
-      addgroup --system --force-badname --quiet postfix
-    fi
-
-    # creating postfix user if it isn't already there
-    if ! getent passwd postfix >/dev/null; then
-      adduser --system --force-badname --quiet \
-        --ingroup postfix \
-        --home /opt/zextras/postfix \
-        postfix
-      usermod -c "postfix user" postfix
-    fi
-    usermod -a -G postfix,tty zextras
-  fi
-
-  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
-    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
-  fi
-
-  if [ ! -d "/opt/zextras/common/conf" ]; then
-    mkdir -p /opt/zextras/common/conf
-    chown -R zextras:zextras /opt/zextras/common/conf
-  fi
-
-  if [ ! -d "/opt/zextras/conf/ca" ]; then
-    mkdir -p /opt/zextras/conf/ca
-    chown -R zextras:zextras /opt/zextras/conf/ca
-  fi
-
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
@@ -769,15 +729,12 @@ postinst__apt() {
     echo "session	required	pam_limits.so"
   } >>"$pamtmp"
   mv -f "$pamtmp" /etc/pam.d/common-session
-  chmod 640 /etc/pam.d/common-session
-  chown -R root:root /opt/zextras/common/lib/perl5/Zextras
 
   if [ -d /etc/logrotate.d ]; then
     cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
   cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
-  chmod 755 /etc/init.d/carbonio
   rm -f /etc/rc*.d/S01carbonio
   rm -f /etc/rc*.d/K01carbonio
 
@@ -797,91 +754,15 @@ postinst__apt() {
     ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
   fi
 
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/backup
-  mkdir -p /opt/zextras/log
-  chown zextras:zextras /opt/zextras/log
-  mkdir -p /opt/zextras/ssl
-  chown zextras:zextras /opt/zextras/ssl
-  mkdir -p /opt/zextras/.ssh
-  chown zextras:zextras /opt/zextras/.ssh
-  mkdir -p /opt/zextras/zmstat
-  chown zextras:zextras /opt/zextras/zmstat
-  systemd-tmpfiles --create
   /usr/lib/systemd/systemd-sysctl
-
-  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
-    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
-    mv -f "$sudotmp" /etc/sudoers
-    chmod "$SUDOMODE" /etc/sudoers
-  fi
-
-  chmod 440 /etc/sudoers.d/carbonio
-  chown root:root /etc/sudoers.d/carbonio
 
   echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
-
+  systemd-sysusers >/dev/null 2>&1 || :
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
 }
 
 postinst__ubuntu_noble() {
-  if [ "$1" = "configure" ]; then
-    # creating zextras group if it isn't already there
-    if ! getent group zextras >/dev/null; then
-      addgroup --system --force-badname --quiet zextras
-    fi
-
-    # creating zextras user if it isn't already there
-    if ! getent passwd zextras >/dev/null; then
-      adduser --system --force-badname --quiet \
-        --ingroup zextras \
-        --home /opt/zextras \
-        --shell /bin/bash \
-        zextras
-      usermod -c "zextras user" zextras
-    fi
-
-    # creating postfix and postdrop groups if aren't already there
-    if ! getent group postdrop >/dev/null; then
-      addgroup --system --force-badname --quiet postdrop
-    fi
-    if ! getent group postfix >/dev/null; then
-      addgroup --system --force-badname --quiet postfix
-    fi
-
-    # creating postfix user if it isn't already there
-    if ! getent passwd postfix >/dev/null; then
-      adduser --system --force-badname --quiet \
-        --ingroup postfix \
-        --home /opt/zextras/postfix \
-        postfix
-      usermod -c "postfix user" postfix
-    fi
-    usermod -a -G postfix,tty zextras
-  fi
-
-  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
-    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
-  fi
-
-  if [ ! -d "/opt/zextras/common/conf" ]; then
-    mkdir -p /opt/zextras/common/conf
-    chown -R zextras:zextras /opt/zextras/common/conf
-  fi
-
-  if [ ! -d "/opt/zextras/conf/ca" ]; then
-    mkdir -p /opt/zextras/conf/ca
-    chown -R zextras:zextras /opt/zextras/conf/ca
-  fi
-
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
@@ -897,8 +778,6 @@ postinst__ubuntu_noble() {
     echo "session	required	pam_limits.so"
   } >>"$pamtmp"
   mv -f "$pamtmp" /etc/pam.d/common-session
-  chmod 640 /etc/pam.d/common-session
-  chown -R root:root /opt/zextras/common/lib/perl5/Zextras
 
   if [ -d /etc/logrotate.d ]; then
     cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
@@ -909,96 +788,15 @@ postinst__ubuntu_noble() {
   rm -f /etc/rc*.d/S01carbonio
   rm -f /etc/rc*.d/K01carbonio
 
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/backup
-  mkdir -p /opt/zextras/log
-  chown zextras:zextras /opt/zextras/log
-  mkdir -p /opt/zextras/ssl
-  chown zextras:zextras /opt/zextras/ssl
-  mkdir -p /opt/zextras/.ssh
-  chown zextras:zextras /opt/zextras/.ssh
-  mkdir -p /opt/zextras/zmstat
-  chown zextras:zextras /opt/zextras/zmstat
-  systemd-tmpfiles --create
   /usr/lib/systemd/systemd-sysctl
-
-  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
-    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
-    mv -f "$sudotmp" /etc/sudoers
-    chmod "$SUDOMODE" /etc/sudoers
-  fi
-
-  chmod 440 /etc/sudoers.d/carbonio
-  chown root:root /etc/sudoers.d/carbonio
 
   echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
-
+  systemd-sysusers >/dev/null 2>&1 || :
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
 }
 
 postinst__yum() {
-  # creating zextras group if it isn't already there
-  if ! getent group zextras >/dev/null; then
-    groupadd --system zextras >/dev/null
-  fi
-  # creating zextras user if it isn't already there
-  if ! getent passwd zextras >/dev/null; then
-    useradd --system \
-      -g zextras \
-      -d /opt/zextras \
-      --shell /bin/bash \
-      zextras >/dev/null
-    usermod -c "zextras user" zextras
-  fi
-
-  # creating postfix and postdrop groups if aren't already there
-  if ! getent group postdrop >/dev/null; then
-    groupadd --system postdrop >/dev/null
-  fi
-  if ! getent group postfix >/dev/null; then
-    groupadd --system postfix >/dev/null
-  fi
-
-  # creating postfix user if it isn't already there
-  if ! getent passwd postfix >/dev/null; then
-    useradd --system \
-      -g postfix \
-      -d /opt/zextras/postfix \
-      postfix
-    usermod -c "postfix user" postfix
-  fi
-  usermod -a -G postfix,tty zextras
-
-  # creating postfix user if it isn't already there
-  if ! getent passwd syslog >/dev/null; then
-    useradd --system \
-      -g adm \
-      syslog
-    usermod -c "syslog user" syslog
-  fi
-
-  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
-    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
-  fi
-
-  if [ ! -d "/opt/zextras/common/conf" ]; then
-    mkdir -p /opt/zextras/common/conf
-    chown -R zextras:zextras /opt/zextras/common/conf
-  fi
-
-  if [ ! -d "/opt/zextras/conf/ca" ]; then
-    mkdir -p /opt/zextras/conf/ca
-    chown -R zextras:zextras /opt/zextras/conf/ca
-  fi
-
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
@@ -1008,7 +806,6 @@ postinst__yum() {
   fi
 
   cp -f /opt/zextras/libexec/carbonio /etc/init.d/carbonio
-  chmod 755 /etc/init.d/carbonio
   rm -f /etc/rc*.d/S99carbonio
   rm -f /etc/rc*.d/K01carbonio
 
@@ -1034,95 +831,15 @@ postinst__yum() {
     ln -s /etc/init.d/carbonio /etc/rc6.d/K01carbonio
   fi
 
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/backup
-  mkdir -p /opt/zextras/log
-  chown zextras:zextras /opt/zextras/log
-  mkdir -p /opt/zextras/ssl
-  chown zextras:zextras /opt/zextras/ssl
-  mkdir -p /opt/zextras/.ssh
-  chown zextras:zextras /opt/zextras/.ssh
-  mkdir -p /opt/zextras/zmstat
-  chown zextras:zextras /opt/zextras/zmstat
-  systemd-tmpfiles --create
   /usr/lib/systemd/systemd-sysctl
-
-  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
-    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
-    mv -f "$sudotmp" /etc/sudoers
-    chmod "$SUDOMODE" /etc/sudoers
-  fi
-
-  chmod 440 /etc/sudoers.d/carbonio
-  chown root:root /etc/sudoers.d/carbonio
 
   echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  systemd-sysusers >/dev/null 2>&1 || :
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
 }
 
 postinst__rocky_9() {
-  # creating zextras group if it isn't already there
-  if ! getent group zextras >/dev/null; then
-    groupadd --system zextras >/dev/null
-  fi
-  # creating zextras user if it isn't already there
-  if ! getent passwd zextras >/dev/null; then
-    useradd --system \
-      -g zextras \
-      -d /opt/zextras \
-      --shell /bin/bash \
-      zextras >/dev/null
-    usermod -c "zextras user" zextras
-  fi
-
-  # creating postfix and postdrop groups if aren't already there
-  if ! getent group postdrop >/dev/null; then
-    groupadd --system postdrop >/dev/null
-  fi
-  if ! getent group postfix >/dev/null; then
-    groupadd --system postfix >/dev/null
-  fi
-
-  # creating postfix user if it isn't already there
-  if ! getent passwd postfix >/dev/null; then
-    useradd --system \
-      -g postfix \
-      -d /opt/zextras/postfix \
-      postfix
-    usermod -c "postfix user" postfix
-  fi
-  usermod -a -G postfix,tty zextras
-
-  # creating postfix user if it isn't already there
-  if ! getent passwd syslog >/dev/null; then
-    useradd --system \
-      -g adm \
-      syslog
-    usermod -c "syslog user" syslog
-  fi
-
-  if [ -d "/opt/zextras/common/certbot/etc/letsencrypt" ]; then
-    chown -R zextras:zextras /opt/zextras/common/certbot/etc/letsencrypt
-  fi
-
-  if [ ! -d "/opt/zextras/common/conf" ]; then
-    mkdir -p /opt/zextras/common/conf
-    chown -R zextras:zextras /opt/zextras/common/conf
-  fi
-
-  if [ ! -d "/opt/zextras/conf/ca" ]; then
-    mkdir -p /opt/zextras/conf/ca
-    chown -R zextras:zextras /opt/zextras/conf/ca
-  fi
-
   if [ -f "/opt/zextras/conf/ca/ca.pem" ]; then
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
@@ -1136,36 +853,10 @@ postinst__rocky_9() {
   rm -f /etc/rc*.d/S99carbonio
   rm -f /etc/rc*.d/K01carbonio
 
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/backup
-  mkdir -p /opt/zextras/log
-  chown zextras:zextras /opt/zextras/log
-  mkdir -p /opt/zextras/ssl
-  chown zextras:zextras /opt/zextras/ssl
-  mkdir -p /opt/zextras/.ssh
-  chown zextras:zextras /opt/zextras/.ssh
-  mkdir -p /opt/zextras/zmstat
-  chown zextras:zextras /opt/zextras/zmstat
-  systemd-tmpfiles --create
   /usr/lib/systemd/systemd-sysctl
-
-  if grep -E -q '^%zextras[[:space:]]' /etc/sudoers; then
-    sudotmp=$(mktemp -t zsudoers.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    SUDOMODE=$(perl -e 'my $mode=(stat("/etc/sudoers"))[2];if ($mode == "0000"){ $mode=33056 };printf("%04o\n",$mode & 07777);')
-    grep -E -v -e '^%zextras[[:space:]]' /etc/sudoers >"$sudotmp"
-    mv -f "$sudotmp" /etc/sudoers
-    chmod "$SUDOMODE" /etc/sudoers
-  fi
-
-  chmod 440 /etc/sudoers.d/carbonio
-  chown root:root /etc/sudoers.d/carbonio
 
   echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  systemd-sysusers >/dev/null 2>&1 || :
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
 }
