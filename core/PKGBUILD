@@ -186,7 +186,7 @@ source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
   "carbonio-core-utils::git+${url}/carbonio-core-utils#branch=devel"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
-  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.6"
+  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.7"
   "carbonio-bootstrap.sh"
   "carbonio-configd.service"
   "carbonio-stats.service"
