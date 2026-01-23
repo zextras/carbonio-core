@@ -3,13 +3,38 @@ Description=Carbonio Stats Daemon
 PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
+Slice=carbonio.slice
 User=zextras
 Type=forking
 PIDFile=/run/carbonio/stats/allprocs.pid
 ExecStart=/opt/zextras/bin/zmstatctl start-systemd
 ExecStop=/opt/zextras/bin/zmstatctl stop-systemd
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
+
+# Security hardening (standard profile - uses shell scripts)
+ProtectSystem=strict
+ReadWritePaths=/opt/zextras/zmstat /run/carbonio/stats
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+NoNewPrivileges=yes
+RemoveIPC=yes
+CapabilityBoundingSet=
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+SystemCallArchitectures=native
+ProtectHostname=yes
+ProtectClock=yes
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target

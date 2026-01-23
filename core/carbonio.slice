@@ -1,0 +1,19 @@
+[Unit]
+Description=Carbonio Root Slice
+Documentation=man:systemd.slice(5)
+PartOf=carbonio.target
+
+[Slice]
+# Root slice for all Carbonio services
+#
+# Child slices (by systemd naming convention):
+#   - carbonio-appserver.slice (mailbox, docs, preview, etc.)
+#   - carbonio-mta.slice (postfix, amavis, clamav, etc.)
+#   - carbonio-proxy.slice (nginx, memcached, etc.)
+#   - carbonio-directory-server.slice (ldap, etc.)
+#
+# Note: Resource limits here apply to ALL Carbonio services combined.
+# Individual limits should be set on child slices, not here.
+
+# Process/thread limit for all Carbonio services combined
+TasksMax=8192
