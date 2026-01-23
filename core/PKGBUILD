@@ -193,6 +193,7 @@ source=(
   "carbonio-bootstrap.sh"
   "carbonio-configd.service"
   "carbonio-stats.service"
+  "carbonio.slice"
   "carbonio.target"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
   "mini_alue_ce"
@@ -207,8 +208,9 @@ sha256sums=(
   'SKIP'
   'SKIP'
   '951cb8ac851137e54241cbed2ed9ea0dcb759f43248db4bc95e188735c64f2c6'
-  '3e61e74320f0aa69bc76f5eb356063b419eddf1a34ca8cb59da41a2b0dbd39ba'
-  'dd1e872a58b8ff397603f67d64743f172869030da18facf11104093f48e895cb'
+  '23f3e5d98811449dbcb4613e4402f69654143255fe2490b795532297a65d2ff9'
+  '0def557a5b229ec13a8b46962d0d45516d128a82ad5874e510eb555db869aae1'
+  '96609bb5ae7b0f3e5c3599b55051612dd8772663fadb18214ebc0784c88c2582'
   'b554c91b0341af5192603c7183c75684f0852a5a0e5a0443ae712787e7689dc4'
   '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
   '544194a67e761eca7f9873551f6f3c81853cf8610a46cc100568211e2a2a0d9c'
@@ -683,6 +685,8 @@ package__rocky_8() {
 
   # systemd units
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
+  install -Dm644 "${srcdir}/carbonio.slice" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.slice"
   install -Dm644 "${srcdir}/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
   install -Dm644 "${srcdir}/carbonio-configd.service" \
@@ -1166,6 +1170,8 @@ package__rocky_9() {
 
   # systemd units
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
+  install -Dm644 "${srcdir}/carbonio.slice" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.slice"
   install -Dm644 "${srcdir}/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
   install -Dm644 "${srcdir}/carbonio-configd.service" \
@@ -1649,6 +1655,8 @@ package__ubuntu_jammy() {
 
   # systemd units
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
+  install -Dm644 "${srcdir}/carbonio.slice" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.slice"
   install -Dm644 "${srcdir}/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
   install -Dm644 "${srcdir}/carbonio-configd.service" \
@@ -2132,6 +2140,8 @@ package__ubuntu_noble() {
 
   # systemd units
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
+  install -Dm644 "${srcdir}/carbonio.slice" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.slice"
   install -Dm644 "${srcdir}/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
   install -Dm644 "${srcdir}/carbonio-configd.service" \
