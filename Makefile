@@ -32,8 +32,7 @@ CONTAINER_NAME ?= yap-$(TARGET)
 CONTAINER_OPTS = --rm -ti \
 	--name $(CONTAINER_NAME) \
 	-v $(CURDIR):/project \
-	-v $(CCACHE_DIR):/root/.ccache \
-	-e CCACHE_DIR=/root/.ccache
+	-v $(CURDIR)/$(OUTPUT_DIR):/artifacts
 
 .PHONY: all build clean pull list-targets help
 
