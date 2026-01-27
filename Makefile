@@ -1,92 +1,96 @@
-.DEFAULT_GOAL := help
+# Makefile for building carbonio-core packages using YAP
+#
+# Usage:
+#   make build TARGET=ubuntu-jammy           # Build packages for Ubuntu 22.04
+#   make clean                               # Clean build artifacts
+#
+# Supported targets:
+#   ubuntu-jammy, ubuntu-noble, rocky-8, rocky-9
 
-# Available distributions for building
-DISTROS := ubuntu-focal ubuntu-jammy ubuntu-noble rocky-8 rocky-9
-YAP_VERSION := 1.11
-YAP_FLAGS := -sdc
+# Configuration
+.DEFAULT_GOAL := build
+YAP_IMAGE_PREFIX ?= docker.io/m0rf30/yap
+YAP_VERSION ?= 1.47
+CONTAINER_RUNTIME ?= $(shell command -v docker >/dev/null 2>&1 && echo docker || echo podman)
 
-.PHONY: help
-help: ## Show this help message
-	@echo "Carbonio Core - Available Make Commands"
+# Build directories
+OUTPUT_DIR ?= artifacts
+
+# CCache directory for build caching
+CCACHE_DIR ?= $(CURDIR)/.ccache
+
+# Default target (can be overridden)
+TARGET ?= ubuntu-jammy
+
+# Container image name (format: docker.io/m0rf30/yap-<target>:<version>)
+YAP_IMAGE = $(YAP_IMAGE_PREFIX)-$(TARGET):$(YAP_VERSION)
+
+# Container name
+CONTAINER_NAME ?= yap-$(TARGET)
+
+# Container options
+CONTAINER_OPTS = --rm -ti \
+	--name $(CONTAINER_NAME) \
+	-v $(CURDIR):/project \
+	-v $(CCACHE_DIR):/root/.ccache \
+	-e CCACHE_DIR=/root/.ccache
+
+.PHONY: all build clean pull list-targets help
+
+# Default target
+all: build
+
+## build: Build packages for the specified TARGET
+build:
+	@echo "Building packages for $(TARGET)..."
+	@mkdir -p $(OUTPUT_DIR) $(CCACHE_DIR)
+	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(YAP_IMAGE) build $(TARGET) /project
+
+## pull: Pull the YAP container image for the specified TARGET
+pull:
+	@echo "Pulling YAP image for $(TARGET)..."
+	$(CONTAINER_RUNTIME) pull $(YAP_IMAGE)
+
+## clean: Remove build artifacts
+clean:
+	@echo "Cleaning build artifacts..."
+	rm -rf $(OUTPUT_DIR)
+
+## list-targets: List supported distribution targets
+list-targets:
+	@echo "Supported distribution targets:"
 	@echo ""
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@echo "  ubuntu-jammy    (Ubuntu 22.04 LTS)"
+	@echo "  ubuntu-noble    (Ubuntu 24.04 LTS)"
+	@echo "  rocky-8         (Rocky Linux 8)"
+	@echo "  rocky-9         (Rocky Linux 9)"
 	@echo ""
-	@echo "Available distributions for build:"
-	@echo "  - ubuntu-focal (Ubuntu 20.04 LTS)"
-	@echo "  - ubuntu-jammy (Ubuntu 22.04 LTS)"
-	@echo "  - ubuntu-noble (Ubuntu 24.04 LTS)"
-	@echo "  - rocky-8      (Rocky Linux 8)"
-	@echo "  - rocky-9      (Rocky Linux 9)"
+	@echo "Usage: make build TARGET=<target>"
 
-.PHONY: build-ubuntu-focal
-build-ubuntu-focal: ## Build packages for Ubuntu 20.04 (Focal)
-	@echo "Building for Ubuntu Focal..."
-	podman run -ti \
-		--workdir /project \
-		-v "$(shell pwd):/project" \
-		"docker.io/m0rf30/yap-ubuntu-focal:$(YAP_VERSION)" \
-		build ubuntu-focal /project $(YAP_FLAGS)
-
-.PHONY: build-ubuntu-jammy
-build-ubuntu-jammy: ## Build packages for Ubuntu 22.04 (Jammy)
-	@echo "Building for Ubuntu Jammy..."
-	podman run -ti \
-		--workdir /project \
-		-v "$(shell pwd):/project" \
-		"docker.io/m0rf30/yap-ubuntu-jammy:$(YAP_VERSION)" \
-		build ubuntu-jammy /project $(YAP_FLAGS)
-
-.PHONY: build-ubuntu-noble
-build-ubuntu-noble: ## Build packages for Ubuntu 24.04 (Noble)
-	@echo "Building for Ubuntu Noble..."
-	podman run -ti \
-		--workdir /project \
-		-v "$(shell pwd):/project" \
-		"docker.io/m0rf30/yap-ubuntu-noble:$(YAP_VERSION)" \
-		build ubuntu-noble /project $(YAP_FLAGS)
-
-.PHONY: build-rocky-8
-build-rocky-8: ## Build packages for Rocky Linux 8
-	@echo "Building for Rocky Linux 8..."
-	podman run -ti \
-		--workdir /project \
-		-v "$(shell pwd):/project" \
-		"docker.io/m0rf30/yap-rocky-8:$(YAP_VERSION)" \
-		build rocky-8 /project $(YAP_FLAGS)
-
-.PHONY: build-rocky-9
-build-rocky-9: ## Build packages for Rocky Linux 9
-	@echo "Building for Rocky Linux 9..."
-	podman run -ti \
-		--workdir /project \
-		-v "$(shell pwd):/project" \
-		"docker.io/m0rf30/yap-rocky-9:$(YAP_VERSION)" \
-		build rocky-9 /project $(YAP_FLAGS)
-
-.PHONY: build-all
-build-all: ## Build packages for all supported distributions
-	@echo "Building for all distributions..."
-	@$(MAKE) build-ubuntu-focal
-	@$(MAKE) build-ubuntu-jammy
-	@$(MAKE) build-ubuntu-noble
-	@$(MAKE) build-rocky-8
-	@$(MAKE) build-rocky-9
-
-.PHONY: clean
-clean: ## Clean build artifacts
-	@echo "Cleaning artifacts..."
-	rm -rf artifacts/
-	@echo "Clean complete."
-
-.PHONY: check-podman
-check-podman: ## Check if podman is installed
-	@which podman > /dev/null || (echo "Error: podman is not installed. Please install podman first." && exit 1)
-	@echo "podman is installed: $$(podman --version)"
-
-.PHONY: validate
-validate: ## Validate the project structure and configuration
-	@echo "Validating project structure..."
-	@test -f yap.json || (echo "Error: yap.json not found" && exit 1)
-	@test -f build-packages.sh || (echo "Error: build-packages.sh not found" && exit 1)
-	@test -d core || (echo "Error: core/ directory not found" && exit 1)
-	@echo "Project structure validation passed."
+## help: Show this help message
+help:
+	@echo "Carbonio Core - Build System"
+	@echo ""
+	@echo "This Makefile builds carbonio-core packages using YAP"
+	@echo "(Yet Another Packager) in Docker/Podman containers."
+	@echo ""
+	@echo "Usage:"
+	@echo "  make <target> [TARGET=<distro>] [OPTIONS]"
+	@echo ""
+	@echo "Targets:"
+	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## /  /' | column -t -s ':'
+	@echo ""
+	@echo "Options:"
+	@echo "  TARGET             Distribution target (default: $(TARGET))"
+	@echo "  YAP_IMAGE_PREFIX   YAP image prefix (default: $(YAP_IMAGE_PREFIX))"
+	@echo "  YAP_VERSION        YAP image version (default: $(YAP_VERSION))"
+	@echo "  CONTAINER_RUNTIME  Container runtime (default: podman)"
+	@echo "  CONTAINER_NAME     Container name (default: $(CONTAINER_NAME))"
+	@echo "  OUTPUT_DIR         Output directory for packages (default: $(OUTPUT_DIR))"
+	@echo "  CCACHE_DIR         CCache directory for build caching (default: $(CCACHE_DIR))"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make build TARGET=ubuntu-jammy"
+	@echo "  make build TARGET=rocky-9"
+	@echo "  make pull TARGET=ubuntu-noble"
+	@echo ""
