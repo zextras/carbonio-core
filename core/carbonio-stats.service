@@ -3,12 +3,13 @@ Description=Carbonio Stats Daemon
 PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
 
 [Service]
+Slice=carbonio.slice
 User=zextras
 Type=forking
 PIDFile=/run/carbonio/stats/allprocs.pid
 ExecStart=/opt/zextras/bin/zmstatctl start-systemd
 ExecStop=/opt/zextras/bin/zmstatctl stop-systemd
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
 
 [Install]
