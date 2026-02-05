@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 pkgname="carbonio-core"
 pkgver="4.4.5"
 pkgrel="1"
@@ -8,7 +12,7 @@ copyright=(
   "2022, Synacor, Inc."
 )
 license=(
-  "GPL-2.0-only"
+  "AGPL-3.0-only"
 )
 url="https://github.com/zextras"
 section="mail"
