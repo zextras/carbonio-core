@@ -13,7 +13,7 @@ EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/systemd-envscript
 ExecStartPre=nc -z $ldap_domain $ldap_port
 ExecStart=/opt/zextras/libexec/zmconfigd
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
 
 [Install]

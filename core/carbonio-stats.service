@@ -12,7 +12,7 @@ Type=forking
 PIDFile=/run/carbonio/stats/allprocs.pid
 ExecStart=/opt/zextras/bin/zmstatctl start-systemd
 ExecStop=/opt/zextras/bin/zmstatctl stop-systemd
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
 
 [Install]
