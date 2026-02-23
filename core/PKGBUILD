@@ -191,7 +191,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#branch=devel"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.5"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.7"
   "carbonio-bootstrap.sh"
@@ -715,7 +715,7 @@ _postinst() {
   # Use cp instead of sed -i to handle bind-mounted /etc/hosts in containers
   # (sed -i creates a temp file and renames, which fails on bind mounts)
   hosts_tmp=$(mktemp)
-  sed -e '/^::1     ip6-localhost ip6-loopback localhost$/!s/::1     ip6-localhost ip6-loopback/::1     ip6-localhost ip6-loopback localhost/' /etc/hosts > "$hosts_tmp" \
+  sed -e '/^::1     ip6-localhost ip6-loopback localhost$/!s/::1     ip6-localhost ip6-loopback/::1     ip6-localhost ip6-loopback localhost/' /etc/hosts >"$hosts_tmp" \
     && cp "$hosts_tmp" /etc/hosts
   rm -f "$hosts_tmp"
   sed -i -e 's/# session    required   pam_limits.so/session    required   pam_limits.so/' /etc/pam.d/su
