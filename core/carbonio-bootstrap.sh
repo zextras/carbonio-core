@@ -1,4 +1,7 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
 
 # Check privileges
 user=$(id -u)
@@ -45,10 +48,16 @@ if [[ -z "$1" ]] || [[ "$1" = "-c" ]]; then
   print_ce_alue
 fi
 
-# Bootstrap and start C services
-/opt/zextras/libexec/setup.pl "${@}"
+# Ensure all users and groups are created before setting directory ownership
+echo "Applying systemd sysusers configurations..."
+systemd-sysusers /usr/lib/sysusers.d/carbonio-*.conf >/dev/null 2>&1 || :
 
-# Fix permission after services starting
-/opt/zextras/libexec/zmfixperms
+# Create directories and set ownership (requires users to exist first)
+echo "Applying systemd tmpfiles configurations..."
+systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-*.conf >/dev/null 2>&1 || :
+echo "tmpfiles configurations applied."
+
+# Bootstrap and start services
+/opt/zextras/libexec/setup.pl "${@}"
 
 ########## End Carbonio Bootstrap

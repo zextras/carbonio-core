@@ -1,5 +1,9 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 pkgname="carbonio-webui"
-pkgver="4.4.4"
+pkgver="4.4.5"
 pkgrel="1"
 pkgdesc="A modern Web UI for carbonio (meta-package)"
 arch=('x86_64')

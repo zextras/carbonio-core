@@ -1,9 +1,7 @@
 #!/bin/bash
-#
 # SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
 #
-# SPDX-License-Identifier: GPL-2.0-only
-#
+# SPDX-License-Identifier: AGPL-3.0-only
 
 # Check if the correct number of arguments is provided
 if [ "$#" -ne 1 ]; then
@@ -14,7 +12,7 @@ fi
 
 DISTRO=$1
 YAP_FLAGS="-sdc"
-YAP_VERSION=1.11
+YAP_VERSION=1.48
 
 # Validate the DISTRO input
 case $DISTRO in

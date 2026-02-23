@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 [Unit]
 Description=Carbonio Config Daemon
 PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
@@ -9,7 +13,7 @@ EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/systemd-envscript
 ExecStartPre=nc -z $ldap_domain $ldap_port
 ExecStart=/opt/zextras/libexec/zmconfigd
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
 
 [Install]
