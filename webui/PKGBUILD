@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-webui"
-pkgver="4.4.5"
+pkgver="4.4.6"
 pkgrel="1"
 pkgdesc="A modern Web UI for carbonio (meta-package)"
 arch=('x86_64')
