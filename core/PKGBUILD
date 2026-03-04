@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-core"
-pkgver="4.4.7"
+pkgver="4.4.8"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
@@ -219,7 +219,7 @@ sha256sums=(
   '487f7f0a6f88013f2bfcefc6c71e69a629a4fc9eeb288af0de3fbce8c84f44b3'
   '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
   '4a52826f26c4b8feb94aa5ce1657b1174993a9fe677d8cf48bbbe82d62164ff0'
-  '33d8985b2423b064274f479c8dd63fe9997c46fa02eb2be546bfb6563f3d78e4'
+  '2700e987f9103e3eb2bc7f10f5c4324f68852f4c825d6671b7d4fdc0c3da6615'
 )
 
 _package() {
