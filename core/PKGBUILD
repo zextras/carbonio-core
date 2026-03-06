@@ -744,6 +744,11 @@ _postinst() {
   echo "$(date +%s): INSTALLED carbonio-core" >>/opt/zextras/.install_history
 
   systemd-sysusers >/dev/null 2>&1 || :
+
+  # Fix /opt/zextras/conf file ownership to prevent
+  # systemd-tmpfiles unsafe path transition warnings.
+  chown zextras:zextras -R /opt/zextras/conf
+
   systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
 
   # Set permissions and capabilities on slapd binary (from carbonio-openldap)
