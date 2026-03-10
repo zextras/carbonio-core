@@ -1,0 +1,172 @@
+---
+# WorkflowTemplate: carbonio-core-ci
+# Migrated from Jenkinsfile — builds carbonio-core packages for all distros
+# and uploads them to Artifactory.
+#
+# Triggered by: Argo Events Sensor (GitHub push to devel/*)
+# Manual run:   argo submit --from workflowtemplate/carbonio-core-ci \
+#                 -p revision=devel --watch -n argo
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: carbonio-core-ci
+  namespace: argo
+  labels:
+    app.kubernetes.io/part-of: carbonio-core
+spec:
+  entrypoint: ci
+  serviceAccountName: argo-workflow
+
+  arguments:
+    parameters:
+      - name: repoUrl
+        value: git@github.com:zextras/carbonio-core.git
+      - name: revision
+        value: devel
+
+  artifactGC:
+    strategy: OnWorkflowDeletion
+
+  templates:
+
+    # ─── Entry point ────────────────────────────────────────────────────────────
+    - name: ci
+      steps:
+        # Step 1: clone the repository
+        - - name: clone
+            templateRef:
+              name: ci-git-clone
+              clusterScope: true
+              template: clone
+            arguments:
+              parameters:
+                - name: repoUrl
+                  value: "{{workflow.parameters.repoUrl}}"
+                - name: revision
+                  value: "{{workflow.parameters.revision}}"
+
+        # Step 2: extract git metadata
+        - - name: git-metadata
+            templateRef:
+              name: ci-git-metadata
+              clusterScope: true
+              template: extract
+            arguments:
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 3: build all 4 distros in parallel (single buildDir at repo root)
+        - - name: build-ubuntu-jammy
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: ubuntu-jammy
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+          - name: build-ubuntu-noble
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: ubuntu-noble
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+          - name: build-rocky-8
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: rocky-8
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+          - name: build-rocky-9
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: rocky-9
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 4: merge all distro artifacts into one directory
+        - - name: collect
+            template: collect-artifacts
+            arguments:
+              artifacts:
+                - name: pkgs-ubuntu-jammy
+                  from: "{{steps.build-ubuntu-jammy.outputs.artifacts.packages}}"
+                - name: pkgs-ubuntu-noble
+                  from: "{{steps.build-ubuntu-noble.outputs.artifacts.packages}}"
+                - name: pkgs-rocky-8
+                  from: "{{steps.build-rocky-8.outputs.artifacts.packages}}"
+                - name: pkgs-rocky-9
+                  from: "{{steps.build-rocky-9.outputs.artifacts.packages}}"
+
+        # Step 5: upload to Artifactory
+        - - name: upload
+            templateRef:
+              name: ci-upload-artifacts
+              clusterScope: true
+              template: upload
+            arguments:
+              parameters:
+                - name: repoName
+                  value: carbonio-core
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+              artifacts:
+                - name: packages
+                  from: "{{steps.collect.outputs.artifacts.all-packages}}"
+
+    # ─── Inline: merge per-distro artifact dirs into one ───────────────────────
+    - name: collect-artifacts
+      inputs:
+        artifacts:
+          - name: pkgs-ubuntu-jammy
+            path: /tmp/pkgs/ubuntu-jammy
+          - name: pkgs-ubuntu-noble
+            path: /tmp/pkgs/ubuntu-noble
+          - name: pkgs-rocky-8
+            path: /tmp/pkgs/rocky-8
+          - name: pkgs-rocky-9
+            path: /tmp/pkgs/rocky-9
+      script:
+        image: alpine:3
+        command: [sh]
+        source: |
+          set -e
+          mkdir -p /tmp/all-packages
+          for DIR in /tmp/pkgs/*/; do
+            cp "$DIR"* /tmp/all-packages/ 2>/dev/null || true
+          done
+          echo "All packages:"
+          ls -lh /tmp/all-packages/
+      outputs:
+        artifacts:
+          - name: all-packages
+            path: /tmp/all-packages
+            archive:
+              none: {}
