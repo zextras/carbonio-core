@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-ce"
-pkgver="4.5.1"
+pkgver="4.5.2"
 pkgrel="1"
 pkgdesc="The Carbonio Community Edition bootstrap package (meta-package)"
 maintainer="Zextras <packages@zextras.com>"

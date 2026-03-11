@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-core"
-pkgver="4.5.1"
+pkgver="4.5.2"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
@@ -191,9 +191,9 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.6"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.7"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
-  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.9"
+  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.10"
   "carbonio-bootstrap.sh"
   "carbonio-configd.service"
   "carbonio-stats.service"
