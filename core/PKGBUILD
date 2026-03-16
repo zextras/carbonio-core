@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-only
+_carbonio_version="26.3.1"
 
 pkgname="carbonio-core"
 pkgver="4.5.2"
@@ -681,7 +682,7 @@ _package() {
   install -D junixsocket-native-2.4.0.nar \
     -t "${pkgdir}/opt/zextras/lib"
 
-  echo "26.3.0" >"${pkgdir}"/opt/zextras/.version
+  echo "${_carbonio_version}" >"${pkgdir}"/opt/zextras/.version
 
   install -Dm644 "${srcdir}/sysctl.conf" \
     "${pkgdir}/usr/lib/sysctl.d/60-carbonio.conf"
