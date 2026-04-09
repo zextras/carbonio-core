@@ -22,7 +22,6 @@ arch=('x86_64')
 depends__apt=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-native-lib"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-libxml2"
@@ -78,7 +77,6 @@ depends__apt=(
 depends__ubuntu_noble=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-native-lib"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-libxml2"
@@ -133,7 +131,6 @@ depends__ubuntu_noble=(
 )
 depends__yum=(
   "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-native-lib"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-libxml2"
