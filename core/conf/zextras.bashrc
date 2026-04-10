@@ -29,9 +29,6 @@ export PERLLIB
 PERL5LIB=$PERLLIB
 export PERL5LIB
 
-JYTHONPATH=/opt/zextras/common/lib/jylibs
-export JYTHONPATH
-
 umask 0027
 
 unset DISPLAY
@@ -39,3 +36,15 @@ unset DISPLAY
 export MANPATH=/opt/zextras/common/share/man:${MANPATH}
 
 export HISTTIMEFORMAT="%y%m%d %T "
+
+# configd bash completion
+if [ -f /opt/zextras/common/share/bash-completion/completions/configd ]; then
+  # shellcheck source=/dev/null
+  . /opt/zextras/common/share/bash-completion/completions/configd
+fi
+
+# configd wrapper bash completion
+if [ -f /opt/zextras/common/share/bash-completion/completions/configd-wrappers ]; then
+  # shellcheck source=/dev/null
+  . /opt/zextras/common/share/bash-completion/completions/configd-wrappers
+fi

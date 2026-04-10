@@ -22,6 +22,7 @@ arch=('any')
 depends__apt=(
   "adduser"
   "carbonio-common-appserver-conf"
+  "carbonio-configd"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-openjdk-cacerts"
@@ -76,6 +77,7 @@ depends__apt=(
 depends__ubuntu_noble=(
   "adduser"
   "carbonio-common-appserver-conf"
+  "carbonio-configd"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-openjdk-cacerts"
@@ -129,6 +131,7 @@ depends__ubuntu_noble=(
 )
 depends__yum=(
   "carbonio-common-appserver-conf"
+  "carbonio-configd"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-openjdk-cacerts"
@@ -183,11 +186,9 @@ provides__yum=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=5affd0ced6cce254d0480ff07e95ae37da9f8100"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#branch=CO-3358"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
-  "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.10"
   "carbonio-bootstrap.sh"
-  "carbonio-configd.service"
   "carbonio-stats.service"
   "carbonio.target"
   "https://repo1.maven.org/maven2/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
@@ -202,8 +203,6 @@ sha256sums=(
   'SKIP'
   'SKIP'
   'SKIP'
-  '69790b3120400eddf89b3d4a96b5fa020be0c19c5d6c3837fb351f7a9f9a05ac'
-  '8c9f1e66ea14f614a7c3af07da0401598519e66e61227afc2b2ac6d5c89b5aea'
   '3da0e19e94888205892102093907e9efa17262dac84db54b2a1be33945e4b751'
   'f0f3b362e5dbe6d6d8d0612aad4bc170724add1da818b11f4b8af05fc9c05772'
   '6a01e0a69be5469284326fcecb19425d3605aea5777c7a4500bedabbfec78a97'
@@ -211,7 +210,7 @@ sha256sums=(
   '487f7f0a6f88013f2bfcefc6c71e69a629a4fc9eeb288af0de3fbce8c84f44b3'
   '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
   'ff23c9c5e4c23ee22ee4e817fa96287afbd5c27ff6c533f1f6a9efa8ad82bc96'
-  '4e2bd1a6def3a6df0989cb673b770e86edce4a5058f9b82be6d1aa65930e058f'
+  '613739981b32370d10d711bd8226104a3e2b2ed276934eb8ba112f28204a8e85'
 )
 
 _package() {
@@ -285,8 +284,6 @@ _package() {
   # REPOS
   # core-utils
   cd "${srcdir}/carbonio-core-utils"
-  install -D src/bin/advanced_status.sh \
-    "${pkgdir}/opt/zextras/bin/advanced_status"
   install -D src/bin/antispam-mysql.sh \
     "${pkgdir}/opt/zextras/bin/antispam-mysql"
   install -D src/bin/antispam-mysql.server.sh \
@@ -335,7 +332,7 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmconfigdctl"
   install -D src/bin/contactbackup.pl \
     "${pkgdir}/opt/zextras/bin/zmcontactbackup"
-  install -D src/bin/control.pl \
+  install -D src/bin/control.sh \
     "${pkgdir}/opt/zextras/bin/zmcontrol"
   install -D src/bin/dedupe.sh \
     "${pkgdir}/opt/zextras/bin/zmdedupe"
@@ -393,7 +390,7 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmplayredo"
   install -D src/bin/prov.sh \
     "${pkgdir}/opt/zextras/bin/zmprov"
-  install -D src/bin/proxyconf.pl \
+  install -D src/bin/proxyconf.sh \
     "${pkgdir}/opt/zextras/bin/zmproxyconf"
   install -D src/bin/proxyctl.sh \
     "${pkgdir}/opt/zextras/bin/zmproxyctl"
@@ -415,7 +412,7 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmstat-chart"
   install -D src/bin/stat-chart-config.pl \
     "${pkgdir}/opt/zextras/bin/zmstat-chart-config"
-  install -D src/bin/statctl.pl \
+  install -D src/bin/statctl.sh \
     "${pkgdir}/opt/zextras/bin/zmstatctl"
   install -D src/bin/storectl.sh \
     "${pkgdir}/opt/zextras/bin/zmstorectl"
@@ -463,8 +460,6 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmcompresslogs"
   install -Dm755 src/libexec/computequotausage.sh \
     "${pkgdir}/opt/zextras/libexec/zmcomputequotausage"
-  install -Dm755 src/libexec/configd.py \
-    "${pkgdir}/opt/zextras/libexec/zmconfigd"
   install -Dm755 src/libexec/cpustat.pl \
     "${pkgdir}/opt/zextras/libexec/zmcpustat"
   install -Dm755 src/libexec/dailyreport.pl \
@@ -533,7 +528,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmqstat"
   install -Dm755 src/libexec/queuelog.pl \
     "${pkgdir}/opt/zextras/libexec/zmqueuelog"
-  install -Dm755 src/libexec/rc.pl \
+  install -Dm755 src/libexec/rc.sh \
     "${pkgdir}/opt/zextras/libexec/zmrc"
   install -Dm755 src/libexec/rcd.pl \
     "${pkgdir}/opt/zextras/libexec/zmrcd"
@@ -620,39 +615,10 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
   install -D conf/configd.cf \
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
-  install -D conf/configd.log4j.properties \
-    "${pkgdir}/opt/zextras/conf/zmconfigd.log4j.properties"
   # systemd env script
   # it generates /opt/zextras/data/systemd.env
   install -Dm755 src/bin/systemd-envscript.sh \
     "${pkgdir}/opt/zextras/bin/systemd-envscript"
-
-  # jython
-  cd "${srcdir}/carbonio-jython"
-  install -D jylibs/commands.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/commands.py"
-  install -D jylibs/conf.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/conf.py"
-  install -D jylibs/config.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/config.py"
-  install -D jylibs/globalconfig.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/globalconfig.py"
-  install -D jylibs/ldap.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/ldap.py"
-  install -D jylibs/listener.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/listener.py"
-  install -D jylibs/localconfig.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/localconfig.py"
-  install -D jylibs/logmsg.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/logmsg.py"
-  install -D jylibs/miscconfig.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/miscconfig.py"
-  install -D jylibs/mtaconfig.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/mtaconfig.py"
-  install -D jylibs/serverconfig.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/serverconfig.py"
-  install -D jylibs/state.py \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/state.py"
 
   # amavis
   cd "${srcdir}/carbonio-amavis"
@@ -693,8 +659,6 @@ _package_systemd() {
   # systemd units
   install -Dm644 "${srcdir}/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
-  install -Dm644 "${srcdir}/carbonio-configd.service" \
-    "${pkgdir}/usr/lib/systemd/system/carbonio-configd.service"
   install -Dm644 "${srcdir}/carbonio-stats.service" \
     "${pkgdir}/usr/lib/systemd/system/carbonio-stats.service"
 }
