@@ -1,0 +1,81 @@
+publiccodeYmlVersion: "0.5"
+name: Carbonio Community Edition
+releaseDate: "2026-04-01"
+softwareVersion: "26.3.2"
+developmentStatus: stable
+softwareType: standalone/web
+url: "https://github.com/zextras/carbonio-core"
+platforms:
+  - linux
+categories:
+  - communications
+  - office
+  - collaboration
+
+description:
+  en:
+    shortDescription: Open-source platform for digital collaboration ensuring security, code transparency, data control, and complete vendor independence.
+    longDescription: |
+      Carbonio CE (Community Edition) is an integrated open-source platform for digital communication and collaboration, providing email, file management, and real-time communication capabilities.
+      The solution is intended for organizations requiring data control, technological transparency, and vendor independence, enabling the adoption of autonomous infrastructures aligned with regulatory requirements.
+      Based on open-source technologies, the platform enables code auditability, system configurability, and integration with existing environments, supporting interoperability and operational flexibility.
+      Its open-source nature allows inspection, modification, and adaptation of the software to specific needs, ensuring transparency, auditability, and full control over the infrastructure.
+    documentation: "https://docs.zextras.com/user-guides/carbonio/en/html/"
+    apiDocumentation: "https://docs.zextras.com/carbonio-ce/html/develop/toc.html"
+    features:
+      - "Email, calendar, contacts, and task management"
+      - "Document storage, sharing, and management"
+      - "Real-time communication through chat and video meetings"
+      - "Access control and permission management"
+      - "Web interfaces and multi-device access"
+      - "Open-source, auditable, and customizable code"
+  it:
+    shortDescription: Piattaforma open source di collaborazione digitale progettata per garantire sicurezza, trasparenza, controllo dei dati e indipendenza dai vendor.
+    longDescription: |
+      Carbonio CE (Community Edition) è una piattaforma open source integrata per la gestione della comunicazione e della collaborazione digitale, che include funzionalità di posta elettronica, gestione documentale e comunicazione in tempo reale.
+      La soluzione è destinata a organizzazioni che richiedono controllo sui dati, trasparenza tecnologica e indipendenza da fornitori, consentendo l'adozione di infrastrutture autonome e conformi ai requisiti normativi.
+      Basata su tecnologie open source, la piattaforma consente la verificabilità del codice, la configurabilità del sistema e l'integrazione con ambienti esistenti, favorendo interoperabilità e flessibilità operativa.
+      La natura open source garantisce la possibilità di ispezionare, modificare e adattare il software alle esigenze specifiche, assicurando trasparenza, auditabilità e pieno controllo dell'infrastruttura.
+    documentation: "https://docs.zextras.com/user-guides/carbonio/it/html/"
+    apiDocumentation: "https://docs.zextras.com/carbonio-ce/html/develop/toc.html"
+    features:
+      - "Gestione di email, calendari, contatti e attività"
+      - "Archiviazione, condivisione e gestione dei documenti"
+      - "Comunicazione in tempo reale tramite chat e riunioni video"
+      - "Controllo degli accessi e gestione dei permessi"
+      - "Interfacce web e accesso multi-dispositivo"
+      - "Codice open source verificabile, modificabile e personalizzabile"
+
+legal:
+  license: AGPL-3.0-only
+  mainCopyrightOwner: "Zextras S.r.l."
+
+maintenance:
+  type: internal
+  contacts:
+    - name: "Paolo Remo Storti"
+      email: "community@zextras.com"
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en # English
+    - zh # Chinese
+    - nl # Dutch
+    - de # German
+    - hi # Hindi
+    - hu # Hungarian
+    - it # Italian
+    - ja # Japanese
+    - pt # Portuguese
+    - pl # Polish
+    - ro # Romanian
+    - ru # Russian
+    - es # Spanish
+    - th # Thai
+    - tr # Turkish
+    - fr # French
+    - vi # Vietnamese
+    - ky # Kyrgyz
+    - bs # Bosnian
+    - sl # Slovenian
