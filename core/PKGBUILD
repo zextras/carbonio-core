@@ -192,7 +192,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#tag=4.1.7"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=5ba0a4803e10ef3f223228faf04c1b980d5b0485"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.10"
   "carbonio-bootstrap.sh"
