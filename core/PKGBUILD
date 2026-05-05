@@ -4,7 +4,7 @@
 _carbonio_version="26.6.0"
 
 pkgname="carbonio-core"
-pkgver="4.5.4"
+pkgver="4.5.5"
 pkgrel="1"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
@@ -186,7 +186,7 @@ optdepends=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=0a12d044be35d6ef5cb0ba03171527b699a12d6e"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=adb89def9208dd8aca856698ec8d157d0e42936a"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.10"
   "carbonio-bootstrap.sh"
