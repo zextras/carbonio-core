@@ -18,7 +18,7 @@ license=(
 url="https://github.com/zextras"
 section="mail"
 priority="optional"
-arch=('x86_64')
+arch=('any')
 depends__apt=(
   "adduser"
   "carbonio-common-appserver-conf"
