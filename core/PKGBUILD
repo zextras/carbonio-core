@@ -181,9 +181,6 @@ depends__yum=(
 provides__yum=(
   "/usr/bin/zmpython"
 )
-optdepends=(
-  "carbonio-common-appserver-docs"
-)
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
   "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=adb89def9208dd8aca856698ec8d157d0e42936a"
