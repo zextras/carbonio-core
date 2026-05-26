@@ -183,7 +183,7 @@ provides__yum=(
 )
 source=(
   "carbonio-amavis::git+${url}/carbonio-amavis#tag=4.0.7"
-  "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=a8a3fdec502c259ed76ec4ab3bf5ccc6c8dc24d4"
+  "carbonio-core-utils::git+${url}/carbonio-core-utils#commit=021989a32298e0c6e2b01d39b7e4f1a3ab35cb8a"
   "carbonio-freshclam::git+${url}/carbonio-freshclam#tag=4.0.3"
   "carbonio-jython::git+${url}/carbonio-jython#tag=4.0.10"
   "carbonio-bootstrap.sh"
