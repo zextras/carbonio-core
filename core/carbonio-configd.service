@@ -19,7 +19,7 @@ Restart=on-failure
 # Hardening
 PrivateTmp=yes
 ProtectSystem=strict
-ReadWritePaths=/opt/zextras/conf /opt/zextras/log /opt/zextras/data /run/carbonio
+ReadWritePaths=/opt/zextras/conf /opt/zextras/log /opt/zextras/data /opt/zextras/common/conf /run/carbonio
 NoNewPrivileges=yes
 PrivateDevices=yes
 ProtectHome=yes
