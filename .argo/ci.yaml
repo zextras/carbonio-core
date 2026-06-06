@@ -1,0 +1,288 @@
+---
+# WorkflowTemplate: carbonio-core
+# Migrated from Jenkinsfile (jenkins-lib-common@v2.10.0, classic package build).
+#
+# Jenkinsfile stage -> Argo mapping:
+#   Setup / gitMetadata    -> ci-git-clone + ci-git-metadata
+#   Security Scan          -> ci-gitleaks-scan
+#   SonarQube analysis     -> ci-sonar-scan (reads committed sonar-project.properties)
+#   Build (buildStage -ds) -> ci-build-packages x4 default distros (parallel)
+#   Upload artifacts       -> ci-upload-artifacts
+#
+# Triggered by: Argo Events Sensor (GitHub push/PR). Manual run:
+#   argo submit --from workflowtemplate/carbonio-core -p revision=main -n argo
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: carbonio-core
+  namespace: argo
+  labels:
+    app.kubernetes.io/part-of: carbonio-core
+spec:
+  entrypoint: ci
+  serviceAccountName: argo-workflow
+
+  arguments:
+    parameters:
+      - name: repoUrl
+        value: git@github.com:zextras/carbonio-core.git
+      - name: revision
+        value: main
+      - name: changeTarget
+        value: ""
+      - name: commitSha
+        value: ""
+
+  artifactGC:
+    strategy: OnWorkflowDeletion
+
+  synchronization:
+    mutexes:
+      - name: carbonio-core-ci
+
+  hooks:
+    running:
+      expression: "workflow.status == \"Running\" && workflow.parameters.commitSha != \"\""
+      templateRef:
+        name: ci-github-checks
+        clusterScope: true
+        template: report
+      arguments:
+        parameters:
+          - name: repoFullName
+            value: zextras/carbonio-core
+          - name: headSha
+            value: "{{workflow.parameters.commitSha}}"
+          - name: name
+            value: "ci/argo"
+          - name: status
+            value: in_progress
+          - name: detailsUrl
+            value: "https://next.dev.zextras.com/workflows/argo/{{workflow.name}}"
+    exit:
+      expression: "workflow.parameters.commitSha != \"\""
+      templateRef:
+        name: ci-github-checks
+        clusterScope: true
+        template: report
+      arguments:
+        parameters:
+          - name: repoFullName
+            value: zextras/carbonio-core
+          - name: headSha
+            value: "{{workflow.parameters.commitSha}}"
+          - name: name
+            value: "ci/argo"
+          - name: status
+            value: completed
+          - name: conclusion
+            value: "{{=workflow.status == 'Succeeded' ? 'success' : (workflow.status == 'Failed' || workflow.status == 'Error' ? 'failure' : 'neutral')}}"
+          - name: detailsUrl
+            value: "https://next.dev.zextras.com/workflows/argo/{{workflow.name}}"
+          - name: summary
+            value: "Argo pipeline {{workflow.status}}"
+
+  templates:
+
+    - name: ci
+      steps:
+        # Step 1: clone
+        - - name: clone
+            templateRef:
+              name: ci-git-clone
+              clusterScope: true
+              template: clone
+            arguments:
+              parameters:
+                - name: repoUrl
+                  value: "{{workflow.parameters.repoUrl}}"
+                - name: revision
+                  value: "{{workflow.parameters.revision}}"
+
+        # Step 2: git metadata
+        - - name: git-metadata
+            templateRef:
+              name: ci-git-metadata
+              clusterScope: true
+              template: extract
+            arguments:
+              parameters:
+                - name: defaultBranch
+                  value: main
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 3: security scan
+        - - name: gitleaks
+            templateRef:
+              name: ci-gitleaks-scan
+              clusterScope: true
+              template: scan
+            arguments:
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 4: SonarQube analysis (committed sonar-project.properties has the
+        # projectKey/sources/exclusions, so no extra -D flags are needed).
+        - - name: sonar-scan
+            templateRef:
+              name: ci-sonar-scan
+              clusterScope: true
+              template: scan
+            arguments:
+              parameters:
+                - name: enabled
+                  value: "true"
+                - name: branch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: changeTarget
+                  value: "{{workflow.parameters.changeTarget}}"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 5: build deb/rpm for the 4 default distros in parallel
+        # (Jenkinsfile buildStage(buildFlags: ' -ds ')).
+        - - name: build-ubuntu-jammy
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: ubuntu-jammy
+                - name: buildFlags
+                  value: "-ds"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+          - name: build-ubuntu-noble
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: ubuntu-noble
+                - name: buildFlags
+                  value: "-ds"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+          - name: build-rocky-8
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: rocky-8
+                - name: buildFlags
+                  value: "-ds"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+          - name: build-rocky-9
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: rocky-9
+                - name: buildFlags
+                  value: "-ds"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 6: collect all distro artifacts
+        - - name: collect
+            template: collect-artifacts
+            arguments:
+              artifacts:
+                - name: pkgs-ubuntu-jammy
+                  from: "{{steps.build-ubuntu-jammy.outputs.artifacts.packages}}"
+                - name: pkgs-ubuntu-noble
+                  from: "{{steps.build-ubuntu-noble.outputs.artifacts.packages}}"
+                - name: pkgs-rocky-8
+                  from: "{{steps.build-rocky-8.outputs.artifacts.packages}}"
+                - name: pkgs-rocky-9
+                  from: "{{steps.build-rocky-9.outputs.artifacts.packages}}"
+
+        # Step 7: upload to Artifactory (gated on default branch / playground
+        # inside the template).
+        - - name: upload
+            templateRef:
+              name: ci-upload-artifacts
+              clusterScope: true
+              template: upload
+            arguments:
+              parameters:
+                - name: repoName
+                  value: carbonio-core
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: isDefaultBranch
+                  value: "{{steps.git-metadata.outputs.parameters.isDefaultBranch}}"
+              artifacts:
+                - name: packages
+                  from: "{{steps.collect.outputs.artifacts.all-packages}}"
+
+    # ─── Inline: merge per-distro artifact dirs into one ───────────────────────
+    - name: collect-artifacts
+      inputs:
+        artifacts:
+          - name: pkgs-ubuntu-jammy
+            path: /tmp/pkgs/ubuntu-jammy
+          - name: pkgs-ubuntu-noble
+            path: /tmp/pkgs/ubuntu-noble
+          - name: pkgs-rocky-8
+            path: /tmp/pkgs/rocky-8
+          - name: pkgs-rocky-9
+            path: /tmp/pkgs/rocky-9
+      script:
+        image: alpine:3
+        command: [sh]
+        source: |
+          set -e
+          mkdir -p /tmp/all-packages
+          for DIR in /tmp/pkgs/*/; do
+            [ -d "$DIR" ] || continue
+            for f in "$DIR"*; do
+              [ -e "$f" ] || continue
+              base=$(basename "$f")
+              if [ -e "/tmp/all-packages/$base" ]; then
+                echo "WARNING: duplicate artifact '$base' from $DIR — keeping first"
+                continue
+              fi
+              cp "$f" /tmp/all-packages/
+            done
+          done
+          echo "All packages:"
+          ls -lh /tmp/all-packages/
+      outputs:
+        artifacts:
+          - name: all-packages
+            path: /tmp/all-packages
+            archive:
+              none: {}
