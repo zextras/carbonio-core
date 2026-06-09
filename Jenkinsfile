@@ -43,12 +43,6 @@ pipeline {
         }
 
         stage('Semantic Release') {
-            when {
-                allOf {
-                    branch 'main'
-                    not { environment name: 'GIT_IS_TAG', value: 'true' }
-                }
-            }
             steps {
                 script {
                     semanticRelease()
