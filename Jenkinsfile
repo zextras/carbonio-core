@@ -57,18 +57,12 @@ pipeline {
         }
 
         stage('Security Scan') {
-            when {
-                environment name: 'GIT_IS_TAG', value: 'true'
-            }
             steps {
                 gitleaksStage()
             }
         }
 
         stage('SonarQube analysis') {
-            when {
-                environment name: 'GIT_IS_TAG', value: 'true'
-            }
             steps {
                 script {
                     scannerHome = tool 'SonarScanner'
@@ -81,9 +75,6 @@ pipeline {
         }
 
         stage('Build') {
-            when {
-                environment name: 'GIT_IS_TAG', value: 'true'
-            }
             steps {
                 echo 'Building deb/rpm packages'
                 buildStage(
@@ -93,9 +84,6 @@ pipeline {
         }
 
         stage('Upload artifacts') {
-            when {
-                environment name: 'GIT_IS_TAG', value: 'true'
-            }
             tools {
                 jfrog 'jfrog-cli'
             }
