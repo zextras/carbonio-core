@@ -35,17 +35,40 @@ pipeline {
         stage('Setup') {
             steps {
                 checkout scm
-                gitMetadata()
+                script {
+                    gitMetadata()
+                    semanticRelease.guard()
+                }
+            }
+        }
+
+        stage('Semantic Release') {
+            when {
+                allOf {
+                    branch 'main'
+                    not { environment name: 'GIT_IS_TAG', value: 'true' }
+                }
+            }
+            steps {
+                script {
+                    semanticRelease()
+                }
             }
         }
 
         stage('Security Scan') {
+            when {
+                environment name: 'GIT_IS_TAG', value: 'true'
+            }
             steps {
                 gitleaksStage()
             }
         }
 
         stage('SonarQube analysis') {
+            when {
+                environment name: 'GIT_IS_TAG', value: 'true'
+            }
             steps {
                 script {
                     scannerHome = tool 'SonarScanner'
@@ -58,6 +81,9 @@ pipeline {
         }
 
         stage('Build') {
+            when {
+                environment name: 'GIT_IS_TAG', value: 'true'
+            }
             steps {
                 echo 'Building deb/rpm packages'
                 buildStage(
@@ -66,8 +92,10 @@ pipeline {
             }
         }
 
-        stage('Upload artifacts')
-        {
+        stage('Upload artifacts') {
+            when {
+                environment name: 'GIT_IS_TAG', value: 'true'
+            }
             tools {
                 jfrog 'jfrog-cli'
             }
