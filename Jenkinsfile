@@ -35,8 +35,8 @@ pipeline {
         stage('Setup') {
             steps {
                 checkout scm
+                gitMetadata()
                 script {
-                    gitMetadata()
                     semanticRelease.guard()
                 }
             }
