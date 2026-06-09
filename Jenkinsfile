@@ -42,14 +42,6 @@ pipeline {
             }
         }
 
-        stage('Semantic Release') {
-            steps {
-                script {
-                    semanticRelease()
-                }
-            }
-        }
-
         stage('Security Scan') {
             steps {
                 gitleaksStage()
@@ -83,6 +75,12 @@ pipeline {
             }
             steps {
                 uploadStage()
+            }
+        }
+
+        stage('Semantic Release') {
+            steps {
+                semanticRelease()
             }
         }
     }
