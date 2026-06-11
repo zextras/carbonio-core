@@ -48,12 +48,7 @@
           },
           {
             "type": "chore",
-            "scope": "release",
             "release": false
-          },
-          {
-            "type": "chore",
-            "release": "patch"
           },
           {
             "type": "revert",
