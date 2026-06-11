@@ -44,16 +44,11 @@
           },
           {
             "type": "ci",
-            "release": "patch"
-          },
-          {
-            "type": "chore",
-            "scope": "release",
             "release": false
           },
           {
             "type": "chore",
-            "release": "patch"
+            "release": false
           },
           {
             "type": "revert",
