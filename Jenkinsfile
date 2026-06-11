@@ -36,9 +36,12 @@ pipeline {
             steps {
                 checkout scm
                 gitMetadata()
-                script {
-                    semanticRelease.guard()
-                }
+            }
+        }
+
+        stage('Skip CI') {
+            steps {
+                script { semanticRelease.guard() }
             }
         }
 
