@@ -1,3 +1,9 @@
+## [4.5.11](https://github.com/zextras/carbonio-core/compare/4.5.10...4.5.11) (2026-06-22)
+
+### Bug Fixes
+
+* units: remove unneeded ReadOnlyPaths ([991c1c0](https://github.com/zextras/carbonio-core/commit/991c1c07d6f9257ae439f02eed1bc278df724dfd))
+
 ## [4.5.10](https://github.com/zextras/carbonio-core/compare/4.5.9...4.5.10) (2026-06-11)
 
 ### Bug Fixes
