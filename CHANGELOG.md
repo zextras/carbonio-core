@@ -1,3 +1,9 @@
+## [4.5.12](https://github.com/zextras/carbonio-core/compare/4.5.11...4.5.12) (2026-06-25)
+
+### Bug Fixes
+
+* [CO-3815] core: remove carbonio-openldap run-time dep ([c6755c9](https://github.com/zextras/carbonio-core/commit/c6755c9949753ef9fb12d0a140f7e9086d5cba5e))
+
 ## [4.5.11](https://github.com/zextras/carbonio-core/compare/4.5.10...4.5.11) (2026-06-22)
 
 ### Bug Fixes
