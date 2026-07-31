@@ -1,3 +1,5 @@
+## [4.5.17](https://github.com/zextras/carbonio-core/compare/4.5.16...4.5.17) (2026-07-31)
+
 ## [4.5.16](https://github.com/zextras/carbonio-core/compare/4.5.15...4.5.16) (2026-07-27)
 
 ## [4.5.15](https://github.com/zextras/carbonio-core/compare/4.5.14...4.5.15) (2026-07-21)
