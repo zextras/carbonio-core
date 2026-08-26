@@ -1,3 +1,9 @@
+## [4.5.20](https://github.com/zextras/carbonio-core/compare/4.5.19...4.5.20) (2026-08-26)
+
+### Bug Fixes
+
+* **CO-4184:** stop recursive chown of certbot config dir ([21eb5b6](https://github.com/zextras/carbonio-core/commit/21eb5b6e8b6204a8b49e286a13297492107ee4ca))
+
 ## [4.5.19](https://github.com/zextras/carbonio-core/compare/4.5.18...4.5.19) (2026-08-17)
 
 ## [4.5.18](https://github.com/zextras/carbonio-core/compare/4.5.17...4.5.18) (2026-08-11)
