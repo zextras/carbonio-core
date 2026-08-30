@@ -1,6 +1,5 @@
 #!/bin/bash
-# SPDX-FileCopyrightText: 2022 Synacor, Inc.
-# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: GPL-2.0-only
 
@@ -25,14 +24,24 @@ zmsetvars() {
     fi
   fi
 
+  # Prefer configd localconfig when available, fallback to zmlocalconfig
+  configd="/opt/zextras/bin/configd"
   zmlocalconfig="/opt/zextras/bin/zmlocalconfig"
-  if [ ! -x "${zmlocalconfig}" ]; then
-    echo Error: can not find zmlocalconfig program
-    exit 1
-  fi
 
-  if ! eval "$(${zmlocalconfig} -q -m export)"; then
-    echo Error: executing: ${zmlocalconfig} -q -m export
+  if [ -x "${configd}" ]; then
+    # Use configd localconfig directly for better performance
+    if ! eval "$(${configd} localconfig -q -s -m export)"; then
+      echo Error: executing: ${configd} localconfig -q -s -m export
+      exit 1
+    fi
+  elif [ -x "${zmlocalconfig}" ]; then
+    # Fallback to legacy zmlocalconfig
+    if ! eval "$(${zmlocalconfig} -q -m export)"; then
+      echo Error: executing: ${zmlocalconfig} -q -m export
+      exit 1
+    fi
+  else
+    echo Error: can not find configd or zmlocalconfig program
     exit 1
   fi
 
@@ -155,9 +164,8 @@ systemd_print() {
 # Usage: zmconfigd_request <timeout-seconds> <command> [args...]
 # Returns 1 if the listener cannot be reached, 124 on timeout.
 #
-# The request socket is never half-closed: zmconfigd runs on Jython 2.7,
-# whose Netty sockets close the whole channel on peer FIN, so clients that
-# shutdown(SHUT_WR) after writing (nmap-ncat, nc -N) never get the reply.
+# The request socket is never half-closed: clients that shutdown(SHUT_WR)
+# after writing (nmap-ncat, nc -N) may not get the reply.
 #
 zmconfigd_request() {
   local timeout_s="$1"
