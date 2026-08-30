@@ -1,0 +1,210 @@
+#!/usr/bin/perl -w
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Periodically print CPU stats obtained from /proc/stat.
+# The first line of /proc/stat output, "cpu", gives total CPU times since boot.
+# The ensuing "cpuN" lines report the same info per CPU.
+# Seven numbers are reported on each CPU line:
+#
+#   user
+#   nice
+#   system
+#   idle
+#   iowait
+#   irq
+#   softirq
+#
+# This script converts these into %util since last time slice.
+#
+# On the Mac, only user, system and idle are reported, using the output of the
+# iostat program.
+#
+
+use strict;
+use Getopt::Long;
+use lib "/opt/zextras/common/lib/perl5";
+use Zextras::Mon::Stat;
+use Zextras::Mon::Logger;
+
+zmstatInit();
+
+my $STAT   = '/proc/stat';
+my @FIELDS = ( 'user', 'nice', 'sys', 'idle', 'iowait', 'irq', 'softirq' );
+my $NUM_CPUS;
+my @PREV_VALS;
+
+my ( $CONSOLE, $LOGFH, $LOGFILE, $HEADING, $ROTATE_DEFER, $ROTATE_NOW );
+
+sub getHeading() {
+    my $heading = 'timestamp';
+    my $i;
+    for ( $i = 0 ; $i <= $NUM_CPUS ; $i++ ) {
+        my $cpu = $i == 0 ? 'cpu' : sprintf( "cpu%d", $i - 1 );
+        my $j;
+        for ( $j = 0 ; $j < scalar(@FIELDS) ; $j++ ) {
+            my $col = "$cpu:" . $FIELDS[$j];
+            $heading .= ", $col";
+        }
+    }
+    return $heading;
+}
+
+sub init() {
+    my $cpus = 0;
+    my $line;
+    open( STAT, "< $STAT" ) or die "Can't open $STAT: $!";
+    while ( defined( $line = <STAT> ) ) {
+        chomp($line);
+        last if ( $line !~ /^cpu/ );
+        my @fields = split( /\s+/, $line );
+        if ( $fields[0] =~ /cpu(\d+)/ ) {
+            $cpus++;
+        }
+    }
+    close(STAT);
+    $NUM_CPUS  = $cpus;
+    @PREV_VALS = ();
+    my $i;
+    for ( $i = 0 ; $i <= $NUM_CPUS ; $i++ ) {
+
+        # total, user, nice, system, idle, iowait, irq, softirq
+        push( @PREV_VALS, 0, 0, 0, 0, 0, 0, 0, 0 );
+    }
+}
+
+sub getCpuStat() {
+    my @utils;
+    my $line;
+    my $cpu = 0;
+    open( STAT, "< $STAT" ) or die "Can't open $STAT: $!";
+    while ( defined( $line = <STAT> ) ) {
+        chomp($line);
+        last if ( $line !~ /^cpu/ );
+        my @fields = split( /\s+/, $line );
+        my $total  = 0;
+        my $i;
+        for ( $i = 1 ; $i <= 7 ; $i++ ) {
+            $total += $fields[$i];
+        }
+        my $total_delta = $total - $PREV_VALS[$cpu];
+        $PREV_VALS[$cpu] = $total;
+        for ( $i = 1 ; $i <= 7 ; $i++ ) {
+            my $delta = $fields[$i] - $PREV_VALS[ $cpu + $i ];
+            my $pct   = percent( $delta, $total_delta );
+            push( @utils, $pct );
+            $PREV_VALS[ $cpu + $i ] = $fields[$i];
+        }
+        $cpu += 8;
+    }
+    close(STAT);
+    return join( ', ', @utils );
+}
+
+sub runIOSTATMac($) {
+    my $interval = shift;
+    my $fh       = new FileHandle;
+    my $cmd      = "/usr/sbin/iostat -d -C -K -w $interval";
+    open( $fh, "$cmd |" ) || die "Unable to execute command \"$cmd\": $!";
+
+    # Skip the first 2 lines.
+    readLine( $fh, 1 );    # device list
+    readLine( $fh, 1 );    # iostat heading
+    return $fh;
+}
+
+sub usage() {
+    print STDERR <<_USAGE_;
+Usage: zmstat-cpu [options]
+Monitor CPU activity
+-i, --interval: output a line every N seconds
+-l, --log:      log file (default is /opt/zextras/zmstat/cpu.csv)
+-c, --console:  output to stdout
+
+If logging to a file, rotation occurs when HUP signal is sent or when
+date changes.  Current log is renamed to <dir>/YYYY-MM-DD/cpu.csv
+and a new file is created.
+_USAGE_
+    exit(1);
+}
+
+sub sighup {
+    if ( !$CONSOLE ) {
+        if ( !$ROTATE_DEFER ) {
+            $LOGFH = rotateLogFile( $LOGFH, $LOGFILE, $HEADING );
+        }
+        else {
+            $ROTATE_NOW = 1;
+        }
+    }
+}
+
+#
+# main
+#
+
+$| = 1;    # Flush immediately
+
+my $interval  = getZmstatInterval();
+my $opts_good = GetOptions(
+    'interval=i' => \$interval,
+    'log=s'      => \$LOGFILE,
+    'console'    => \$CONSOLE
+);
+if ( !$opts_good ) {
+    print STDERR "\n";
+    usage();
+}
+
+if ( !defined($LOGFILE) || $LOGFILE eq '' ) {
+    $LOGFILE = getLogFilePath('cpu.csv');
+}
+elsif ( $LOGFILE eq '-' ) {
+    $CONSOLE = 1;
+}
+if ($CONSOLE) {
+    $LOGFILE = '-';
+}
+
+createPidFile('cpu.pid');
+
+$SIG{HUP} = \&sighup;
+
+init();
+$HEADING = getHeading();
+$LOGFH   = openLogFile( $LOGFILE, $HEADING );
+
+my $date = getDate();
+waitUntilNiceRoundSecond($interval);
+
+while (1) {
+    my $cpuinfo = getCpuStat();
+
+    my $tstamp   = getTstamp();
+    my $currDate = getDate();
+    if ( $currDate ne $date ) {
+        $LOGFH = rotateLogFile( $LOGFH, $LOGFILE, $HEADING, $date );
+        $date  = $currDate;
+    }
+
+    # Don't allow rotation in signal handler while we're writing.
+    $ROTATE_DEFER = 1;
+    $LOGFH->print("$tstamp, $cpuinfo\n");
+    Zextras::Mon::Logger::LogStats( "info",
+        "zmstat cpu.csv: ${HEADING}:: $tstamp, $cpuinfo" );
+    $LOGFH->flush();
+    $ROTATE_DEFER = 0;
+    if ($ROTATE_NOW) {
+
+        # Signal handler delegated rotation to main.
+        $ROTATE_NOW = 0;
+        $LOGFH      = rotateLogFile( $LOGFH, $LOGFILE, $HEADING );
+    }
+
+    sleep($interval);
+}
+
+close($LOGFH);

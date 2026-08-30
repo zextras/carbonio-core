@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars
+
+if [ "$(whoami)" != zextras ]; then
+  echo Error: must be run as zextras user
+  exit 1
+fi
+
+optConf=0
+for opt in "$@"; do
+  if [ "$opt" = "-c" ] || [ "$opt" = "--conf" ]; then
+    optConf=1
+    break
+  fi
+done
+
+if [ $optConf -eq 1 ]; then
+  # If --conf option was given, use it.
+  exec zmjava -Djava.awt.headless=true com.zimbra.perf.chart.ChartUtil "$@"
+else
+  # If no --conf option, look for /opt/zextras/conf/zmstat-chart.xml and
+  # generated one if necessary.
+  conf=/opt/zextras/conf/zmstat-chart.xml
+  confTmp=$conf.$$.tmp
+  CONF_TIME=0
+  CONFGEN_TIME=$(stat -c %Z /opt/zextras/bin/zmstat-chart-config)
+  if [ -f $conf ]; then
+    CONF_TIME=$(stat -c %Z $conf)
+  fi
+  if [ "$CONFGEN_TIME" -gt "$CONF_TIME" ]; then
+    zmstat-chart-config >$confTmp
+    rc=$?
+    if [ $rc -ne 0 ]; then
+      echo "Unable to generate chart configuration file $conf"
+      if [ -e $confTmp ]; then
+        rm -f $confTmp
+      fi
+      exit $rc
+    fi
+    mv -f $confTmp $conf
+  fi
+  exec zmjava -Djava.awt.headless=true com.zimbra.perf.chart.ChartUtil --conf $conf "$@"
+fi

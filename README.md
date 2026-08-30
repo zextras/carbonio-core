@@ -1,18 +1,20 @@
 # Carbonio Core
 
-Carbonio Core is an open-source, community-driven email server that provides core components and resources for the Carbonio email and collaboration platform. This project contains the essential infrastructure, configuration files, and system services that power Carbonio's mail delivery and management capabilities, including:
+Carbonio Core provides the core components and resources for the Carbonio email and collaboration platform. It ships the control scripts, libraries, configuration templates, and system services that manage Carbonio's components, including:
 
-- Core mail server components
+- Service control scripts and libraries (`zm*` utilities, configd, jython modules)
+- Configuration templates (MTA, Amavis, FreshClam, configd, cron)
 - System services (carbonio.target, carbonio-configd.service, carbonio-stats.service)
-- Configuration management
 - Bootstrap scripts for initial setup
 
 ## Project Structure
 
-- `ce/` - Community Edition specific files
-- `core/` - Core package files and configurations
-- `webui/` - Web UI related files
-- `build-packages.sh` - Build script for creating distribution packages
+- `src/` - Commands, libraries, and runtime utilities
+- `config/` - Carbonio, MTA, configd, Amavis, FreshClam, and cron configuration
+- `system/` - systemd units and operating-system integration
+- `assets/` - Package assets
+- `package/` - YAP packaging recipe
+- `build-packages.sh` - Build script for creating the `carbonio-core` package
 
 ## Quick Start
 
@@ -43,18 +45,18 @@ make build TARGET=ubuntu-noble
 
 ## Installation
 
-These packages are distributed as part of the [Carbonio platform](https://zextras.com/carbonio). To install:
+The `carbonio-core` package is distributed as part of the [Carbonio platform](https://zextras.com/carbonio). To install:
 
 ### Ubuntu (Jammy/Noble)
 
 ```bash
-apt-get install <package-name>
+apt-get install carbonio-core
 ```
 
 ### Rocky Linux (8/9)
 
 ```bash
-yum install <package-name>
+yum install carbonio-core
 ```
 
 ## Contributing
@@ -63,4 +65,4 @@ We welcome contributions from the community! See [CONTRIBUTING.md](CONTRIBUTING.
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details.
+The repository contains AGPL-3.0-only, GPL-2.0-only, and CC0-1.0 components. Imported files retain their original licensing notices; license texts are provided in `LICENSES/`.

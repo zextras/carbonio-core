@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+if [ "$(whoami)" != zextras ]; then
+  echo Error: must be run as zextras user
+  exit 1
+fi
+
+zimbra_java_home=/opt/zextras/common/lib/jvm/java
+jspc_src_dir=/opt/zextras/mailboxd/webapps/zimbra
+jspc_build_dir=/opt/zextras/mailboxd/work/zimbra/jsp
+jspc_class_path="/opt/zextras/mailbox/jars/*:/opt/zextras/common/jetty_home/lib/*:/opt/zextras/common/jetty_home/lib/apache-jsp/*:/opt/zextras/common/jetty_home/lib/apache-jstl/*:/opt/zextras/mailbox/jars/*:/opt/zextras/jetty/lib/ext/*:/opt/zextras/jetty/lib/plus/*:/opt/zextras/jetty/lib/naming/*:/opt/zextras/lib/ext/*:/opt/zextras/jetty/common/lib/*:/opt/zextras/jetty/webapps/zimbra/WEB-INF/lib/*"
+
+extensions="backup clamscanner network carbonio-license zimbrahsm zimbrasync"
+ext_dir="/opt/zextras/lib/ext-common"
+for i in $extensions; do
+  if [ -d "/opt/zextras/lib/ext/$i" ]; then
+    jspc_class_path="${jspc_class_path}:${ext_dir}/$i"
+  fi
+done
+
+for i in /opt/zextras/common/jetty_home/lib/apache-jsp/*.jar; do
+  if [ "$class_path" = "" ]; then
+    class_path="$i"
+  else
+    class_path="${class_path}:$i"
+  fi
+done
+
+for i in /opt/zextras/common/jetty_home/lib/apache-jstl/*.jar; do
+  if [ "$class_path" = "" ]; then
+    class_path="$i"
+  else
+    class_path="${class_path}:$i"
+  fi
+done
+
+java_cmd="${zimbra_java_home}/bin/java \
+  -client -Xmx256m \
+  -Dzimbra.home=/opt/zextras \
+  -classpath ${jspc_class_path}:${class_path}"
+
+if [ -d "${jspc_build_dir}" ]; then
+  rm -rf ${jspc_build_dir}
+fi
+mkdir ${jspc_build_dir}
+
+compile_jsp() {
+  ${java_cmd} org.apache.jasper.JspC -v -trimSpaces -d ${jspc_build_dir} -webapp ${jspc_src_dir} -uriroot ${jspc_src_dir} -compile
+  return $?
+}
+
+compile_jsp
+rc=$?
+if [ $rc -eq 0 ]; then
+  echo "done."
+else
+  echo "failed."
+fi

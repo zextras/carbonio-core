@@ -1,0 +1,129 @@
+#!/usr/bin/perl -w
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+use strict;
+use Getopt::Std;
+
+my $log_file  = '/opt/zextras/log/zmmailboxd.out';
+my $outhandle = \*STDOUT;
+my $timeout   = 25;
+my $pid;
+my $tail;
+
+my %opts = ();
+getopts( 'hip:f:o:t:', \%opts );
+
+$SIG{'ALRM'} = sub {
+    print STDERR
+"Timed out (${timeout}s) waiting for thread dump to complete.  Aborting!\n";
+    kill( 15, $tail ) if ( defined $tail );
+    close(TAIL);
+    close($outhandle);
+
+    # remove the incomplete output file
+    unlink $opts{'o'} if defined $opts{'o'};
+    exit;
+};
+
+sub usage() {
+    print STDERR <<"EOF";
+Run as the zextras user.
+Usage: zmthrdump [-h] [-i] [-t timeout] [-p pid] [-f file] [-o out-file]
+
+    -h        prints this help message
+    -i        append timestamp to LOGFILE prior to invoking SIGQUIT
+    -p        PID to send SIGQUIT
+    -f        LOGFILE to tail for thread dump output (default:  zmmailboxd.out)
+    -o        output file of threaddump (default:  stdout)
+    -t        TIMEOUT (seconds) to exit if unresponsive (default: $timeout)
+
+EOF
+    close $outhandle;
+    exit;
+}
+
+my $append_ts = $opts{'i'};
+
+usage() if ( $opts{'h'} );
+
+my $id = getpwuid($<);
+chomp $id;
+
+$log_file = $opts{'f'} if ( exists $opts{'f'} && defined $opts{'f'} );
+usage() if ( exists $opts{'f'} && !defined $opts{'f'} );
+
+die "-f requires a filename argument" if ( !defined($log_file) );
+if ( !-f $log_file ) {
+    print STDERR "zmthrdump: $log_file: file not found\n";
+    exit 1;
+}
+
+if ( exists $opts{'t'} && defined $opts{'t'} ) {
+    $timeout = $opts{'t'};
+    usage() if ( !defined($timeout) || $timeout !~ /^\d+$/ );
+}
+elsif ( exists $opts{'t'} ) {
+    usage();
+}
+
+if ( exists $opts{'o'} && defined $opts{'o'} ) {
+    open( OUTHANDLE, "+>$opts{'o'}" ) || die "$opts{'o'}: $!";
+    $outhandle = \*OUTHANDLE;
+}
+elsif ( exists $opts{'o'} ) {
+    usage();
+}
+
+if ( exists $opts{'p'} ) {
+    $pid = $opts{'p'};
+    usage() if ( !defined($pid) || $pid !~ /^\d+$/ );
+}
+else {
+    $pid = qx(pgrep -o -f '/opt/zextras/.*/java.*mailboxd');
+    chomp($pid);
+}
+
+if ( !defined($pid) || $pid !~ /^\d+$/ || !kill( 0, $pid ) ) {
+    print STDERR "zmthrdump: unable to determine mailboxd pid\n";
+    exit 1;
+}
+
+my $ts  = scalar(localtime);
+my $msg = "zmthrdump: Requested thread dump [PID $pid] at $ts\n";
+if ($append_ts) {
+    open( LOG, ">>$log_file" ) || die "$log_file: unable to append: $!";
+    print LOG "\n$msg";
+    close(LOG);
+}
+
+print $outhandle "$msg";
+my $printing = 0;
+my $done     = 0;
+
+if ( -x "/opt/zextras/common/bin/jstack" ) {
+    $tail = open( TAIL, "/opt/zextras/common/bin/jstack -l $pid|" )
+      || die "jstack: $!";
+}
+else {
+    $tail = open( TAIL, "tail -F $log_file |" )
+      || die "$log_file: unable to tail: $!";
+    if ( !fork() ) {
+
+ # there seems to be a race condition if we don't wait for tail to start running
+        select( undef, undef, undef, 1.0 );
+        kill( 3, $pid ) || die "$pid: $!";
+        exit(0);
+    }
+}
+
+while (<TAIL>) {
+    alarm($timeout);
+    print $outhandle $_;
+}
+
+close(TAIL);
+close $outhandle;

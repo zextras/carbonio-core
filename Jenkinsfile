@@ -68,6 +68,7 @@ pipeline {
                 echo 'Building deb/rpm packages'
                 buildStage(
                     buildFlags: ' -ds ',
+                    useDefaultExcludes: false,
                 )
             }
         }

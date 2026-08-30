@@ -1,17 +1,11 @@
 {
-    "name": "An open-source, community-driven email server",
-    "description": "The test description",
+    "name": "carbonio-core",
+    "description": "Core components and resources for Carbonio",
     "buildDir": "/tmp/",
     "output": "artifacts",
     "projects": [
         {
-            "name": "ce"
-        },
-        {
-            "name": "core"
-        },
-        {
-            "name": "webui"
+            "name": "package"
         }
     ]
 }

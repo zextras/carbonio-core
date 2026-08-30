@@ -1,0 +1,148 @@
+#!/usr/bin/perl
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+use strict;
+use Getopt::Long;
+use English;
+
+# Runs EXPLAIN on all SELECT statements in the input stream.
+# EXPLAIN results that have potential performance impact
+# are followed by a "### NOTES" section.
+
+# Options
+my $user = "zextras";
+my $password = "zextras";
+my $database = "zimbra";
+my $mySqlCommand = "mysql";
+my $verbose = 0;
+my $usage = 0;
+my $logDir = "/opt/zextras/log";
+my $ignore;
+my $normalize = 0;
+
+if (-f "/opt/zextras/bin/zmlocalconfig") {
+    $password = qx(zmlocalconfig -s -m nokey zimbra_mysql_password);
+    chomp $password;
+    $user = qx(zmlocalconfig -m nokey zimbra_mysql_user);
+    chomp $user;
+}
+
+GetOptions("user=s" => \$user, "password=s" => \$password,
+	   "database=s" => \$database, "mysql=s" => \$mySqlCommand,
+	   "ignore=s" => \$ignore, "help" => \$usage,
+	   "normalize" => \$normalize);
+
+if ($usage) {
+    usage();
+    exit(0);
+}
+
+my %explained;
+
+while (<>) {
+    my $query = $_;
+    if (!($query =~ /^SELECT/)) {
+	next;
+    }
+    if ((defined($ignore) && $query =~ /$ignore/) || $explained{$query}) {
+	next;
+    }
+    $explained{$query} = 1;
+
+    my @notes;
+    my $rows = 0;
+    my %notes;
+    my $totalRows = 1;
+
+    print($query . "\n\n");
+    my @output = runSql("EXPLAIN " . $query);
+
+    foreach my $line (@output) {
+	if ($line =~ /type\: ALL/ ||
+	    $line =~ /key\: NULL/) {
+	    $notes{"Table scan"} = 1;
+	}
+	if ($line =~ /rows: (\d+)/) {
+	    $rows = $1;
+	    $totalRows = $totalRows * $rows;
+	}
+	if ($line =~ /filesort/) {
+	    if ($rows > 100) {
+		$notes{"Filesort"} = 1;
+	    }
+	}
+	if ($line =~ /temporary/) {
+	    if ($rows > 100) {
+		$notes{"Temporary table"} = 1;
+	    }
+	}
+
+	print($line . "\n");
+    }
+    print("\n");
+
+    if ($totalRows > 100) {
+	$notes{$totalRows . " rows scanned"} = 1;
+    }
+
+    if (scalar(keys(%notes)) > 0) {
+	print("### NOTES: " . join(",", keys(%notes)) . "\n\n");
+    }
+}
+
+exit(0);
+
+############################
+
+sub runSql($) {
+    my ($script) = @_;
+
+    # Write the last script to a text file for debugging
+    open(LASTSCRIPT, ">lastScript.sql") || die "Could not open lastScript.sql";
+    print(LASTSCRIPT $script);
+    close(LASTSCRIPT);
+
+    # Run the mysql command and redirect output to a temp file
+    my $tempFile = "mysql.out";
+    my $command = "$mySqlCommand --user=$user --password=$password " .
+        "--database=$database --vertical";
+    open(MYSQL, "| $command > $tempFile") || die "Unable to run $command";
+    print(MYSQL $script);
+    close(MYSQL);
+
+    if ($? != 0) {
+        die "Error while running '$command'.";
+    }
+
+    # Process output
+    open(OUTPUT, $tempFile) || die "Could not open $tempFile";
+    my @output;
+    while (<OUTPUT>) {
+        s/\s+$//;
+        push(@output, $_);
+    }
+
+    unlink($tempFile);
+    return @output;
+}
+
+sub usage() {
+    print <<USAGE_EOF
+Usage: $PROGRAM_NAME statements.sql
+
+Runs EXPLAIN on all unique SELECT statements in the specified file.
+Statements that span multiple lines are not supported.
+
+  -h, --help           Display this usage message
+  -i, --ignore=regexp  Ignore any SELECT statements that match the
+                       specified regular expression
+  -u, --user=name      MySQL user name (default: "zextras")
+  -p, --password=name  MySQL password (default: "zextras")
+  -d, --database=name  MySQL database (default: "zimbra")
+  -m, --mysql=command  MySQL client command name (default: "mysql")
+USAGE_EOF
+}
