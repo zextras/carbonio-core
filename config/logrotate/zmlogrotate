@@ -1,0 +1,120 @@
+/var/log/carbonio.log {
+    daily
+    missingok
+    notifempty
+    create 0644 syslog adm
+    dateext
+    postrotate
+      systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
+      su - zextras -c "/opt/zextras/bin/zmconfigdctl restart" > /dev/null 2>&1 || true
+    endscript
+    compress
+    rotate 30
+}
+
+/var/log/carbonio-stats.log {
+    daily
+    missingok
+    notifempty
+    create 0644 syslog adm
+    dateext
+    postrotate
+      systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
+      su - zextras -c "/opt/zextras/bin/zmconfigdctl restart" > /dev/null 2>&1 || true
+    endscript
+    rotate 0
+}
+
+/opt/zextras/log/myslow.log {
+    daily
+    missingok
+    copytruncate
+    rotate 30
+    notifempty
+    create 0644 zextras zextras
+    dateext
+    compress
+    #su zextras zextras
+}
+
+/opt/zextras/log/clamd.log {
+    daily
+    missingok
+    copytruncate
+    notifempty
+    create 0660 zextras zextras
+    dateext
+    postrotate
+      kill -HUP $(ps --ppid 1 -o pid,cmd | grep /opt/zextras/common/sbin/clamd | awk '{ print $1 }' 2> /dev/null) 2> /dev/null || true
+    endscript
+    compress
+    size 5000k
+    rotate 7
+    #su zextras zextras
+}
+
+/opt/zextras/log/freshclam.log {
+    daily
+    missingok
+    copytruncate
+    notifempty
+    create 0660 zextras zextras
+    dateext
+    postrotate
+      kill -HUP $(pidof /opt/zextras/common/bin/freshclam 2> /dev/null) 2> /dev/null || true
+    endscript
+    compress
+    size 1000k
+    rotate 7
+    #su zextras zextras
+}   
+
+/opt/zextras/log/nginx.log /opt/zextras/log/nginx.access.log /opt/zextras/log/nginx_clamav_signature_provider_access.log {
+    daily
+    sharedscripts
+    missingok
+    notifempty
+    create 0644 zextras zextras
+    dateext
+    postrotate
+      kill -USR1 $(ps --ppid 1 -o pid,cmd | grep /opt/zextras/common/sbin/nginx | awk '{ print $1 }' 2> /dev/null) 2> /dev/null || true
+    endscript
+    rotate 7
+    compress
+    delaycompress
+    #su zextras zextras
+}
+
+/opt/zextras/zmstat/zmstat.out {
+    daily
+    missingok
+    copytruncate
+    rotate 7
+    notifempty
+    compress
+    #su zextras zextras
+    dateext
+}
+
+/opt/zextras/log/cbpolicyd.log {
+    daily
+    missingok
+    rotate 7
+    notifempty
+    copytruncate
+    create 0644 zextras zextras
+    dateext
+    compress
+    #su zextras zextras
+}   
+
+/opt/zextras/log/spamtrain.log {
+    daily
+    missingok
+    copytruncate
+    rotate 7
+    notifempty
+    compress
+    #su zextras zextras
+    dateext
+}

@@ -1,0 +1,115 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+export LD_PRELOAD=/opt/zextras/common/lib/libjemalloc.so
+
+umask 027
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars
+
+if [ ! -x /opt/zextras/common/sbin/slapadd ]; then
+  exit 0
+fi
+
+if [ "$(whoami)" != zextras ]; then
+  echo Error: must be run as zextras user
+  exit 1
+fi
+
+zgood=no
+bgood=no
+zcat=$(which zcat 2>/dev/null)
+bzcat=$(which bzcat 2>/dev/null)
+
+if [ -x "$zcat" ]; then
+  zgood=yes
+fi
+
+if [ -x "$bzcat" ]; then
+  bgood=yes
+fi
+
+if [ "$1" = "" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo "USAGE: Imports LDAP databases"
+  echo "Main database: zmslapadd <FILE> [-w]"
+  echo "Config database: zmslapadd -c <FILE>"
+  echo "Accesslog database: zmslapadd -a <FILE>"
+  exit 1
+fi
+
+CONFIG=no
+ALOG=no
+if [ "$1" = "-c" ]; then
+  CONFIG=yes
+  SRC=$2
+elif [ "$1" = "-a" ]; then
+  ALOG=yes
+  SRC=$2
+else
+  SRC=$1
+fi
+
+comp=0
+computil=
+
+if [ ! -f "$SRC" ]; then
+  echo "Error: Input file does not exist"
+  exit 1
+fi
+
+if [[ "$SRC" == *".gz" ]]; then
+  if [ $zgood = "no" ]; then
+    echo "Error: zcat is missing."
+    exit 1
+  fi
+  computil=$zcat
+  comp=1
+elif [[ "$SRC" == *".bz2" ]]; then
+  if [ $bgood = "no" ]; then
+    echo "Error: bzcat is missing."
+    exit 1
+  fi
+  computil=$bzcat
+  comp=1
+fi
+
+if [ $CONFIG = "yes" ]; then
+  if [ $comp = "0" ]; then
+    /opt/zextras/common/sbin/slapadd -q -F /opt/zextras/data/ldap/config -n 0 -l "$SRC"
+    RETVAL=$?
+  else
+    $computil "$SRC" | /opt/zextras/common/sbin/slapadd -q -F /opt/zextras/data/ldap/config -n 0
+    RETVAL=$?
+  fi
+
+  # Fix for CO-1599: Rename zimbra.ldif to carbonio.ldif if it exists
+  # The backup contains DN cn={4}zimbra but the file should be named carbonio.ldif
+  # to match the expected schema filename used by zmldapschema
+  if [ $RETVAL -eq 0 ] && [ -f "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={4}zimbra.ldif" ]; then
+    mv "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={4}zimbra.ldif" \
+      "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={4}carbonio.ldif"
+    RETVAL=$?
+  fi
+elif [ $ALOG = "yes" ]; then
+  if [ $comp = "0" ]; then
+    /opt/zextras/common/sbin/slapadd -q -F /opt/zextras/data/ldap/config -b "cn=accesslog" -l "$SRC"
+    RETVAL=$?
+  else
+    $computil "$SRC" | /opt/zextras/common/sbin/slapadd -q -F /opt/zextras/data/ldap/config -b "cn=accesslog"
+    RETVAL=$?
+  fi
+else
+  if [ $comp = "0" ]; then
+    /opt/zextras/common/sbin/slapadd -w -q -F /opt/zextras/data/ldap/config -b "" -l "$SRC"
+    RETVAL=$?
+  else
+    $computil "$SRC" | /opt/zextras/common/sbin/slapadd -w -q -F /opt/zextras/data/ldap/config -b ""
+    RETVAL=$?
+  fi
+fi
+
+exit $RETVAL

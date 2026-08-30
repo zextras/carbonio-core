@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars
+
+if [ "127.0.0.1" != "${antispam_mysql_host}" ] &&
+  [ "${zimbra_server_hostname}" != "${antispam_mysql_host}" ] &&
+  [ "localhost" != "${antispam_mysql_host}" ]; then
+  echo "antispam-mysqladmin must be run on local machine where database resides"
+  exit 1
+fi
+
+exec /opt/zextras/common/bin/mysqladmin \
+  --socket=/run/carbonio/antispam-mysql.sock \
+  --user=root \
+  --password="${antispam_mysql_root_password}" "$@"

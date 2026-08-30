@@ -12,7 +12,7 @@ fi
 
 DISTRO=$1
 YAP_FLAGS="-sdc"
-YAP_VERSION=1.48
+YAP_VERSION=2.6.1
 
 # Validate the DISTRO input
 case $DISTRO in

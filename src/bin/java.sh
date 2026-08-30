@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Much faster; just call zmlocalconfig once
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars -f
+
+java_options="-XX:ErrorFile=/opt/zextras/log"
+
+# shellcheck disable=SC2086
+exec "${zimbra_java_home}/bin/java" ${java_options} \
+  -client ${zimbra_zmjava_options} \
+  -Dzimbra.home=/opt/zextras \
+  -classpath "/opt/zextras/mailbox/jars/*" \
+  "$@"

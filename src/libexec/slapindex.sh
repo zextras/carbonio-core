@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+export LD_PRELOAD=/opt/zextras/common/lib/libjemalloc.so
+
+umask 027
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars
+
+if [ ! -x /opt/zextras/common/sbin/slapindex ]; then
+  exit 0
+fi
+
+if [ "$(whoami)" != zextras ]; then
+  echo Error: must be run as zextras user
+  exit 1
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo "USAGE: Indexes LDAP databases"
+  echo "Main database: zmslapindex <key>"
+  echo "Config database: zmslapindex -c <key>"
+  echo "Accesslog database: zmslapindex -a <key>"
+  exit 1
+fi
+
+CONFIG=no
+ALOG=no
+if [ "$1" = "-c" ]; then
+  CONFIG=yes
+  KEY=$2
+elif [ "$1" = "-a" ]; then
+  ALOG=yes
+  KEY=$2
+else
+  KEY=$1
+fi
+
+if [ $CONFIG = "yes" ]; then
+  /opt/zextras/common/sbin/slapindex -q -F /opt/zextras/data/ldap/config -n 0 "$KEY"
+  RETVAL=$?
+elif [ $ALOG = "yes" ]; then
+  /opt/zextras/common/sbin/slapindex -q -F /opt/zextras/data/ldap/config -b "cn=accesslog" "$KEY"
+  RETVAL=$?
+else
+  /opt/zextras/common/sbin/slapindex -q -F /opt/zextras/data/ldap/config -b "" "$KEY"
+  RETVAL=$?
+fi
+
+exit $RETVAL

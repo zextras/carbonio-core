@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars -f
+
+#
+#
+# Usage: zmmycnf [--innodb-buffer-pool-memory-percent number].
+#
+# We don't error check - if you provide wrong arguments we default the
+# buffer pool percent to keep things simple for the installer.
+#
+bufferPoolPercent=25
+if [ "$1" = "--innodb-buffer-pool-memory-percent" ]; then
+  if echo "$2" | grep -q "^[0-9]*$"; then
+    if [ "$2" -gt 1 ] && [ "$2" -lt 100 ]; then
+      bufferPoolPercent=$2
+    fi
+  fi
+fi
+
+#
+# Calculate innodb buffer pool size
+#
+memKB=$(zmsysmemkb)
+((bufferPoolSize = memKB * 1024 * bufferPoolPercent / 100))
+
+#
+# Tell the JDBC driver how many mysql active connections to use.
+#
+/opt/zextras/bin/zmlocalconfig -e zimbra_mysql_connector_maxActive=100
+
+#
+# Write config to stdout
+#
+cat <<EOF
+
+[mysqld]
+
+basedir        = /opt/zextras/common
+datadir        = ${mysql_data_directory}
+socket         = /run/carbonio/mysql.sock
+pid-file       = /run/carbonio/mysql.pid
+bind-address   = ${mysql_bind_address}
+port           = ${mysql_port}
+user           = ${zimbra_mysql_user}
+tmpdir         = ${zimbra_tmp_directory}
+
+external-locking
+slow_query_log = 1
+slow_query_log_file = ${zimbra_log_directory}/myslow.log
+
+general_log_file = ${zimbra_log_directory}/mysql-mailboxd.log
+
+long_query_time  = 1
+log_queries_not_using_indexes
+
+thread_cache_size = 110
+max_connections   = 110
+
+# We do a lot of writes, query cache turns out to be not useful.
+query_cache_type = 0
+
+sort_buffer_size = 1048576
+read_buffer_size = 1048576
+
+# (Num mailbox groups * Num tables in each group) + padding
+table_open_cache = 1200
+
+innodb_data_file_path          = ibdata1:10M:autoextend
+innodb_buffer_pool_size        = ${bufferPoolSize}
+innodb_log_file_size           = 524288000
+innodb_log_buffer_size         = 8388608
+innodb_file_per_table
+
+# Value is: 200 + max_connections + 2 * table_open_cache
+innodb_open_files              = 2710
+
+innodb_max_dirty_pages_pct     = 30
+innodb_flush_method            = O_DIRECT
+innodb_flush_log_at_trx_commit = 0
+max_allowed_packet             = 16777216
+
+[mysqld_safe]
+
+log-error      = ${zimbra_log_directory}/mysqld.log
+pid-file     = /run/carbonio/mysql.pid
+
+
+EOF

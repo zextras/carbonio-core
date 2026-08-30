@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+export TMP=/opt/zextras/data/tmp
+exec /opt/zextras/bin/zmjava \
+  -classpath "/opt/zextras/jython/jars/*:/opt/zextras/mailbox/jars/*:/opt/zextras/lib/jars/*:/opt/zextras/conf" \
+  -Djava.io.tmpdir=/opt/zextras/data/tmp -Dpython.cachedir.skip=true org.python.util.jython "$@"

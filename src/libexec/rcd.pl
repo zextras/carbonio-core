@@ -1,0 +1,356 @@
+#!/usr/bin/perl
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+use strict;
+#
+# We allow only a well-known set of commands to be executed with the
+# Zimbra key.  Try to use as few regular expression checked commands
+# as possible, and when you do create them be conservative with what
+# is allowed - specially beware of any shell special characters.
+#
+my %SIMPLE_COMMANDS = (
+   "start amavis"       => "/opt/zextras/bin/zmamavisdctl start",
+   "start freshclam"    => "/opt/zextras/bin/zmfreshclamctl start",
+   "start mailbox"    => "/opt/zextras/bin/zmstorectl start",
+   "start ldap"       => "/opt/zextras/bin/ldap start",
+   "start mta"        => "/opt/zextras/bin/zmmtactl start",
+   "start antispam"   => "/opt/zextras/bin/zmantispamctl start",
+   "start antivirus"  => "/opt/zextras/bin/zmantivirusctl start",
+   "stop amavis"      => "/opt/zextras/bin/zmamavisdctl stop",
+   "stop freshclam"   => "/opt/zextras/bin/zmfreshclamctl stop",
+   "stop mailbox"     => "/opt/zextras/bin/zmstorectl stop",
+   "stop ldap"        => "/opt/zextras/bin/ldap stop",
+   "stop mta"         => "/opt/zextras/bin/zmmtactl stop",
+   "stop antispam"    => "/opt/zextras/bin/zmantispamctl stop",
+   "stop antivirus"   => "/opt/zextras/bin/zmantivirusctl stop",
+   "status"           => "/opt/zextras/bin/zmcontrol status",
+   "startup"          => "/opt/zextras/bin/zmcontrol startup",
+   "shutdown"         => "/opt/zextras/bin/zmcontrol shutdown",
+   "msgtrace"         => "/opt/zextras/bin/zmmsgtrace",
+   "flushqueue"       => "/opt/zextras/common/sbin/postqueue -f",
+   "showqueue"        => "/opt/zextras/common/sbin/postqueue -p",
+   "zmserverips"      => "/opt/zextras/libexec/zmserverips",
+   "zmupdateauthkeys" => "/opt/zextras/bin/zmupdateauthkeys",
+   "slapcat"          => "/opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -b ''",
+   "zmqstat all"      => "sudo /opt/zextras/libexec/zmqstat",
+   "zmqstat incoming" => "sudo /opt/zextras/libexec/zmqstat incoming",
+   "zmqstat hold"     => "sudo /opt/zextras/libexec/zmqstat hold",
+   "zmqstat active"   => "sudo /opt/zextras/libexec/zmqstat active",
+   "zmqstat deferred" => "sudo /opt/zextras/libexec/zmqstat deferred",
+   "zmqstat corrupt"  => "sudo /opt/zextras/libexec/zmqstat corrupt",
+   "zmcollectconfigfiles" => "tar cv /opt/zextras/conf | gzip -cf",
+   "zmcollectldapzimbra" => "/opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -b '' -s cn=zimbra | gzip -cf",
+   "zmproxyconfgen"     => "/opt/zextras/bin/zmproxyconfgen",
+   "zmproxyctl reload"  => "/opt/zextras/bin/zmproxyctl reload",
+   "zmaltermimeconfig"  => "/opt/zextras/libexec/zmaltermimeconfig",
+   "downloadcsr"      => "cat /opt/zextras/ssl/carbonio/commercial/commercial.csr"
+);
+
+
+# Regexes for Postfix Queue IDs
+
+# Short Format character: ASCII uppercase A-F range plus ASCII digits
+my $SF_QID_CHAR = qr{[A-F0-9]};
+
+# Long Format time portion character:  ASCII digits and ASCII uppercase/lowercase consonants
+my $LF_QID_TIME_CHAR  = qr{[0-9BCDFGHJKLMNPQRSTVWXYZ]}i;
+
+# Long Format inode number portion character: ASCII digits and ASCII uppercase/lowercase consonants minus "z"
+my $LF_QID_INODE_CHAR = qr{[0-9BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxy]};
+
+my $REGEX_POSTFIX_QID = qr{(?:${SF_QID_CHAR}{6,}+|${LF_QID_TIME_CHAR}{10,}z${LF_QID_INODE_CHAR}++)};
+
+
+my %REGEX_CHECKED_COMMANDS = (
+  "zmqaction" => {
+    regex => qr{(hold|release|requeue|delete)\s+(incoming|deferred|corrupt|active|maildrop|hold)\s+(?:(?:${REGEX_POSTFIX_QID},)*+${REGEX_POSTFIX_QID}|ALL)},
+    program => "/opt/zextras/libexec/zmqaction"},
+  "zmbackupldap" => {
+    regex => '[a-zA-Z0-9\\/\\.\\-_:@ ]*',
+    # typcial backup destination path:
+    # alphanumeric, slash, dot, dash, underscore, colon, at, space
+    program => "/opt/zextras/libexec/zmbackupldap"},
+  "zmcertmgr" => {
+    regex => '(viewdeployedcrt|viewstagedcrt|createcsr|createcrt|getcrt|deploycrt|viewcsr|verifycrt|verifycrtkey|verifycrtchain)\s?[a-zA-Z0-9\\/\\.\\-\\\_:@\\,\\=\\\'\\"\\* ]*',
+    program => "/opt/zextras/bin/zmcertmgr"},
+  "clusvcadm" => {
+    regex => '[a-zA-Z0-9\\/\\.\\-_:@ ]*',
+    # alphanumeric, slash, dot, dash, underscore, colon, at, space
+    program => "sudo /usr/sbin/clusvcadm"},
+  "zmclustat" => {
+    regex => '[a-zA-Z0-9\\/\\.\\-_:@ ]*',
+    # alphanumeric, slash, dot, dash, underscore, colon, at, space
+    program => "sudo /opt/cluster/bin/zmclustat"},
+  "zmloggerhostmap"  => {
+    regex => '[a-zA-Z0-9\\/\\.\\-_:@ ]*',
+    program=>"/opt/zextras/bin/zmloggerhostmap",},
+  "rsync" => {
+    regex => '[\'"a-zA-Z0-9\\/\\.\\-_:@= ]*',
+    program => "rsync"},
+  "certbot" => {
+    regex => '(certonly)\s?[a-zA-Z0-9\\/\\.\\-\\\_:@\\,\\=\\\'\\"\\* ]*',
+    program => "/opt/zextras/libexec/certbot"},
+  "dkimutil" => {
+    regex => '(-[a|r])?\s?(-d\s(([\w-]+\.)+[\w-]{2,4}))?',
+    program => "/opt/zextras/libexec/zmdkimkeyutil"}
+);
+
+my %allhosts = ();
+my $gothosts = 0;
+
+sub trim($) {
+  my $val = shift;
+  $val =~ s/[\r\n]*$//;  # Windows-safe
+  return $val;
+}
+
+my $thishost = trim(qx(/opt/zextras/bin/zmlocalconfig -m nokey zimbra_server_hostname));
+my $enable_logging = uc(trim(qx(/opt/zextras/bin/zmlocalconfig -m nokey zimbra_zmrcd_logging_enabled 2> /dev/null)));
+$enable_logging = "FALSE" unless $enable_logging;
+
+
+sub logMsg($) {
+  my $msg = shift;
+  print STDOUT "$msg\n";
+  print LOG "$msg\n" if ($enable_logging eq "TRUE");
+}
+
+sub logError($) {
+  my $msg = shift;
+  print STDERR "ERROR: $msg\n";
+  print LOG "$msg\n" if ($enable_logging eq "TRUE");
+  #logMsg("ERROR: $msg");
+}
+
+sub runRemoteCommand {
+  my $host = shift;
+  my $command = shift;
+  my $args = shift;
+
+  logMsg("Remote: HOST:$host $command $args");
+}
+
+sub runCommand {
+  my $host = shift;
+  my $command = shift;
+  my $args = shift;
+
+  #logMsg("runCommand: $host $command $args");
+  if (lc($host) ne lc($thishost)) {
+    runRemoteCommand($host, $command, $args);
+    return;
+  }
+
+  my $cmdstr;
+  my $smplcmd;
+  if (defined($args) && $args ne "") {  
+    $smplcmd = $command . " " . $args;
+  } else {
+    $smplcmd = $command;
+  }
+  if (defined($SIMPLE_COMMANDS{$smplcmd})) {
+    $cmdstr = $SIMPLE_COMMANDS{$smplcmd};
+    #logMsg("SIMPLE_COMMAND: $cmdstr");
+  } elsif (defined($REGEX_CHECKED_COMMANDS{$command})) {
+    my %spec = %{$REGEX_CHECKED_COMMANDS{$command}};
+    my $regex = $spec{regex};
+    my $program = $spec{program};
+    if (!defined($regex)) {
+      logError("internal error (regex undefined)");
+      exit 1;
+    }
+    if (!defined($program)) {
+      logError("internal error (program undefined)");
+      exit 1;
+    }
+    if ($args !~ /^$regex$/) {
+      logError("args '$args' not allowed for command '$command'");
+      exit 1;
+    }
+    $cmdstr = $program . " " . $args;
+  } else {
+    #logMsg("$SIMPLE_COMMANDS{$smplcmd}");
+    logError("Unknown command: \"$command\"");
+    exit 1;
+  }
+  if (open(COMMAND, "$cmdstr |")) {
+    #logMsg("Running cmd: $cmdstr");
+    if (($command ne "zmqstat") && ($command ne "zmcollectconfigfiles") && ($command ne "zmcollectldapzimbra") &&
+        ($command ne "clusvcadm") && ($command ne "zmclustat")) {
+      logMsg("STARTCMD: $host $cmdstr");
+    }
+
+    while (<COMMAND>) {
+      chomp;
+      logMsg($_);
+    }
+    close COMMAND;
+
+    if (($command ne "zmqstat") && ($command ne "zmcollectconfigfiles") && ($command ne "zmcollectldapzimbra") &&
+        ($command ne "clusvcadm") && ($command ne "zmclustat")) {
+      logMsg("ENDCMD: $host $cmdstr");
+    }
+
+    # Stop if command exited with error.
+    my $status = $? >> 8;
+    if ($status != 0) {
+        exit $status;
+    }
+  } else {
+    logError("Can't run $cmdstr: $!");
+    exit 1;
+  }
+}
+
+sub getHostsByService {
+  my $service = shift;
+
+  my @hosts = ();
+
+  if (!$gothosts) {
+    open CMD, "/opt/zextras/bin/zmprov -l gas |" or return undef;
+    my @hl = <CMD>;
+    close CMD;
+    foreach my $h (@hl) {
+      $h = trim($h);
+      alarm(120);
+      open CMD, "/opt/zextras/bin/zmprov -l gs $h | grep zimbraServiceEnabled | sed -e 's/zimbraServiceEnabled: //'|" or return undef;
+      my @sl = <CMD>;
+      close CMD;
+      foreach my $s (@sl) {
+        $s = trim($s);
+        $allhosts{$h}{$s} = $s;
+      }
+      alarm(0);
+    }
+    $gothosts = 1;
+  }
+
+  foreach my $h (keys %allhosts) {
+    foreach my $s (keys %{ $allhosts{$h} }) {
+      if ($s eq $service) {
+        push @hosts, $h;
+      }
+    }
+  }
+  return \@hosts;
+}
+
+sub getHostList {
+  my $hstring = shift;
+
+  # Host format is either 
+  #   HOST:h1[,HOST:h2...] and/or
+  #   SERVICE:s1[SERVICE:s2,...]
+  # The script will de-dup hosts
+
+  my %hosts = ();
+
+  my @hspecs = split (',', $hstring);
+  foreach my $spec (@hspecs) {
+    my ($type, $item) = split (':', $spec);
+    if ($type eq "HOST") {
+      if ($item eq "ALL") {
+        getHostsByService();
+        my @h = sort keys %allhosts;
+        return \@h;
+      }
+      $hosts{$item} = $item;
+    } elsif ($type eq "SERVICE") {
+      if ($item eq "ALL") {
+        getHostsByService();
+        my @h = sort keys %allhosts;
+        return \@h;
+      }
+      my $hl = getHostsByService($item);
+      foreach (@$hl) {
+        $hosts{$_} = $_;
+      }
+    } else {
+      return undef;
+    }
+  }
+  my @h = sort keys %hosts;
+  return \@h;
+}
+
+sub isRsyncCmd {
+  my $cmd = shift;
+  if (defined($cmd) && $cmd ne '') {
+    my @parts = split(/\s+/, $cmd);
+    my $prog = $parts[0];
+    if ($prog =~ /rsync$/) {
+      if (($prog ne 'rsync') && ($prog ne '/opt/zextras/common/bin/rsync')) {
+        logError("command '$prog' not allowed");
+        exit 1;
+      }
+      my $regex = $REGEX_CHECKED_COMMANDS{'rsync'}->{'regex'};
+      if ($cmd !~ /^$regex$/) {
+        logError("invalid arguments in command [$cmd]");
+        exit 1;
+      }
+      return 1;
+    }
+  }
+  return 0;
+}
+
+sub doHelp {
+  foreach my $cm (sort keys %SIMPLE_COMMANDS) {
+    print $cm, " -> ", $SIMPLE_COMMANDS{$cm}, "\n";
+  }
+  foreach my $cm (sort keys %REGEX_CHECKED_COMMANDS) {
+    my %cd = %{$REGEX_CHECKED_COMMANDS{$cm}};
+    print $cm, " ", $cd{regex}, " -> ", $cd{program}, " <arg>\n";
+  }
+}
+
+sub handleALRM {
+  logMsg("ENDCMD: Timeout reached!");
+  eval {
+    close CMD;
+  };
+}
+
+$| = 1;
+
+$SIG{ALRM} = \&handleALRM;
+open(LOG, ">>/opt/zextras/log/zmrcd.log")
+  if ($enable_logging eq "TRUE");
+
+# special case for rsync over ssh from a remote host
+my $originalCmd = $ENV{'SSH_ORIGINAL_COMMAND'};
+if (isRsyncCmd($originalCmd)) {
+  print LOG "exec'ing: $originalCmd\n" if ($enable_logging eq "TRUE");
+  exec($originalCmd);
+}
+
+while (<>) {
+  trim($_);
+  my ($host, $command, $args) = split (' ', $_, 3);
+
+  if ($host eq "?") {
+    doHelp();
+    next;
+  }
+
+  my $hostlist = getHostList ($host);
+
+  if (!defined ($hostlist)) {
+    logError("Invalid hostlist");
+    exit 1;
+  }
+  # strip args to be able to use via CLI(using CLI \n added to the end of SIMPLE_COMMAND)
+  chomp $args;
+
+  foreach my $h (@$hostlist) {
+    runCommand ($h, $command, $args);
+  }
+  close(LOG) if ($enable_logging eq "TRUE");
+  exit 0;
+
+}

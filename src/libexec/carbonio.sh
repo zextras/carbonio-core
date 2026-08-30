@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Init file for Carbonio
+#
+# chkconfig: 345 99 01
+# description: Carbonio Services
+#
+#
+
+### BEGIN INIT INFO
+# Provides: carbonio
+# Required-Start: $network $remote_fs $syslog $time cron
+# Required-Stop: $network $remote_fs $syslog $time
+# Default-Start: 3 5
+# Default-Stop: 0 1 6
+# Short-Description: Carbonio Services
+# Description: Loads all the services required by your Carbonio installation
+### END INIT INFO
+
+carbonio_command() {
+  if [ -f /opt/zextras/redolog/redo.log ]; then
+    chown -f zextras:zextras /opt/zextras/redolog/redo.log
+  fi
+  su - zextras -c "zmcontrol $1 </dev/null"
+}
+
+case "$1" in
+  restart)
+    carbonio_command shutdown
+    carbonio_command startup
+    RETVAL=$?
+    if [ -d /var/lock/subsys ] && [ $RETVAL -eq 0 ]; then
+      touch /var/lock/subsys/carbonio
+    fi
+    ;;
+  start)
+    carbonio_command startup
+    RETVAL=$?
+    if [ -d /var/lock/subsys ] && [ $RETVAL -eq 0 ]; then
+      touch /var/lock/subsys/carbonio
+    fi
+    ;;
+  stop)
+    carbonio_command shutdown
+    RETVAL=$?
+    if [ -d /var/lock/subsys ] && [ $RETVAL -eq 0 ]; then
+      rm -f /var/lock/subsys/carbonio
+    fi
+    ;;
+  reload | status)
+    carbonio_command "$1"
+    RETVAL=$?
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart|reload|status}"
+    RETVAL=1
+    ;;
+esac
+exit $RETVAL

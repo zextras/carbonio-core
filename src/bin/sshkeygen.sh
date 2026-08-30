@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars
+
+keyattr="zimbraSshPublicKey"
+
+zmprov="/opt/zextras/bin/zmprov -m -l"
+
+keyfile="/opt/zextras/.ssh/zimbra_identity"
+
+mkdir -p /opt/zextras/.ssh
+
+if [ ! -d "/opt/zextras/.ssh" ]; then
+  echo "Unable to create /opt/zextras/.ssh."
+  exit 1
+fi
+
+chmod 700 /opt/zextras/.ssh
+
+rm -f ${keyfile}
+
+keytype=${1:-rsa}
+
+if [ "$keytype" != "rsa" ]; then
+  echo "Bad keytype: $keytype"
+  echo ""
+  exit 1
+fi
+
+ssh-keygen -f ${keyfile} -b 2048 -N '' \
+  -t "${keytype}" -C "${zimbra_server_hostname}"
+
+# Starting with OpenSSH 7.8 by default, the key is created with the OpenSSH private key format instead of the OpenSSL PEM format.
+# Check the format of KEY and convert to OpenSSL PEM format.
+grep "BEGIN OPENSSH PRIVATE KEY" ${keyfile} >/dev/null 2>&1
+rc=$?
+if [ $rc -eq 0 ]; then
+  ssh-keygen -p -m PEM -f ${keyfile} -b 2048 -N '' -t "${keytype}" -C "${zimbra_server_hostname}"
+fi
+pubkey=$(cat ${keyfile}.pub)
+
+${zmprov} ms "${zimbra_server_hostname}" ${keyattr} "${pubkey}"

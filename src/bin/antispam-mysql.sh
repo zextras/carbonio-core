@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+zmsetvars
+
+if [ "${antispam_mysql_host}" = "$(zmhostname)" ] ||
+  [ "${antispam_mysql_host}" = "localhost" ] ||
+  [ "${antispam_mysql_host}" = "127.0.0.1" ] ||
+  [ "${antispam_mysql_host}" = "::1" ]; then
+  exec /opt/zextras/common/bin/mysql \
+    --socket=/run/carbonio/antispam-mysql.sock \
+    --user="${antispam_mysql_user}" \
+    --password="${antispam_mysql_password}" "$@"
+else
+  exec /opt/zextras/common/bin/mysql \
+    --host="${antispam_mysql_host}" \
+    --port="${antispam_mysql_port}" \
+    --user="${antispam_mysql_user}" \
+    --password="${antispam_mysql_password}" "$@"
+fi

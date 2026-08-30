@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+
+zmsetvars
+
+getPubKey() {
+  server=$1
+  echo "Fetching key for ${s}"
+  pubkey=$(${zmprov} gs "${server}" 2>/dev/null |
+    grep $keyattr | sed -e "s/^${keyattr}: //")
+}
+
+replacePubKey() {
+  server=$1
+  key=$2
+  echo "Updating keys for $server"
+  keyhost=$(echo "${key}" | awk '{print $3}')
+
+  echo "${authkeys}" >"${tempkeysfile}"
+  cat /dev/null >"${tempkeysfile}".new
+
+  while read -r keyline; do
+    linehost=$(echo "${keyline}" | awk '{print $4}')
+    if [ "$linehost" != "$keyhost" ]; then
+      echo "${keyline}" >>"${tempkeysfile}".new
+    fi
+  done <"${tempkeysfile}"
+
+  #Don't change the indentation on these lines
+
+  authkeys=$(cat "${tempkeysfile}.new")
+
+  authkeys="${authkeys}
+command=\"/opt/zextras/libexec/zmrcd\" ${key}"
+
+  rm -f "${tempkeysfile} ${tempkeysfile}.new"
+}
+
+updateAllServers() {
+  for s in ${servers}; do
+    echo "Updating authkeys on remote server $s"
+    echo "HOST:$s zmupdateauthkeys" | /opt/zextras/libexec/zmrc "$s"
+  done
+}
+
+# Get all the public keys from ldap, and replace them in
+# /opt/zextras/.ssh/authorized_keys
+
+keyattr="zimbraSshPublicKey"
+
+zmprov="/opt/zextras/bin/zmprov -m -l"
+
+authkeysfile="/opt/zextras/.ssh/authorized_keys"
+
+if [ ! -d "${zimbra_tmp_directory}" ]; then
+  mkdir -p "${zimbra_tmp_directory}" >/dev/null 2>&1
+fi
+
+tempkeysfile=$(mktemp -t auth_keys.XXXXXX 2>/dev/null) || {
+  echo "Failed to create tmpfile"
+  exit 1
+}
+
+if [ -f $authkeysfile ]; then
+  authkeys=$(cat ${authkeysfile})
+fi
+
+servers=$(${zmprov} gas)
+
+if [ "$1" == "-a" ]; then
+  updateAllServers
+fi
+
+for s in ${servers}; do
+  echo "Updating keys for ${s}"
+  getPubKey "${s}"
+  if [ "$pubkey" != "" ]; then
+    replacePubKey "${s}" "${pubkey}"
+  else
+    echo "Key for ${s} NOT FOUND"
+  fi
+done
+
+echo "Updating ${authkeysfile}"
+echo "${authkeys}" >"${tempkeysfile}" && mv "${tempkeysfile}" ${authkeysfile}
+chmod 644 ${authkeysfile}

@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+source /opt/zextras/bin/zmshutil || exit 1
+
+usage() {
+  echo "Usage: $0 [-k <keep count>] [-h] [-l] [-p]"
+  echo ""
+  echo "    -h|--help    Help/usage information"
+  echo "    -k|--keep    Number of archived copies of zmstat data to retain."
+  echo "    -l|--list    Generate a listing of log dates archived."
+  echo "    -p|--purge   Purge ALL archived zmstats data."
+  echo ""
+  exit
+}
+
+zmsetvars
+
+while [ $# -gt 0 ]; do
+  case $1 in
+    -h | --help)
+      usage
+      ;;
+    -k | --keep)
+      shift
+      zmstat_max_retention=$1
+      ;;
+    -l | --list)
+      listArchives=TRUE
+      ;;
+    -p | --purge)
+      purgeAll=TRUE
+      ;;
+    *)
+      echo "ERROR: Unknown option $1"
+      usage
+      ;;
+  esac
+  shift
+done
+
+cd /opt/zextras/zmstat || return 1
+rc=$?
+if [ $rc -ne 0 ] || [ "${PWD}" != "/opt/zextras/zmstat" ]; then
+  echo "ERROR: Cannot change to the zmstats log directory /opt/zextras/zmstat."
+  exit 1
+fi
+
+if [ "${listArchives}" == "TRUE" ]; then
+  if [ "$(find . -maxdepth 1 -type d -name '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' | wc -l)" -gt 0 ]; then
+    find . -maxdepth 1 -type d -name '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+  fi
+elif [ "${purgeAll}" == "TRUE" ]; then
+  DIR_LIST=$(find . -type d -print | grep -E '^\./[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$' | sort -r | sed -e "s%./%%")
+  for d in ${DIR_LIST}; do
+    echo "Deleting ${d} zmstat archive."
+    rm -rf "${d}"
+  done
+elif [ "${zmstat_max_retention:-"0"}" -gt 0 ]; then
+  DIR_LIST=$(find . -type d -print | grep -E '^\./[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$' | sort -r | sed -e "1,${zmstat_max_retention}d ; s%./%%")
+
+  for d in ${DIR_LIST}; do
+    echo "Deleting ${d} zmstat archive."
+    rm -rf "${d}"
+  done
+else
+  echo "WARNING: zmstat_max_retention is set to 0 or is undefined.  No zmstat data has been pruned."
+fi

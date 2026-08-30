@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+#
+# We cannot rely on any config parameters when running zmlocalconfig for obvious
+# chicken and egg reasons. So we just make assumptions about install layout.
+#
+
+ROOT=/opt/zextras
+
+umask 0027
+
+java="${ROOT}/common/bin/java"
+
+CP="${ROOT}/mailbox/jars/*"
+
+exec ${java} -client -cp "$CP" \
+  -Dzimbra.home="${ROOT}" \
+  com.zimbra.cs.localconfig.LocalConfigCLI "$@"
