@@ -8,11 +8,10 @@ PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.t
 
 [Service]
 User=zextras
-Environment="JYTHONPATH=/opt/zextras/common/lib/jylibs"
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/systemd-envscript
 ExecStartPre=nc -z $ldap_domain $ldap_port
-ExecStart=/opt/zextras/libexec/zmconfigd
+ExecStart=/opt/zextras/bin/configd
 RestartSec=3s
 Restart=on-failure
 
