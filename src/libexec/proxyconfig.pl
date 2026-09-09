@@ -646,7 +646,9 @@ sub ldapConnect {
 sub warnDeprecatedVirtualIPs {
     my $ldap = eval { ldapConnect() };
     if (!$ldap) {
-        print STDERR "Warning: unable to check domains for deprecated zimbraVirtualIPAddress: $@";
+        my $err = $@ || "unknown error";
+        chomp($err);
+        print STDERR "Warning: unable to check domains for deprecated zimbraVirtualIPAddress: $err\n";
         return;
     }
 
@@ -675,7 +677,9 @@ sub warnDeprecatedVirtualIPs {
         scope=>"base",
         attrs => ['zimbraReverseProxySNIEnabled'],
         );
-    if (!$mesg->code) {
+    if ($mesg->code) {
+        print STDERR "Warning: unable to check zimbraReverseProxySNIEnabled: " . $mesg->error . "\n";
+    } else {
         foreach my $entry ($mesg->entries) {
             my $sni = $entry->get_value('zimbraReverseProxySNIEnabled');
             if (defined $sni && uc($sni) eq "FALSE") {

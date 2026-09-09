@@ -5437,6 +5437,7 @@ sub warnDeprecatedVirtualIPs {
     my $result = $ldap->bind( $ldap_dn, password => $ldap_pass );
     if ( $result->code() ) {
         detail("ldap bind failed for $ldap_dn");
+        $ldap->unbind;
         return;
     }
     detail("ldap bind done for $ldap_dn");
