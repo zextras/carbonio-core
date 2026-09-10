@@ -1,3 +1,9 @@
+## [4.6.0](https://github.com/zextras/carbonio-core/compare/4.5.21...4.6.0) (2026-09-10)
+
+### Features
+
+* **CO-4256:** warn about domains still using deprecated Virtual IPs ([#183](https://github.com/zextras/carbonio-core/issues/183)) ([2f45b43](https://github.com/zextras/carbonio-core/commit/2f45b43720bc7074e244989f51257c16b566e002))
+
 ## [4.5.21](https://github.com/zextras/carbonio-core/compare/4.5.20...4.5.21) (2026-08-30)
 
 ## [4.5.20](https://github.com/zextras/carbonio-core/compare/4.5.19...4.5.20) (2026-08-26)
