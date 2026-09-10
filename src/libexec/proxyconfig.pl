@@ -535,7 +535,11 @@ if ($options{d}) {
 
 print ZMPROV "exit\n";
 close ZMPROV;
-exit ($? >> 8);
+my $rc = $? >> 8;
+
+warnDeprecatedVirtualIPs() if ($options{e} || $options{f});
+
+exit $rc;
 
 sub usage() {
   print "Usage: $0 [-h] [-o] [-m] [-w] [-d [-r] [-s] [-a w1:w2:w3:w4] [-c [-n n1:n2]] [-i p1:p2:p3:p4] [-p p1:p2:p3:p4] [-x mailmode]] [-e [-a w1:w2:w3:w4] [[-c|-C] [-n n1:n2]] [-i p1:p2:p3:p4] [-p p1:p2:p3:p4] [-u|-U] [-x mailmode]] [-f] -H hostname\n";
@@ -614,13 +618,7 @@ sub getLdapServerValue {
   return $val;
 }
 
-sub checkPackage {
-    my $key = shift;    
-    my $pkg = shift;
-    my $found = 0;
-    my $size = 0;
-    my @list;
-    my $entry;
+sub ldapConnect {
     my $mesg;
     my $ldapurl = getLocalConfig("ldap_url");
     my $zdn = getLocalConfig("zimbra_ldap_userdn");
@@ -639,7 +637,71 @@ sub checkPackage {
 
     $mesg = $ldap->bind("$zdn", password=>"$zps");
     $mesg->code && die "Bind: ". $mesg->error . "\n";
-    
+
+    return $ldap;
+}
+
+# IP-based virtual hosting (zimbraVirtualIPAddress) is deprecated in favour of SNI.
+# Warn about any domain that still relies on it so admins can migrate before it is removed.
+sub warnDeprecatedVirtualIPs {
+    my $ldap = eval { ldapConnect() };
+    if (!$ldap) {
+        my $err = $@ || "unknown error";
+        chomp($err);
+        print STDERR "Warning: unable to check domains for deprecated zimbraVirtualIPAddress: $err\n";
+        return;
+    }
+
+    my $mesg = $ldap->search(
+        base=>"",
+        filter=>"(&(objectClass=zimbraDomain)(zimbraVirtualIPAddress=*))",
+        scope=>"sub",
+        attrs => ['zimbraDomainName', 'zimbraVirtualIPAddress'],
+        );
+    if ($mesg->code) {
+        print STDERR "Warning: unable to check domains for deprecated zimbraVirtualIPAddress: " . $mesg->error . "\n";
+        $ldap->unbind;
+        return;
+    }
+
+    foreach my $entry ($mesg->entries) {
+        my $domain = $entry->get_value('zimbraDomainName');
+        my $vips = join(", ", $entry->get_value('zimbraVirtualIPAddress'));
+        print STDERR "Warning: domain $domain has zimbraVirtualIPAddress set ($vips): " .
+            "IP-based virtual hosting is deprecated, use SNI with zimbraVirtualHostname instead.\n";
+    }
+
+    $mesg = $ldap->search(
+        base=>"cn=config,cn=zimbra",
+        filter=>"(objectClass=*)",
+        scope=>"base",
+        attrs => ['zimbraReverseProxySNIEnabled'],
+        );
+    if ($mesg->code) {
+        print STDERR "Warning: unable to check zimbraReverseProxySNIEnabled: " . $mesg->error . "\n";
+    } else {
+        foreach my $entry ($mesg->entries) {
+            my $sni = $entry->get_value('zimbraReverseProxySNIEnabled');
+            if (defined $sni && uc($sni) eq "FALSE") {
+                print STDERR "Warning: zimbraReverseProxySNIEnabled is FALSE: " .
+                    "disabling SNI to use IP-based virtual hosts is deprecated.\n";
+            }
+        }
+    }
+
+    $ldap->unbind;
+}
+
+sub checkPackage {
+    my $key = shift;    
+    my $pkg = shift;
+    my $found = 0;
+    my $size = 0;
+    my @list;
+    my $entry;
+    my $mesg;
+    my $ldap = ldapConnect();
+
     $mesg = $ldap->search(
         base=>"",
         filter=>"(&(objectClass=zimbraServer)(cn=$hostname))",

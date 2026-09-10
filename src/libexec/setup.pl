@@ -5419,6 +5419,53 @@ sub countReverseProxyLookupTargets {
     return "$count";
 }
 
+# IP-based virtual hosting (zimbraVirtualIPAddress) is deprecated in favour of SNI.
+# Warn about any domain that still relies on it so admins can migrate before it is removed.
+sub warnDeprecatedVirtualIPs {
+    my $ldap_pass       = getLocalConfig("zimbra_ldap_password");
+    my $ldap_master_url = getLocalConfig("ldap_master_url");
+    my $ldap;
+    my @masters    = split( / /, $ldap_master_url );
+    my $master_ref = \@masters;
+
+    unless ( $ldap = Net::LDAP->new($master_ref) ) {
+        detail("Unable to contact $ldap_master_url: $!");
+        return;
+    }
+    my $ldap_dn = $config{zimbra_ldap_userdn};
+
+    my $result = $ldap->bind( $ldap_dn, password => $ldap_pass );
+    if ( $result->code() ) {
+        detail("ldap bind failed for $ldap_dn");
+        $ldap->unbind;
+        return;
+    }
+    detail("ldap bind done for $ldap_dn");
+    detail("Searching LDAP for domains with deprecated zimbraVirtualIPAddress...");
+    $result = $ldap->search(
+        filter => "(&(objectClass=zimbraDomain)(zimbraVirtualIPAddress=*))",
+        attrs  => [ 'zimbraDomainName', 'zimbraVirtualIPAddress' ]
+    );
+    if ( $result->code() ) {
+        detail( "Search for zimbraVirtualIPAddress failed: " . $result->error() );
+        $ldap->unbind;
+        return;
+    }
+    foreach my $entry ( $result->entries ) {
+        my $domain = $entry->get_value('zimbraDomainName');
+        my $vips   = join( ", ", $entry->get_value('zimbraVirtualIPAddress') );
+        progress( "WARNING: domain $domain has zimbraVirtualIPAddress set ($vips): "
+              . "IP-based virtual hosting is deprecated, use SNI with zimbraVirtualHostname instead.\n" );
+    }
+    $ldap->unbind;
+
+    my $sni = getLdapConfigValue("zimbraReverseProxySNIEnabled");
+    if ( defined $sni && uc($sni) eq "FALSE" ) {
+        progress( "WARNING: zimbraReverseProxySNIEnabled is FALSE: "
+              . "disabling SNI to use IP-based virtual hosts is deprecated.\n" );
+    }
+}
+
 sub countUsers {
     return $main::loaded{stats}{numAccts}
       if ( exists $main::loaded{stats}{numAccts} );
@@ -5858,6 +5905,9 @@ sub applyConfig {
     if ( ( !$newinstall ) && isInstalled("carbonio-directory-server") ) {
         setProxyBits();
     }
+
+    # bootstrap also runs on existing nodes (e.g. to add services), so domains may already use VIPs
+    warnDeprecatedVirtualIPs();
 
     configInitMta();
 
