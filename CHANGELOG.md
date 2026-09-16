@@ -1,3 +1,9 @@
+## [4.6.1](https://github.com/zextras/carbonio-core/compare/4.6.0...4.6.1) (2026-09-16)
+
+### Bug Fixes
+
+* **core:** stop recursive chown of /opt/zextras/conf (CO-4269) ([#186](https://github.com/zextras/carbonio-core/issues/186)) ([6c86d83](https://github.com/zextras/carbonio-core/commit/6c86d83e8b8f8fc5ecfb41f259c83a1f9f64705a))
+
 ## [4.6.0](https://github.com/zextras/carbonio-core/compare/4.5.21...4.6.0) (2026-09-10)
 
 ### Features
