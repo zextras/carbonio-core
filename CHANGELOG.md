@@ -1,3 +1,9 @@
+## [4.6.2](https://github.com/zextras/carbonio-core/compare/4.6.1...4.6.2) (2026-09-16)
+
+### Bug Fixes
+
+* **core:** re-assert sibling tmpfiles.d fragments in postinst (CO-4269) ([#188](https://github.com/zextras/carbonio-core/issues/188)) ([d92fc14](https://github.com/zextras/carbonio-core/commit/d92fc14d05d021fb5a3a7238a318e2b8e851cbdc))
+
 ## [4.6.1](https://github.com/zextras/carbonio-core/compare/4.6.0...4.6.1) (2026-09-16)
 
 ### Bug Fixes
