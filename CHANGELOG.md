@@ -1,3 +1,9 @@
+## [4.6.3](https://github.com/zextras/carbonio-core/compare/4.6.2...4.6.3) (2026-09-16)
+
+### Bug Fixes
+
+* **syslog:** drop debug priority from auth facility selectors ([#189](https://github.com/zextras/carbonio-core/issues/189)) ([fc1590d](https://github.com/zextras/carbonio-core/commit/fc1590dc3ff9ddb9c9e5443b92e0eb6ed174c4a0)), closes [zextras/carbonio-thirds#237](https://github.com/zextras/carbonio-thirds/issues/237)
+
 ## [4.6.2](https://github.com/zextras/carbonio-core/compare/4.6.1...4.6.2) (2026-09-16)
 
 ### Bug Fixes
