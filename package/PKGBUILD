@@ -645,13 +645,15 @@ _postinst() {
   # (e.g. carbonio-mta keeps ldap-*.cf group postfix).
   chown zextras:zextras /opt/zextras/conf
 
-  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
-
-  # Repair hosts where a previous core postinst chown -R stripped group
-  # postfix from /opt/zextras/conf/ldap-*.cf (CO-4269).
-  if [ -f /usr/lib/tmpfiles.d/carbonio-mta.conf ]; then
-    systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-mta.conf >/dev/null 2>&1 || :
-  fi
+  # Apply every installed Carbonio fragment in one invocation, so
+  # per-file ownership declared by sibling packages (carbonio-mta's
+  # ldap-*.cf group postfix, carbonio-appserver's antisamy.xml, ...) is
+  # (re)asserted here too. This repairs hosts where a previous core
+  # postinst chown -R had stripped it (CO-4269). A single invocation also
+  # lets systemd resolve any cross-fragment conflict by priority.
+  # shellcheck disable=SC2046
+  systemd-tmpfiles --create $(ls /usr/lib/tmpfiles.d/carbonio-*.conf 2>/dev/null) \
+    >/dev/null 2>&1 || :
 
   # Set permissions and capabilities on slapd binary (from carbonio-openldap)
   # This must run here because openldap is installed before carbonio-core,
