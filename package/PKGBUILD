@@ -639,11 +639,19 @@ _package_systemd() {
 _postinst() {
   systemd-sysusers >/dev/null 2>&1 || :
 
-  # Fix /opt/zextras/conf file ownership to prevent
-  # systemd-tmpfiles unsafe path transition warnings.
-  chown zextras:zextras -R /opt/zextras/conf
+  # Own the directory itself to prevent systemd-tmpfiles unsafe path
+  # transition warnings. NOT recursive (CO-4269): per-file ownership is
+  # declared by tmpfiles.d, and other packages own some files there
+  # (e.g. carbonio-mta keeps ldap-*.cf group postfix).
+  chown zextras:zextras /opt/zextras/conf
 
   systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-core.conf >/dev/null 2>&1 || :
+
+  # Repair hosts where a previous core postinst chown -R stripped group
+  # postfix from /opt/zextras/conf/ldap-*.cf (CO-4269).
+  if [ -f /usr/lib/tmpfiles.d/carbonio-mta.conf ]; then
+    systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-mta.conf >/dev/null 2>&1 || :
+  fi
 
   # Set permissions and capabilities on slapd binary (from carbonio-openldap)
   # This must run here because openldap is installed before carbonio-core,
