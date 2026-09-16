@@ -108,7 +108,7 @@ sub updateSyslogNG {
   print TMPFH "source zimbra_src {  unix-stream(\"/dev/log\" keep-alive(yes) max-connections(128)); }; # zextras\n";
   print TMPFH "filter zimbra_local0 { facility(local0); }; # zextras\n";
   print TMPFH "filter zimbra_local1 { facility(local1); }; # zextras\n";
-  print TMPFH "filter zimbra_auth { facility(auth); }; # zextras\n";
+  print TMPFH "filter zimbra_auth { facility(auth) and level(info..emerg); }; # zextras\n";
   print TMPFH "filter zimbra_mail { facility(mail); }; # zextras\n";
   if ( $TYPE eq "local" ) {
     print TMPFH "destination zimbra_mail { file(\"/var/log/carbonio.log\" owner(\"zextras\")); }; # zextras\n";
@@ -198,7 +198,7 @@ sub updateSyslog {
       if ( $rsyslog == 1 && $_ =~ /^\tlocal0,local1.none;\\/ ) {
         next;
       }
-      if ( $_ =~ /^auth\.\* / ) {
+      if ( $_ =~ /^auth\.(\*|info) / ) {
         next;
       }
       if ( $_ =~ /^mail.*($LOGHOST|zimbra)/ ) {
@@ -227,10 +227,10 @@ sub updateSyslog {
   if ( $TYPE eq "remote" ) {
     print TMPFH "local0.*                @".$LOGHOST."\n";
     print TMPFH "local1.*                @".$LOGHOST."\n";
-    print TMPFH "auth.*                  @".$LOGHOST."\n";
+    print TMPFH "auth.info               @".$LOGHOST."\n";
   }
   print TMPFH "local0.*                $logfile\n";
-  print TMPFH "auth.*                  $logfile\n";
+  print TMPFH "auth.info               $logfile\n";
 
   if ($TYPE eq "remote" ) {
     print TMPFH "mail.*                @".$LOGHOST."\n";
@@ -287,7 +287,7 @@ sub updateRsyslogd {
       if ( $_ =~ /^\tlocal0,local1.none;\\/ ) {
         next;
       }
-      if ( $_ =~ /^auth\.\* / ) {
+      if ( $_ =~ /^auth\.(\*|info) / ) {
         next;
       }
       s/;local0.none//g;
@@ -315,10 +315,10 @@ sub updateRsyslogd {
   if ( $TYPE eq "remote" ) {
     print ZFH "local0.*                @".$LOGHOST."\n";
     print ZFH "local1.*                @".$LOGHOST."\n";
-    print ZFH "auth.*                  @".$LOGHOST."\n";
+    print ZFH "auth.info               @".$LOGHOST."\n";
   }
   print ZFH "local0.*                $logfile\n";
-  print ZFH "auth.*                  $logfile\n";
+  print ZFH "auth.info               $logfile\n";
 
   if ($TYPE eq "remote" ) {
     print ZFH "mail.*                @".$LOGHOST."\n";
