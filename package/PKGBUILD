@@ -621,6 +621,9 @@ _package() {
   # systemd tmpfiles.d
   install -Dm644 "${repodir}/system/tmpfiles.d/carbonio-core.conf" \
     "${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf"
+  # needrestart: ignore JVM tmpdir churn (CO-4287)
+  install -Dm644 "${repodir}/system/needrestart/carbonio-core.conf" \
+    "${pkgdir}/etc/needrestart/conf.d/${pkgname}.conf"
 }
 
 _package_systemd() {
