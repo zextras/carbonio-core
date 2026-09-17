@@ -121,7 +121,7 @@ class Command:
 			self.output = output
 			self.error = error
 			if rc:
-				Log.logMsg(4, "Executed: %s returned %d (%d - %d) (%.2f sec): output='%s'" % (st, rc, len(output), len(error), dt, output))
+				Log.logMsg(2, "Executed: %s returned %d (%.2f sec): output='%s' error='%s'" % (st, rc, dt, output, error))
 			else:
 				Log.logMsg(4, "Executed: %s returned %d (%d - %d) (%.2f sec)" % (st, rc, len(output), len(error), dt))
 
