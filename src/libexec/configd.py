@@ -221,11 +221,16 @@ while True:
 		Log.logMsg (5, "LOCK myState.lAction requested")
 		myState.lAction.acquire()
 		Log.logMsg (5, "LOCK myState.lAction acquired")
-		myState.compileActions()
-		myState.requestedconfig = {}
-		myState.doConfigRewrites()
-		myState.lAction.notifyAll()
-		myState.lAction.release()
+		try:
+			myState.compileActions()
+			myState.requestedconfig = {}
+			myState.doConfigRewrites()
+		finally:
+			# Always wake and release REWRITE clients (listener.py). If a rewrite
+			# raised, the reentrant Condition lock would otherwise stay held by the
+			# main thread forever and every 7171 REWRITE would hang (CO-4290).
+			myState.lAction.notifyAll()
+			myState.lAction.release()
 		Log.logMsg (5, "LOCK myState.lAction released")
 
 		# executes rewrites/postconf/restarts

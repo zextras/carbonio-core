@@ -16,6 +16,11 @@ import state
 
 from logmsg import *
 
+# Upper bound for how long a REWRITE client is held on the socket. Must stay
+# below the systemd TimeoutStartSec (default 90s) of units that probe us from
+# ExecStartPre (carbonio-mailthreat, carbonio-policyd). CO-4290.
+REWRITE_TIMEOUT = 60
+
 class ThreadedRequestHandler(SocketServer.BaseRequestHandler):
 
 	def handle(self):
@@ -39,10 +44,18 @@ class ThreadedRequestHandler(SocketServer.BaseRequestHandler):
 					state.State.mState.requestedconfig[arg] = arg
 				os.kill(os.getpid(),signal.SIGUSR2) # wake up the main thread if it's sleeping
 				Log.logMsg (5, "LOCK myState.lAction wait()")
-				state.State.mState.lAction.wait()
+				state.State.mState.lAction.wait(REWRITE_TIMEOUT)
+				# Python 2 wait() does not report timeouts; the main loop clears
+				# requestedconfig before rewriting, so a still-queued service means
+				# we timed out. The request stays queued and runs on the next cycle.
+				pending = [arg for arg in args[1:] if arg in state.State.mState.requestedconfig]
 				Log.logMsg (5, "LOCK myState.lAction released")
 				state.State.mState.lAction.release()
-				response = "SUCCESS REWRITES COMPLETE"
+				if pending:
+					Log.logMsg(1, "Rewrite request timed out after %ds for %s" % (REWRITE_TIMEOUT, " ".join(pending)))
+					response = "ERROR REWRITE TIMEOUT"
+				else:
+					response = "SUCCESS REWRITES COMPLETE"
 		else:
 			response = "ERROR UNKNOWN COMMAND"
 
