@@ -1,3 +1,10 @@
+## [4.6.5](https://github.com/zextras/carbonio-core/compare/4.6.4...4.6.5) (2026-09-17)
+
+### Bug Fixes
+
+* **configd:** drop seccomp hardening that implicitly re-enables NoNewPrivileges (CO-4222) ([#192](https://github.com/zextras/carbonio-core/issues/192)) ([2e3566e](https://github.com/zextras/carbonio-core/commit/2e3566edb862142828ecc03695101ec165cd3b20))
+* **core:** ignore /opt/zextras/data/tmp in needrestart scans (CO-4287) ([#191](https://github.com/zextras/carbonio-core/issues/191)) ([3502fef](https://github.com/zextras/carbonio-core/commit/3502fef34849390236069b99744c6b7cc42adb74))
+
 ## [4.6.4](https://github.com/zextras/carbonio-core/compare/4.6.3...4.6.4) (2026-09-17)
 
 ### Bug Fixes
