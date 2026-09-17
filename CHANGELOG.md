@@ -1,3 +1,9 @@
+## [4.6.6](https://github.com/zextras/carbonio-core/compare/4.6.5...4.6.6) (2026-09-17)
+
+### Bug Fixes
+
+* **tmpfiles:** stop making /opt/zextras/common/conf contents group-writable ([#193](https://github.com/zextras/carbonio-core/issues/193)) ([7f9b299](https://github.com/zextras/carbonio-core/commit/7f9b299249c042ccedeb76a92205e35cadfe2547))
+
 ## [4.6.5](https://github.com/zextras/carbonio-core/compare/4.6.4...4.6.5) (2026-09-17)
 
 ### Bug Fixes
