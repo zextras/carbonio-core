@@ -1,3 +1,9 @@
+## [4.6.4](https://github.com/zextras/carbonio-core/compare/4.6.3...4.6.4) (2026-09-17)
+
+### Bug Fixes
+
+* **configd:** never leave lAction held after a failed rewrite (CO-4290) ([#190](https://github.com/zextras/carbonio-core/issues/190)) ([9fa8b81](https://github.com/zextras/carbonio-core/commit/9fa8b814f396ad2ea88d10a89dd6b1ab209c41d6))
+
 ## [4.6.3](https://github.com/zextras/carbonio-core/compare/4.6.2...4.6.3) (2026-09-16)
 
 ### Bug Fixes
