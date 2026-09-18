@@ -52,9 +52,13 @@ fi
 echo "Applying systemd sysusers configurations..."
 systemd-sysusers /usr/lib/sysusers.d/carbonio-*.conf >/dev/null 2>&1 || :
 
-# Create directories and set ownership (requires users to exist first)
+# Create directories and set ownership (requires users to exist first).
+# /opt/zextras/conf must be root-owned while the rules run, or tmpfiles
+# skips its files as an unsafe path transition.
 echo "Applying systemd tmpfiles configurations..."
+chown root:root /opt/zextras/conf
 systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-*.conf >/dev/null 2>&1 || :
+chown zextras:zextras /opt/zextras/conf
 echo "tmpfiles configurations applied."
 
 # Bootstrap and start services
