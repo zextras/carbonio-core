@@ -1,3 +1,9 @@
+## [4.6.7](https://github.com/zextras/carbonio-core/compare/4.6.6...4.6.7) (2026-09-18)
+
+### Bug Fixes
+
+* **core:** run tmpfiles while /opt/zextras/conf is still root-owned ([#195](https://github.com/zextras/carbonio-core/issues/195)) ([ce0d6e3](https://github.com/zextras/carbonio-core/commit/ce0d6e3e878efe7dbb91c5e1e097bcca2641d63c))
+
 ## [4.6.6](https://github.com/zextras/carbonio-core/compare/4.6.5...4.6.6) (2026-09-17)
 
 ### Bug Fixes
