@@ -3,7 +3,7 @@
     "main"
   ],
   "repositoryUrl": "https://github.com/zextras/carbonio-core",
-  "tagFormat": "${version}",
+  "tagFormat": "v${version}",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
