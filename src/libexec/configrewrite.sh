@@ -8,14 +8,11 @@
 source /opt/zextras/bin/zmshutil || exit 1
 zmsetvars
 
-NC=$(which nc 2>/dev/null)
-NC=${NC:-$(which netcat 2>/dev/null)}
-
-echo REWRITE "$@" | $NC -w "${zimbra_configrewrite_timeout}" localhost "${zmconfigd_listen_port}" >/dev/null 2>&1
+zmconfigd_request "${zimbra_configrewrite_timeout}" REWRITE "$@" >/dev/null
 rc=$?
 
-# If nc fails to connect, run zmconfigd directly
-if [ $rc -ne 0 ]; then
+# If zmconfigd is not listening, run it directly
+if [ $rc -eq 1 ]; then
   /opt/zextras/libexec/zmconfigd "$@"
   rc=$?
   stty echo
