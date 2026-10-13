@@ -1,3 +1,9 @@
+## [4.6.9](https://github.com/zextras/carbonio-core/compare/4.6.8...4.6.9) (2026-10-13)
+
+### Bug Fixes
+
+* **configd:** [CO-4493] drop nc from carbonio-configd ExecStartPre ([#205](https://github.com/zextras/carbonio-core/issues/205)) ([bce01c5](https://github.com/zextras/carbonio-core/commit/bce01c5bbf27ffdcdc5e4f9588e9560799fe0861))
+
 ## [4.6.8](https://github.com/zextras/carbonio-core/compare/4.6.7...4.6.8) (2026-10-13)
 
 ### Bug Fixes
