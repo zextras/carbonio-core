@@ -11,7 +11,7 @@ User=zextras
 Environment="JYTHONPATH=/opt/zextras/common/lib/jylibs"
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/systemd-envscript
-ExecStartPre=nc -z $ldap_domain $ldap_port
+ExecStartPre=/usr/bin/timeout 10 /bin/bash -c 'exec 3<>"/dev/tcp/$1/$2"' _ $ldap_domain $ldap_port
 ExecStart=/opt/zextras/libexec/zmconfigd
 RestartSec=3s
 Restart=on-failure
