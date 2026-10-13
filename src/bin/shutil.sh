@@ -149,3 +149,21 @@ systemd_print() {
   echo "Exiting."
   exit 1
 }
+
+#
+# Send one request to the zmconfigd listener and print its reply.
+# Usage: zmconfigd_request <timeout-seconds> <command> [args...]
+# Returns 1 if the listener cannot be reached, 124 on timeout.
+#
+# The request socket is never half-closed: zmconfigd runs on Jython 2.7,
+# whose Netty sockets close the whole channel on peer FIN, so clients that
+# shutdown(SHUT_WR) after writing (nmap-ncat, nc -N) never get the reply.
+#
+zmconfigd_request() {
+  local timeout_s="$1"
+  shift
+  # shellcheck disable=SC2016 # expanded by the inner shell
+  timeout "${timeout_s}" bash -c \
+    'exec 3<>"/dev/tcp/localhost/$1" || exit 1; shift; echo "$*" >&3; cat <&3' \
+    _ "${zmconfigd_listen_port:-7171}" "$@" 2>/dev/null
+}

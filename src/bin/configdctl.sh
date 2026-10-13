@@ -29,9 +29,6 @@ fi
 
 pid=""
 
-NC=$(command -v nc 2>/dev/null)
-NC=${NC:-$(command -v netcat 2>/dev/null)}
-
 get_pid() {
   pid=$(pgrep -f '/opt/zextras/.*/java.*configd')
 }
@@ -42,7 +39,7 @@ check_running() {
   if [[ -z "${pid}" ]]; then
     running=0
   else
-    status=$(echo STATUS | $NC -w 15 localhost "${zmconfigd_listen_port}" 2>/dev/null)
+    status=$(zmconfigd_request 15 STATUS)
     local rc=$?
     if [[ $rc -eq 0 && "$status" = "SUCCESS ACTIVE" ]]; then
       running=1
