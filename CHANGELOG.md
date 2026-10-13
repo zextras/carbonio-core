@@ -1,3 +1,9 @@
+## [4.6.8](https://github.com/zextras/carbonio-core/compare/4.6.7...4.6.8) (2026-10-13)
+
+### Bug Fixes
+
+* **configd:** [CO-4493] talk to zmconfigd without half-closing the socket ([#204](https://github.com/zextras/carbonio-core/issues/204)) ([50f0bd7](https://github.com/zextras/carbonio-core/commit/50f0bd739bd1fd1218e0573e965475efdb168c3a))
+
 ## [4.6.7](https://github.com/zextras/carbonio-core/compare/4.6.6...4.6.7) (2026-09-18)
 
 ### Bug Fixes
