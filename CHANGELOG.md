@@ -1,3 +1,11 @@
+## [4.6.10](https://github.com/zextras/carbonio-core/compare/v4.6.9...v4.6.10) (2026-10-19)
+
+### Bug Fixes
+
+* **package:** fetch junixsocket-native from Nexus ([#211](https://github.com/zextras/carbonio-core/issues/211)) ([4e8a0ab](https://github.com/zextras/carbonio-core/commit/4e8a0ab63b4aac98c799b6c7a3bf9ce34e685ed1))
+* put mailbox jars on proxyconfgen classpath ([#208](https://github.com/zextras/carbonio-core/issues/208)) ([6800e45](https://github.com/zextras/carbonio-core/commit/6800e451c2b548ba8a0551eafe87764a518a6677))
+* **setup:** [CO-4499] stop zmconfigd left running outside systemd ([#209](https://github.com/zextras/carbonio-core/issues/209)) ([16eec7b](https://github.com/zextras/carbonio-core/commit/16eec7b2444c45778c019b7555c7cc80ca1ef64f))
+
 ## [4.6.9](https://github.com/zextras/carbonio-core/compare/4.6.8...4.6.9) (2026-10-13)
 
 ### Bug Fixes
