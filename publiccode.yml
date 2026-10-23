@@ -1,7 +1,7 @@
 publiccodeYmlVersion: "0.5"
 name: Carbonio Community Edition
-releaseDate: "2026-04-01"
-softwareVersion: "26.3.2"
+releaseDate: "2026-10-15"
+softwareVersion: "26.9.0"
 developmentStatus: stable
 softwareType: standalone/web
 url: "https://github.com/zextras/carbonio-core"
