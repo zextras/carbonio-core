@@ -1,4 +1,4 @@
-!/usr/bin/perl
+#!/usr/bin/perl
 
 # SPDX-FileCopyrightText: 2022 Synacor, Inc.
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
