@@ -1,3 +1,9 @@
+## [4.6.11](https://github.com/zextras/carbonio-core/compare/v4.6.10...v4.6.11) (2026-10-23)
+
+### Bug Fixes
+
+* **package:** [CO-4519] bump carbonio version to 26.12.0 ([#215](https://github.com/zextras/carbonio-core/issues/215)) ([07f6630](https://github.com/zextras/carbonio-core/commit/07f663000474f18d9b9ab57839efa0ebdf242550))
+
 ## [4.6.10](https://github.com/zextras/carbonio-core/compare/v4.6.9...v4.6.10) (2026-10-19)
 
 ### Bug Fixes
