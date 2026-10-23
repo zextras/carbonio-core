@@ -147,12 +147,17 @@ my $REGEX_POSTFIX_QID = qr{(?:${SF_QID_CHAR}{6,}+|${LF_QID_TIME_CHAR}{10,}z${LF_
         Dec => '12',
     );
 
-    # log timestamp does not contain the year
+	# log timestamp might or might not contain the year depending on the format
     sub logdate_to_number {
         my ( $ts, $yr ) = @_;
         return unless ($ts);
 
-        # Sep 14 18:30:02
+        # Check for ISO 8601 format (Ubuntu 24)
+        if ( $ts =~ /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/ ) {
+            return sprintf("%04d%02d%02d%02d%02d%02d", $1, $2, $3, $4, $5, $6);
+        }
+
+        # Sep 14 18:30:02 (Traditional Ubuntu 22 format)
         my @p = split( ' ', $ts );
         my $mo = $mon{ $p[0] };
 
@@ -321,6 +326,28 @@ sub sort_files {
 sub doit {
     my ( $opt, @files ) = @_;
 
+	my $matchLine = qr{
+			^
+			(
+				(?: \w{3} \s+ [\s\d]\d \s+ \d{2}:\d{2}:\d{2} )   # Traditional Syslog format (Ubuntu 22)
+				|
+				(?: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[+-]\d{2}:\d{2} ) # ISO 8601 format (Ubuntu 24)
+			)
+			\s+
+			(?:<[^>]+>\s+)?       # optional initial tag
+			(\S+)                 # hostname
+			\s+
+			([^\[]+)              # service/component (e.g., postfix/smtpd)
+			\[
+				(\d+)             # PID
+			\]
+			:
+			\s+
+			(?:\[ID\s+\d+\s+\w+\.\w+\]\s+)?
+								  # optional [ID ...] prefix
+			(.*)                  # remaining message
+			$
+		}x;
     warn( "$Prog: total files to read: ", scalar(@files), "\n" ) if ($DEBUG);
     my $nomatch = 0;
 
@@ -335,15 +362,7 @@ sub doit {
             $line =~ s/\s+$//;
             next unless ($line);
             next
-              unless (
-                $line =~ /(^\w{3} \s [\s\d]\d \s \d{2}:\d{2}:\d{2})\s
-                    (?:<[^>]+> \s)?
-                    (\S+)\s
-                    ([^[]+)\[(\d+)\]:\s
-                    (?:\[ID \s \d+ \s \w+\.\w+\] \s)?
-                    (.*)$/x
-              );
-
+              unless ($line =~ $matchLine);
             my %ent;
             @ent{qw(log_date host app pid msg)} = ( $1, $2, $3, $4, $5 );
 
@@ -422,7 +441,7 @@ sub doit {
                     $msg =~ /^to=<([^>]*)>
                          (?:, \s orig_to=<([^>]*)>)?,\s
                          relay=([^[,]+)(?:\[(.*?)\](:\d+))?,\s
-                         delay=\S+, \s delays=\S+, \s dsn=\S+ \s
+						 delay=\S+, \s delays=\S+, \s (?:.*, \s)?dsn=\S+ \s
                          status=(\S+) \s (.*)/x
                   )
                 {
@@ -597,14 +616,14 @@ sub doit {
             print(
                 "Message ID '$msg->{messageId}'\n",
                 ( $msg->{sender} || "unknown" ),
-                " -->\n",
+                " -->",
             );
             foreach my $r (@recip) {
                 my $or = $rList->{$r}->{origRecip};
                 print( $indent, $r, ( $or ? " (originally to $or)" : () ),
                     "\n" );
             }
-            $indent = "  ";
+            $indent = " ";
             foreach my $r (@recip) {
                 if ( $opt->{_recipient} ) {
                     my $or = $rList->{$r}->{origRecip};
