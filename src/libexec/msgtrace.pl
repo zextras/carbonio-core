@@ -18,8 +18,8 @@ zmmsgtrace [options] [<mail-syslog-file>...]
     --recipient|r "user@domain"   # case insensitive regex
     --srchost|F "hostname_or_ip"  # case insensitive regex
     --desthost|D "hostname_or_ip" # case insensitive regex
-    --time|t "start_ts,end_ts"    # YYYYMM[DD[HH[MM[SS]]]]
-    --year "YYYY"                 # file year if no YYYY in file
+    --time|t "start_ts,end_ts"    # YYYYMM[DD[HH[MM[SS]]]] or ISO 8601
+    --year "YYYY"                 # year for traditional syslog timestamps
     --nosort                      # do not sort @ARGV files by mtime
     --debug                       verbose output useful for debugging
     --help                        display a brief help message
@@ -30,6 +30,9 @@ zmmsgtrace [options] [<mail-syslog-file>...]
 
   Files ending in '.gz', '.bz' or '.bz2' will be read using gzip or
   bunzip2.
+
+  Time filters accept YYYYMM[DD[HH[MM[SS]]]] or ISO 8601 timestamps.
+  The --year option applies only to traditional syslog timestamps.
 
 =head1 EXAMPLE
 
@@ -147,12 +150,18 @@ my $REGEX_POSTFIX_QID = qr{(?:${SF_QID_CHAR}{6,}+|${LF_QID_TIME_CHAR}{10,}z${LF_
         Dec => '12',
     );
 
-    # log timestamp does not contain the year
+    # log timestamp might or might not contain the year depending on the format
     sub logdate_to_number {
         my ( $ts, $yr ) = @_;
         return unless ($ts);
 
-        # Sep 14 18:30:02
+        # ISO 8601 format (RSYSLOG_FileFormat)
+        # Timezone offsets are not normalized; --time compares local wall-clock times.
+        if ( $ts =~ /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/ ) {
+            return sprintf("%04d%02d%02d%02d%02d%02d", $1, $2, $3, $4, $5, $6);
+        }
+
+        # Sep 14 18:30:02 (RSYSLOG_TraditionalFileFormat)
         my @p = split( ' ', $ts );
         my $mo = $mon{ $p[0] };
 
@@ -310,8 +319,10 @@ sub sort_files {
     return sort { -M $b <=> -M $a } @files;
 }
 
-# Linux:
+# Traditional syslog (RSYSLOG_TraditionalFileFormat):
 #  Jul  1 20:08:06 host postfix/smtpd[4379]: connect from host[1.0.0.1]
+# RFC 3339 (RSYSLOG_FileFormat):
+#  2026-10-23T10:08:06+02:00 host postfix/smtpd[4379]: connect from host[1.0.0.1]
 # FreeBSD:
 #  Jul  1 20:08:06 <mail.info> host postfix/smtpd[437]: connect from h[1.0.0.1]
 #  Aug 17 15:16:12 host postfix/cleanup[1419]: [ID 197553 mail.info] EC2B339E5: message-id=<rnd@som.dom>
@@ -321,6 +332,28 @@ sub sort_files {
 sub doit {
     my ( $opt, @files ) = @_;
 
+    my $matchLine = qr{
+            ^
+            (
+                (?: \w{3} \s+ [\s\d]\d \s+ \d{2}:\d{2}:\d{2} ) # Traditional syslog (RFC 3164)
+                |
+                (?: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}) ) # RFC 3339
+            )
+            \s+
+            (?:<[^>]+>\s+)?       # optional initial tag
+            (\S+)                 # hostname
+            \s+
+            ([^\[]+)              # service/component (e.g., postfix/smtpd)
+            \[
+                (\d+)             # PID
+            \]
+            :
+            \s+
+            (?:\[ID\s+\d+\s+\w+\.\w+\]\s+)?
+                                  # optional [ID ...] prefix
+            (.*)                  # remaining message
+            $
+        }x;
     warn( "$Prog: total files to read: ", scalar(@files), "\n" ) if ($DEBUG);
     my $nomatch = 0;
 
@@ -335,15 +368,7 @@ sub doit {
             $line =~ s/\s+$//;
             next unless ($line);
             next
-              unless (
-                $line =~ /(^\w{3} \s [\s\d]\d \s \d{2}:\d{2}:\d{2})\s
-                    (?:<[^>]+> \s)?
-                    (\S+)\s
-                    ([^[]+)\[(\d+)\]:\s
-                    (?:\[ID \s \d+ \s \w+\.\w+\] \s)?
-                    (.*)$/x
-              );
-
+              unless ($line =~ $matchLine);
             my %ent;
             @ent{qw(log_date host app pid msg)} = ( $1, $2, $3, $4, $5 );
 
@@ -422,7 +447,7 @@ sub doit {
                     $msg =~ /^to=<([^>]*)>
                          (?:, \s orig_to=<([^>]*)>)?,\s
                          relay=([^[,]+)(?:\[(.*?)\](:\d+))?,\s
-                         delay=\S+, \s delays=\S+, \s dsn=\S+ \s
+                         delay=\S+, \s delays=\S+, \s (?:\w+=[^,]*,\s)*dsn=\S+ \s
                          status=(\S+) \s (.*)/x
                   )
                 {
@@ -529,7 +554,7 @@ sub doit {
             }
         }
 
-        #print( "POSTFIX:", Dumper( \%msgs ), "AMAVIS:",  Dumper( \%amav ) );
+        #print( "POSTFIX:", Dumper( \%msgs ), "AMAVIS:", Dumper( \%amav ) );
 
         if ($nomatch) {
             warn(
