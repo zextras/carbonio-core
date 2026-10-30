@@ -2,7 +2,7 @@
 
 Carbonio Core provides the core components and resources for the Carbonio email and collaboration platform. It ships the control scripts, libraries, configuration templates, and system services that manage Carbonio's components, including:
 
-- Service control scripts and libraries (`zm*` utilities, configd, jython modules)
+- Service control scripts and libraries (`zm*` utilities, configd)
 - Configuration templates (MTA, Amavis, FreshClam, configd, cron)
 - System services (carbonio.target, carbonio-configd.service, carbonio-stats.service)
 - Bootstrap scripts for initial setup
