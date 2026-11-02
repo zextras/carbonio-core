@@ -13,6 +13,8 @@ EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/systemd-envscript
 ExecStartPre=/usr/bin/timeout 10 /bin/bash -c 'exec 3<>"/dev/tcp/$1/$2"' _ $ldap_domain $ldap_port
 ExecStart=/opt/zextras/libexec/zmconfigd
+ExecStartPost=-/usr/bin/timeout 120 /bin/bash -c 'until [[ "$(timeout 5 bash -c "exec 3<>/dev/tcp/localhost/$1 && echo STATUS >&3 && cat <&3" 2>/dev/null)" == "SUCCESS ACTIVE"* ]]; do sleep 1; done' _ ${configd_listen_port}
+TimeoutStartSec=180
 RestartSec=3s
 Restart=on-failure
 

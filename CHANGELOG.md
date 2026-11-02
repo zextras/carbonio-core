@@ -1,3 +1,9 @@
+## [4.6.12](https://github.com/zextras/carbonio-core/compare/v4.6.11...v4.6.12) (2026-10-27)
+
+### Bug Fixes
+
+* **configd:** [CO-4467] wait for first rewrite before reporting configd started ([#213](https://github.com/zextras/carbonio-core/issues/213)) ([86ee2f8](https://github.com/zextras/carbonio-core/commit/86ee2f869acaab6454c19dd2e23039f3cb42b4d3))
+
 ## [4.6.11](https://github.com/zextras/carbonio-core/compare/v4.6.10...v4.6.11) (2026-10-23)
 
 ### Bug Fixes
