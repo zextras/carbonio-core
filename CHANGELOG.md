@@ -1,3 +1,9 @@
+## [4.6.13](https://github.com/zextras/carbonio-core/compare/v4.6.12...v4.6.13) (2026-11-03)
+
+### Bug Fixes
+
+* **zmmsgtrace:** [ZCT-2226] support ISO timestamps and extended Postfix logs ([#216](https://github.com/zextras/carbonio-core/issues/216)) ([54281ec](https://github.com/zextras/carbonio-core/commit/54281ec3ee0c010eaa40af2821bc602ba814f259))
+
 ## [4.6.12](https://github.com/zextras/carbonio-core/compare/v4.6.11...v4.6.12) (2026-10-27)
 
 ### Bug Fixes
