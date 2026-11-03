@@ -17,9 +17,16 @@ zimbra_zmjava_java_library_path=${zimbra_zmjava_java_library_path:-/opt/zextras/
 # mailboxd heap: default to 512 if not set, use for both xms and xmx
 mailboxd_java_heap_size=${mailboxd_java_heap_size:-512}
 
+mailboxd_java_heap_new_size_percent=${mailboxd_java_heap_new_size_percent:-25}
+mailboxd_thread_stack_size=${mailboxd_thread_stack_size:-256k}
+networkaddress_cache_ttl=${networkaddress_cache_ttl:-60}
+
 # Append JVM flags to mailboxd_java_options if not already present
 if ! echo "${mailboxd_java_options}" | grep -q 'Xss'; then
   mailboxd_java_options="${mailboxd_java_options} -Xss${mailboxd_thread_stack_size}"
+fi
+if ! echo "${mailboxd_java_options}" | grep -q 'sun.net.inetaddr.ttl'; then
+  mailboxd_java_options="${mailboxd_java_options} -Dsun.net.inetaddr.ttl=${networkaddress_cache_ttl}"
 fi
 if ! echo "${mailboxd_java_options}" | grep -q 'log4j'; then
   mailboxd_java_options="${mailboxd_java_options} -Dlog4j.configurationFile=${zimbra_log4j_properties}"
@@ -46,11 +53,18 @@ ldap_domain="${url%:*}"
   echo "antispam_enable_rule_compilation=${antispam_enable_rule_compilation}"
   echo "antispam_enable_rule_updates=${antispam_enable_rule_updates}"
   echo "bind_url=${bind_url}"
+  echo "configd_listen_port=${zmconfigd_listen_port}"
+  echo "configd_rewrite_timeout=${zimbra_configrewrite_timeout}"
   echo "java_options=${zimbra_zmjava_options}"
   echo "java_xms=${mailboxd_java_heap_size}"
   echo "java_xmx=${mailboxd_java_heap_size}"
   echo "ldap_domain=${ldap_domain}"
   echo "ldap_port=${ldap_port}"
-  echo "mailboxd_java_options=${mailboxd_java_options}"
+  echo "log_directory=${zimbra_log_directory}"
+  echo "mailboxd_directory=${mailboxd_directory}"
+  echo "mailboxd_java_heap_new_size_percent=${mailboxd_java_heap_new_size_percent}"
   echo "mail_service_port=${zimbra_mail_service_port}"
+  echo "mailboxd_java_options=${mailboxd_java_options}"
+  echo "mysql_errlogfile=${mysql_errlogfile}"
+  echo "mysql_mycnf=${mysql_mycnf}"
 } >/opt/zextras/data/systemd.env

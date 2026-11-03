@@ -2,4 +2,9 @@
 # SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
 # SPDX-License-Identifier: GPL-2.0-only
 # Compatibility wrapper — delegates to configd service.
-exec /opt/zextras/bin/configd service "$1" "clamd" "${@:2}"
+CONFIGD=/opt/zextras/bin/configd
+[ -x "$CONFIGD" ] || {
+  echo "Error: configd binary not found at $CONFIGD" >&2
+  exit 1
+}
+exec "$CONFIGD" service "${1:-}" clamd "${@:2}"

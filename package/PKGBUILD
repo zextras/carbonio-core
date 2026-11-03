@@ -23,7 +23,7 @@ arch=('any')
 depends__apt=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-configd"
+  "carbonio-configd (>= 1.1.0)"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-openjdk-cacerts"
@@ -77,7 +77,7 @@ depends__apt=(
 depends__ubuntu_noble=(
   "adduser"
   "carbonio-common-appserver-conf"
-  "carbonio-configd"
+  "carbonio-configd (>= 1.1.0)"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-openjdk-cacerts"
@@ -130,7 +130,7 @@ depends__ubuntu_noble=(
 )
 depends__yum=(
   "carbonio-common-appserver-conf"
-  "carbonio-configd"
+  "carbonio-configd (>= 1.1.0)"
   "carbonio-mailbox-jar"
   "carbonio-innotop"
   "carbonio-openjdk-cacerts"
@@ -295,6 +295,8 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmcertmgr"
   install -D "${repodir}/src/bin/clamdctl.sh" \
     "${pkgdir}/opt/zextras/bin/zmclamdctl"
+  install -D "${repodir}/src/bin/configdctl.sh" \
+    "${pkgdir}/opt/zextras/bin/zmconfigdctl"
   install -D "${repodir}/src/bin/contactbackup.pl" \
     "${pkgdir}/opt/zextras/bin/zmcontactbackup"
   install -D "${repodir}/src/bin/control.sh" \
@@ -491,7 +493,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmqstat"
   install -Dm755 "${repodir}/src/libexec/queuelog.pl" \
     "${pkgdir}/opt/zextras/libexec/zmqueuelog"
-  install -Dm755 "${repodir}/src/libexec/rc.sh" \
+  install -Dm755 "${repodir}/src/libexec/rc.pl" \
     "${pkgdir}/opt/zextras/libexec/zmrc"
   install -Dm755 "${repodir}/src/libexec/rcd.pl" \
     "${pkgdir}/opt/zextras/libexec/zmrcd"
@@ -583,7 +585,6 @@ _package() {
   install -Dm755 "${repodir}/src/bin/systemd-envscript.sh" \
     "${pkgdir}/opt/zextras/bin/systemd-envscript"
 
-
   # amavis
   install -D "${repodir}/config/amavis/amavisd-custom.conf" \
     "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
@@ -634,6 +635,10 @@ _postinst() {
   # unprivileged owner ("unsafe path transition"), so /opt/zextras/conf
   # must still be root-owned while the rules below run.
   chown root:root /opt/zextras/conf
+
+  # Remove leftovers of the retired Jython zmconfigd implementation.
+  rm -rf /opt/zextras/common/lib/jylibs /opt/zextras/jython \
+    /opt/zextras/conf/zmconfigd.log4j.properties
 
   # One invocation for every fragment, so sibling ownership
   # (carbonio-mta's ldap-*.cf group postfix) is re-asserted too.
