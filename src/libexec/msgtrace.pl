@@ -18,7 +18,7 @@ zmmsgtrace [options] [<mail-syslog-file>...]
     --recipient|r "user@domain"   # case insensitive regex
     --srchost|F "hostname_or_ip"  # case insensitive regex
     --desthost|D "hostname_or_ip" # case insensitive regex
-    --time|t "start_ts,end_ts"    # YYYYMM[DD[HH[MM[SS]]]] or ISO 8601
+    --time|t "start_ts,end_ts"    # YYYYMM[DD[HH[MM[SS]]]], YYYY-MM-DD or ISO 8601
     --year "YYYY"                 # year for traditional syslog timestamps
     --nosort                      # do not sort @ARGV files by mtime
     --debug                       verbose output useful for debugging
@@ -184,6 +184,7 @@ my $REGEX_POSTFIX_QID = qr{(?:${SF_QID_CHAR}{6,}+|${LF_QID_TIME_CHAR}{10,}z${LF_
         my @v = $max ? ( 31, 23, 59, 60 ) : ( 0, 0, 0, 0 );
 
         return undef unless $t;
+        $t =~ s/-//g if $t =~ /^\d{4}-\d{2}-\d{2}$/;
         return undef
           unless $t =~ /^(\d{4})(\d{2})(\d{2})?(\d{2})?(\d{2})?(\d{2})?$/;
         my @t = ( $1, $2, $3 || $v[0], $4 || $v[1], $5 || $v[2], $6 || $v[3] );
@@ -447,6 +448,7 @@ sub doit {
                     $msg =~ /^to=<([^>]*)>
                          (?:, \s orig_to=<([^>]*)>)?,\s
                          relay=([^[,]+)(?:\[(.*?)\](:\d+))?,\s
+                         (?:\w+=[^,]*,\s)*
                          delay=\S+, \s delays=\S+, \s (?:\w+=[^,]*,\s)*dsn=\S+ \s
                          status=(\S+) \s (.*)/x
                   )
@@ -513,7 +515,7 @@ sub doit {
                     $msg =~ /^\(([^)]+)\)\s            # 1 am_id (<pid>-<seq>)
                              (Passed|Blocked)\s        # 2 disposition
                              ([^,]+),\s                # 3 CLEAN or ...,
-                             (?:[^\[]*)?\[([^]]+)\]\s  # 4 a hostname or ip
+                             (?:[^\[]*)?\[([^]]+)\](?::\d+)?\s  # 4 a hostname or ip
                              (?:\[([^]]+)\]\s)?        # 5 an ip
                              <([^>]*)>\s               # 6 from smtp addr
                              ->\s
@@ -554,7 +556,7 @@ sub doit {
             }
         }
 
-        #print( "POSTFIX:", Dumper( \%msgs ), "AMAVIS:", Dumper( \%amav ) );
+        #print( "POSTFIX:", Dumper( \%msgs ), "AMAVIS:",  Dumper( \%amav ) );
 
         if ($nomatch) {
             warn(
