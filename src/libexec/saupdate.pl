@@ -51,7 +51,7 @@ if ( !$rule_updates_enabled ) {
 
 my $sa =
 "/opt/zextras/common/bin/sa-update -v --reallyallowplugins --refreshmirrors >/dev/null 2>&1";
-my $restart = "/opt/zextras/bin/configd service restart amavis >/dev/null 2>&1";
+my $restart = "/opt/zextras/bin/configd service restart amavis norewrite >/dev/null 2>&1";
 my $compile = "/opt/zextras/libexec/zmsacompile >/dev/null 2>&1";
 
 my $restart_enabled = getLocalConfig("antispam_enable_restarts");
