@@ -449,6 +449,8 @@ sub doit {
                 }
 
                 # to=<>, relay=, delay=, delays=, dsn=5.0.0, status=bounced ...
+                # Postfix delivery log with optional fields:
+                # to=<user@example.com>, relay=127.0.0.1[127.0.0.1]:10026, conn_use=2, delay=0.17, delays=0.02/0/0/0.14, tls=may?, dsn=2.0.0, status=sent (250 2.0.0 from MTA(smtp:[127.0.0.1]:10030): 250 2.0.0 Ok: queued as BB24C654F1)
                 elsif (
                     $msg =~ /^to=<([^>]*)>
                          (?:, \s orig_to=<([^>]*)>)?,\s
