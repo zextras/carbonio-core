@@ -31,7 +31,8 @@ zmmsgtrace [options] [<mail-syslog-file>...]
   Files ending in '.gz', '.bz' or '.bz2' will be read using gzip or
   bunzip2.
 
-  Time filters accept YYYYMM[DD[HH[MM[SS]]]] or ISO 8601 timestamps.
+  Time filters accept YYYYMM[DD[HH[MM[SS]]]], YYYY-MM-DD,
+  or ISO 8601 timestamps.
   The --year option applies only to traditional syslog timestamps.
 
 =head1 EXAMPLE
@@ -39,6 +40,10 @@ zmmsgtrace [options] [<mail-syslog-file>...]
 Show a trace of all messages in '/var/log/carbonio.log':
 
   $ zmmsgtrace
+
+Show a trace of messages from October 29, 2026:
+
+  $ zmmsgtrace --time 2026-10-29,2026-10-29
 
 Show a trace of all messages in '/var/log/carbonio.log' by sender
 matching the word 'phil':
