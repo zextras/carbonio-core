@@ -12,19 +12,17 @@ CONFIGD=/opt/zextras/bin/configd
 
 usage() {
   "$CONFIGD" release 2>/dev/null
-  echo "$0 [-v -h -H <host>] command [args]"
+  echo "$0 [-v -V -h] command [args]"
   echo
   printf '\t-v:\tdisplay version\n'
   printf '\t-V:\tdisplay advanced version information\n'
   printf '\t-h:\tprint usage statement\n'
-  printf '\t-H:\tHost name (localhost)\n'
   echo
   printf '\tCommand in:\n'
   printf '\t\t%-20s%30s\n' restart "Restart services" shutdown "Shutdown services" \
     startup "Startup services" status "Display service status" stop "Stop services" start "Start services"
 }
 
-HOST=""
 while [ $# -gt 0 ]; do
   case "$1" in
     -v) exec "$CONFIGD" release ;;
@@ -34,28 +32,14 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     -H)
-      HOST="$2"
-      shift 2
+      # Never worked in legacy control.pl (getopts ran after the command was read).
+      # Remote operations use /opt/zextras/libexec/zmrc directly.
+      echo "Error: remote execution (-H) is not supported; use /opt/zextras/libexec/zmrc" >&2
+      exit 1
       ;;
     *) break ;;
   esac
 done
-
-if [ -n "$HOST" ]; then
-  # Remote execution stays on the legacy Perl SSH helpers (zmrc/zmrcd).
-  case "$1" in
-    start | startup) remote=startup ;;
-    stop | shutdown) remote=shutdown ;;
-    restart) remote=restart ;;
-    status) remote=status ;;
-    *)
-      usage >&2
-      exit 1
-      ;;
-  esac
-  echo "HOST:${HOST} ${remote}" | /opt/zextras/libexec/zmrc "$HOST"
-  exit $?
-fi
 
 case "$1" in
   start | startup) exec "$CONFIGD" control start ;;
