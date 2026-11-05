@@ -677,12 +677,6 @@ _postinst() {
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
 
-  # Use cp instead of sed -i to handle bind-mounted /etc/hosts in containers
-  # (sed -i creates a temp file and renames, which fails on bind mounts)
-  hosts_tmp=$(mktemp)
-  sed -e '/^::1     ip6-localhost ip6-loopback localhost$/!s/::1     ip6-localhost ip6-loopback/::1     ip6-localhost ip6-loopback localhost/' /etc/hosts >"$hosts_tmp" \
-    && cp "$hosts_tmp" /etc/hosts
-  rm -f "$hosts_tmp"
   sed -i -e 's/# session    required   pam_limits.so/session    required   pam_limits.so/' /etc/pam.d/su
   if [ -f /etc/pam.d/common-session ]; then
     pamtmp=$(mktemp -t zpamtmp.XXXXXX 2>/dev/null) || {
