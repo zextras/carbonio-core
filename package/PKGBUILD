@@ -677,7 +677,6 @@ _postinst() {
     ln -f -s ca.pem "/opt/zextras/conf/ca/$(openssl x509 -hash -noout -in /opt/zextras/conf/ca/ca.pem).0"
   fi
 
-
   sed -i -e 's/# session    required   pam_limits.so/session    required   pam_limits.so/' /etc/pam.d/su
   if [ -f /etc/pam.d/common-session ]; then
     pamtmp=$(mktemp -t zpamtmp.XXXXXX 2>/dev/null) || {
