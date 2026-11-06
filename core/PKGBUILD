@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-only
-_carbonio_version="26.3.2"
+_carbonio_version="26.3.4"
 
 pkgname="carbonio-core"
 pkgver="4.5.4"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
