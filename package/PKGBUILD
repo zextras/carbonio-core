@@ -5,7 +5,7 @@ _carbonio_version="26.9.2"
 
 pkgname="carbonio-core"
 pkgver="4.6.7"
-pkgrel="2"
+pkgrel="3"
 pkgdesc="Core components and resources for Carbonio"
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
