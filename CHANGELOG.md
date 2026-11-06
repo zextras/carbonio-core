@@ -1,3 +1,9 @@
+## [4.7.0](https://github.com/zextras/carbonio-core/compare/v4.6.13...v4.7.0) (2026-11-06)
+
+### Features
+
+* **CO-3358:** migrate service management to native configd ([#178](https://github.com/zextras/carbonio-core/issues/178)) ([6a837de](https://github.com/zextras/carbonio-core/commit/6a837de2eaf3cd291da43e5f82c5d7d1b8cb6286))
+
 ## [4.6.13](https://github.com/zextras/carbonio-core/compare/v4.6.12...v4.6.13) (2026-11-03)
 
 ### Bug Fixes
