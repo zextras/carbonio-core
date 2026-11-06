@@ -1,3 +1,9 @@
+## [4.7.1](https://github.com/zextras/carbonio-core/compare/v4.7.0...v4.7.1) (2026-11-06)
+
+### Bug Fixes
+
+* **setup:** stop only the stray configd daemon, not configd CLI calls ([#225](https://github.com/zextras/carbonio-core/issues/225)) ([d028bef](https://github.com/zextras/carbonio-core/commit/d028bef01f63d6fff4986122a27b92a871478b8a))
+
 ## [4.7.0](https://github.com/zextras/carbonio-core/compare/v4.6.13...v4.7.0) (2026-11-06)
 
 ### Features
