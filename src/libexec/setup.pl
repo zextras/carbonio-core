@@ -4077,16 +4077,19 @@ sub runAsRoot {
     return $rc;
 }
 
-# A zmconfigd started via zmcontrol (legacy mode, e.g. a bootstrap run before
-# any role target was enabled) lives outside carbonio-configd.service and keeps
-# its listener port, so the unit fails with "already running" forever (CO-4499).
-# With the targets stopped, any zmconfigd still alive is such a stray: kill it.
+# A configd daemon started via zmcontrol (legacy mode, e.g. a bootstrap run
+# before any role target was enabled) lives outside carbonio-configd.service and
+# keeps its listener port, so the unit fails with "already running" forever
+# (CO-4499). With the targets stopped, any configd daemon still alive is such a
+# stray: kill it. The daemon runs with no arguments, so anchor the pattern at
+# end of line to leave configd CLI invocations (e.g. "configd localconfig ...")
+# alone.
 sub stopStrayConfigd {
-    my @match = ( '-u', 'zextras', '-f', '^/opt/zextras/bin/configd' );
+    my @match = ( '-u', 'zextras', '-f', '^/opt/zextras/bin/configd$' );
     system("systemctl stop carbonio-configd.service >> $logfile 2>&1");
     my $running = sub { 0 == system( 'pkill', '-0', @match ) };
     return unless $running->();
-    detail("Stopping zmconfigd running outside carbonio-configd.service\n");
+    detail("Stopping configd daemon running outside carbonio-configd.service\n");
     system( 'pkill', '-TERM', @match );
     for ( 1 .. 10 ) {
         return unless $running->();
