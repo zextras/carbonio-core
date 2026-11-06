@@ -66,6 +66,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building deb/rpm packages'
+                // The stash below includes .git (useDefaultExcludes: false) and tag
+                // checkouts leave unreadable *.promisor markers that break it.
+                sh 'find .git -name "*.promisor" -delete'
                 buildStage(
                     buildFlags: ' -ds ',
                     useDefaultExcludes: false,
