@@ -4082,7 +4082,7 @@ sub runAsRoot {
 # its listener port, so the unit fails with "already running" forever (CO-4499).
 # With the targets stopped, any zmconfigd still alive is such a stray: kill it.
 sub stopStrayConfigd {
-    my @match = ( '-u', 'zextras', '-f', 'org\.python\.util\.jython /opt/zextras/libexec/zmconfigd' );
+    my @match = ( '-u', 'zextras', '-f', '^/opt/zextras/bin/configd' );
     system("systemctl stop carbonio-configd.service >> $logfile 2>&1");
     my $running = sub { 0 == system( 'pkill', '-0', @match ) };
     return unless $running->();
