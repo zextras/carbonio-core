@@ -4,7 +4,7 @@
 
 pkgname="carbonio-webui"
 pkgver="4.5.4"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="A modern Web UI for carbonio (meta-package)"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
