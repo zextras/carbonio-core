@@ -1,3 +1,9 @@
+## [4.7.2](https://github.com/zextras/carbonio-core/compare/v4.7.1...v4.7.2) (2026-11-11)
+
+### Bug Fixes
+
+* **mta:** make Postfix config root-owned and narrow sudo rules (CO-4621) ([#226](https://github.com/zextras/carbonio-core/issues/226)) ([cda7600](https://github.com/zextras/carbonio-core/commit/cda7600ee2f9e2c82e04252650279cdab17a8153))
+
 ## [4.7.1](https://github.com/zextras/carbonio-core/compare/v4.7.0...v4.7.1) (2026-11-06)
 
 ### Bug Fixes
