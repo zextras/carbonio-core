@@ -27,8 +27,9 @@ rewrite_config() {
 
 if [ "$1" = "status" ] || [ "$1" = "start" ]; then
   if [ ! -f /opt/zextras/common/conf/main.cf ]; then
-    touch /opt/zextras/common/conf/main.cf
-    /opt/zextras/common/sbin/postconf -e mail_owner="${postfix_mail_owner}" setgid_group="${postfix_setgid_group}"
+    # CO-4621: common/conf is root-owned; only the root helper may create main.cf
+    sudo /opt/zextras/libexec/postfix-conf set \
+      mail_owner="${postfix_mail_owner}" setgid_group="${postfix_setgid_group}"
   fi
   sudo /opt/zextras/libexec/zmmtastatus 2>/dev/null
   R=$?
@@ -56,4 +57,6 @@ if [ -f /etc/aliases ]; then
   sudo /opt/zextras/common/sbin/postalias /etc/aliases
 fi
 
-sudo /opt/zextras/common/sbin/postfix "$@"
+# sudoers only allows the bare verbs (start|stop|status|reload|flush|check);
+# the optional "norewrite" marker is not meant for postfix itself.
+sudo /opt/zextras/common/sbin/postfix "$1"
