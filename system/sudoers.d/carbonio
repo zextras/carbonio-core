@@ -1,7 +1,7 @@
 Defaults:zextras !requiretty
 
 # CO-4621: the zextras user must not be able to turn sudo into root through
-# Postfix. Postfix configuration is changed only via carbonio-postfix-conf,
+# Postfix. Postfix configuration is changed only via postfix-conf,
 # which validates every request. postconf/postfix are NOT allowed with
 # arbitrary arguments (no -c, no "set-permissions", no -e/-X).
 # Sudoers matches the LAST matching rule, so the "!" rules must follow the
@@ -34,7 +34,7 @@ Cmnd_Alias CARBONIO_POSTSUPER = \
 %zextras ALL=NOPASSWD:CARBONIO_POSTFIX_CTL
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postalias /etc/aliases
 %zextras ALL=NOPASSWD:CARBONIO_POSTSUPER
-%zextras ALL=NOPASSWD:/opt/zextras/libexec/carbonio-postfix-conf
+%zextras ALL=NOPASSWD:/opt/zextras/libexec/postfix-conf
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmmailboxdmgr
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmmtastatus
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmqstat

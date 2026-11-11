@@ -28,7 +28,7 @@ rewrite_config() {
 if [ "$1" = "status" ] || [ "$1" = "start" ]; then
   if [ ! -f /opt/zextras/common/conf/main.cf ]; then
     # CO-4621: common/conf is root-owned; only the root helper may create main.cf
-    sudo /opt/zextras/libexec/carbonio-postfix-conf set \
+    sudo /opt/zextras/libexec/postfix-conf set \
       mail_owner="${postfix_mail_owner}" setgid_group="${postfix_setgid_group}"
   fi
   sudo /opt/zextras/libexec/zmmtastatus 2>/dev/null

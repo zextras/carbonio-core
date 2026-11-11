@@ -9,13 +9,13 @@
 # and trusted by the root master process. This wrapper never runs postconf as
 # root. Read-only invocations run postconf as the current user; the supported
 # write modes are routed to the validating root helper:
-#   postconf -e KEY=VALUE...  ->  carbonio-postfix-conf set KEY=VALUE...
-#   postconf -X KEY...        ->  carbonio-postfix-conf unset KEY...
+#   postconf -e KEY=VALUE...  ->  postfix-conf set KEY=VALUE...
+#   postconf -X KEY...        ->  postfix-conf unset KEY...
 # Every other way of writing (-#, -M/-P/-F with '=', -e/-X combined with any
 # other option) is refused.
 
 POSTCONF=/opt/zextras/common/sbin/postconf
-HELPER=/opt/zextras/libexec/carbonio-postfix-conf
+HELPER=/opt/zextras/libexec/postfix-conf
 
 if [ ! -x "${POSTCONF}" ]; then
   echo "Error: postfix not installed"
