@@ -1,13 +1,62 @@
 Defaults:zextras !requiretty
 
+# CO-4621: the zextras user must not be able to turn sudo into root through
+# Postfix. Postfix configuration is changed only via carbonio-postfix-conf,
+# which validates every request. postconf/postfix are NOT allowed with
+# arbitrary arguments (no -c, no "set-permissions", no -e/-X).
+# Sudoers matches the LAST matching rule, so the "!" rules must follow the
+# broad allow rule of the same command.
+
+Cmnd_Alias CARBONIO_POSTFIX_CTL = \
+    /opt/zextras/common/sbin/postfix start, \
+    /opt/zextras/common/sbin/postfix stop, \
+    /opt/zextras/common/sbin/postfix status, \
+    /opt/zextras/common/sbin/postfix reload, \
+    /opt/zextras/common/sbin/postfix flush, \
+    /opt/zextras/common/sbin/postfix check
+
+# Only the exact forms used by libexec/qaction.pl
+Cmnd_Alias CARBONIO_POSTSUPER = \
+    /opt/zextras/common/sbin/postsuper -[hHrd] ALL incoming, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] - incoming, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] ALL active, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] - active, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] ALL deferred, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] - deferred, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] ALL hold, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] - hold, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] ALL maildrop, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] - maildrop, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] ALL corrupt, \
+    /opt/zextras/common/sbin/postsuper -[hHrd] - corrupt
+
 %zextras ALL=NOPASSWD:/opt/zextras/common/sbin/amavis-mc
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postalias
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postcat
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postconf
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postfix
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postsuper
-%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/qshape.pl
+%zextras ALL=NOPASSWD:CARBONIO_POSTFIX_CTL
+%zextras ALL=NOPASSWD:/opt/zextras/common/sbin/postalias /etc/aliases
+%zextras ALL=NOPASSWD:CARBONIO_POSTSUPER
+%zextras ALL=NOPASSWD:/opt/zextras/libexec/carbonio-postfix-conf
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmmailboxdmgr
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmmtastatus
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmqstat
 %zextras ALL=NOPASSWD:/opt/zextras/libexec/zmstat-fd *
+
+# qshape: exact forms only, no wildcard (qshape.pl accepts -c <config_dir> and
+# absolute queue paths). Allowed: no arguments (the "" below), -s, and either
+# of those followed by one queue name. src/bin/qshape.sh passes "$@" through.
+Cmnd_Alias CARBONIO_QSHAPE = \
+    /opt/zextras/common/sbin/qshape.pl "", \
+    /opt/zextras/common/sbin/qshape.pl -s, \
+    /opt/zextras/common/sbin/qshape.pl incoming, \
+    /opt/zextras/common/sbin/qshape.pl -s incoming, \
+    /opt/zextras/common/sbin/qshape.pl active, \
+    /opt/zextras/common/sbin/qshape.pl -s active, \
+    /opt/zextras/common/sbin/qshape.pl deferred, \
+    /opt/zextras/common/sbin/qshape.pl -s deferred, \
+    /opt/zextras/common/sbin/qshape.pl hold, \
+    /opt/zextras/common/sbin/qshape.pl -s hold, \
+    /opt/zextras/common/sbin/qshape.pl maildrop, \
+    /opt/zextras/common/sbin/qshape.pl -s maildrop, \
+    /opt/zextras/common/sbin/qshape.pl corrupt, \
+    /opt/zextras/common/sbin/qshape.pl -s corrupt
+
+%zextras ALL=NOPASSWD:CARBONIO_QSHAPE
