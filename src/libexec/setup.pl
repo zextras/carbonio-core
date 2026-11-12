@@ -5909,7 +5909,7 @@ sub applyConfig {
         # carbonio-configd's setup installs the RFC 7919 ffdhe2048 group (instead
         # of generating one in 15-30 seconds) and records it in zimbraSSLDHParam
         # (bug 103803: a file path, not the PEM, see bug 104244).
-        my $rc = runAsRoot("$setupBin dhparam");
+        my $rc = runAsRoot("$setupBin dhparam install");
         if ( $rc != 0 ) {
             progress("\nfailed to generate dhparam key");
             progress("\nCarbonio bootstrap process exited cause one of the subprocess failed.\n");
