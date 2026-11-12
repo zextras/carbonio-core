@@ -303,7 +303,7 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmcontrol"
   install -D "${repodir}/src/bin/dedupe.sh" \
     "${pkgdir}/opt/zextras/bin/zmdedupe"
-  install -D "${repodir}/src/bin/dhparam.pl" \
+  install -D "${repodir}/src/bin/dhparam.sh" \
     "${pkgdir}/opt/zextras/bin/zmdhparam"
   install -D "${repodir}/src/bin/dumpenv.sh" \
     "${pkgdir}/opt/zextras/bin/zmdumpenv"
@@ -325,7 +325,7 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmjava"
   install -D "${repodir}/src/bin/javaext.sh" \
     "${pkgdir}/opt/zextras/bin/zmjavaext"
-  install -D "${repodir}/src/bin/ldappasswd.pl" \
+  install -D "${repodir}/src/bin/ldappasswd.sh" \
     "${pkgdir}/opt/zextras/bin/zmldappasswd"
   install -D "${repodir}/src/bin/lmtpinject.sh" \
     "${pkgdir}/opt/zextras/bin/zmlmtpinject"

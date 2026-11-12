@@ -4118,6 +4118,22 @@ sub runAsZextras {
     return $rc;
 }
 
+# setLdapPassword runs zmldappasswd's replacement with the password on stdin,
+# so it is never on a command line (visible to every local user) or logged.
+sub setLdapPassword {
+    my ( $opt, $pass ) = @_;
+    my $cmd = "$setupBin ldap-passwd $opt";
+    detail("*** Running as zextras user: $cmd\n");
+    my $fh;
+    unless ( open( $fh, "|-", "$SU \"$cmd\" >> $logfile 2>&1" ) ) {
+        detail("Unable to run $cmd: $!\n");
+        return 1;
+    }
+    print $fh "$pass\n";
+    close($fh);
+    return 0xffff & $?;
+}
+
 sub runAsZextrasWithOutput {
     my $cmd = shift;
     if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /zmprov -r -m -l ca/ ) {
@@ -4553,13 +4569,13 @@ sub updatePasswordsInLocalConfig {
 
             if ($ldapRootPassChanged) {
                 progress("Setting ldap root password...");
-                runAsZextras("/opt/zextras/bin/zmldappasswd -r $config{LDAPROOTPASS}");
+                setLdapPassword("-r", $config{LDAPROOTPASS});
                 progress("done.\n");
             }
             if ($ldapAdminPassChanged) {
                 progress("Setting ldap admin password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd $config{LDAPADMINPASS}");
+                    setLdapPassword("", $config{LDAPADMINPASS});
                 }
                 else {
                     setLocalConfig( "zimbra_ldap_password", "$config{LDAPADMINPASS}" );
@@ -4569,7 +4585,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapRepChanged == 1 ) {
                 progress("Setting replication password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -l $config{LDAPREPPASS}");
+                    setLdapPassword("-l", $config{LDAPREPPASS});
                 }
                 else {
                     setLocalConfig( "ldap_replication_password", "$config{LDAPREPPASS}" );
@@ -4579,7 +4595,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapPostChanged == 1 ) {
                 progress("Setting Postfix password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -p $config{LDAPPOSTPASS}");
+                    setLdapPassword("-p", $config{LDAPPOSTPASS});
                 }
                 else {
                     setLocalConfig( "ldap_postfix_password", "$config{LDAPPOSTPASS}" );
@@ -4589,7 +4605,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapAmavisChanged == 1 ) {
                 progress("Setting amavis password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -a $config{LDAPAMAVISPASS}");
+                    setLdapPassword("-a", $config{LDAPAMAVISPASS});
                 }
                 else {
                     setLocalConfig( "ldap_amavis_password", "$config{LDAPAMAVISPASS}" );
@@ -4599,7 +4615,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapNginxChanged == 1 ) {
                 progress("Setting nginx password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -n $config{ldap_nginx_password}");
+                    setLdapPassword("-n", $config{ldap_nginx_password});
                 }
                 else {
                     setLocalConfig( "ldap_nginx_password", "$config{ldap_nginx_password}" );
@@ -4627,7 +4643,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapPostChanged == 1 ) {
                 progress("Setting postfix password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -p $config{LDAPPOSTPASS}");
+                    setLdapPassword("-p", $config{LDAPPOSTPASS});
                 }
                 else {
                     setLocalConfig( "ldap_postfix_password", "$config{LDAPPOSTPASS}" );
@@ -4637,7 +4653,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapAmavisChanged == 1 ) {
                 progress("Setting amavis password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -a $config{LDAPAMAVISPASS}");
+                    setLdapPassword("-a", $config{LDAPAMAVISPASS});
                 }
                 else {
                     setLocalConfig( "ldap_amavis_password", "$config{LDAPAMAVISPASS}" );
@@ -4650,7 +4666,7 @@ sub updatePasswordsInLocalConfig {
             if ( $ldapNginxChanged == 1 ) {
                 progress("Setting nginx password...");
                 if ( $config{LDAPHOST} eq $config{HOSTNAME} ) {
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -n $config{ldap_nginx_password}");
+                    setLdapPassword("-n", $config{ldap_nginx_password});
                 }
                 else {
                     setLocalConfig( "ldap_nginx_password", "$config{ldap_nginx_password}" );
@@ -4704,22 +4720,22 @@ sub configSetupLdap {
             progress("done.\n");
             if ( $ldapRepChanged == 1 ) {
                 progress("Setting replication password...");
-                runAsZextras("/opt/zextras/bin/zmldappasswd -l \'$config{LDAPREPPASS}\'");
+                setLdapPassword("-l", $config{LDAPREPPASS});
                 progress("done.\n");
             }
             if ( $ldapPostChanged == 1 ) {
                 progress("Setting Postfix password...");
-                runAsZextras("/opt/zextras/bin/zmldappasswd -p \'$config{LDAPPOSTPASS}\'");
+                setLdapPassword("-p", $config{LDAPPOSTPASS});
                 progress("done.\n");
             }
             if ( $ldapAmavisChanged == 1 ) {
                 progress("Setting amavis password...");
-                runAsZextras("/opt/zextras/bin/zmldappasswd -a \'$config{LDAPAMAVISPASS}\'");
+                setLdapPassword("-a", $config{LDAPAMAVISPASS});
                 progress("done.\n");
             }
             if ( $ldapNginxChanged == 1 ) {
                 progress("Setting nginx password...");
-                runAsZextras("/opt/zextras/bin/zmldappasswd -n \'$config{ldap_nginx_password}\'");
+                setLdapPassword("-n", $config{ldap_nginx_password});
                 progress("done.\n");
             }
         }
@@ -4748,17 +4764,17 @@ sub configSetupLdap {
             if ( $newinstall && $config{LDAPREPLICATIONTYPE} eq "mmr" ) {
                 if ( $ldapPostChanged == 1 ) {
                     progress("Setting Postfix password...");
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -p \'$config{LDAPPOSTPASS}\'");
+                    setLdapPassword("-p", $config{LDAPPOSTPASS});
                     progress("done.\n");
                 }
                 if ( $ldapAmavisChanged == 1 ) {
                     progress("Setting amavis password...");
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -a \'$config{LDAPAMAVISPASS}\'");
+                    setLdapPassword("-a", $config{LDAPAMAVISPASS});
                     progress("done.\n");
                 }
                 if ( $ldapNginxChanged == 1 ) {
                     progress("Setting nginx password...");
-                    runAsZextras("/opt/zextras/bin/zmldappasswd -n \'$config{ldap_nginx_password}\'");
+                    setLdapPassword("-n", $config{ldap_nginx_password});
                     progress("done.\n");
                 }
             }
