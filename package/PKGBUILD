@@ -291,7 +291,7 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmcbpadmin"
   install -D "${repodir}/src/bin/cbpolicydctl.sh" \
     "${pkgdir}/opt/zextras/bin/zmcbpolicydctl"
-  install -D "${repodir}/src/bin/certmgr.pl" \
+  install -D "${repodir}/src/bin/certmgr.sh" \
     "${pkgdir}/opt/zextras/bin/zmcertmgr"
   install -D "${repodir}/src/bin/clamdctl.sh" \
     "${pkgdir}/opt/zextras/bin/zmclamdctl"
