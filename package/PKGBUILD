@@ -449,11 +449,11 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmgsaupdate"
   install -Dm755 "${repodir}/src/libexec/hspreport.pl" \
     "${pkgdir}/opt/zextras/libexec/zmhspreport"
-  install -Dm755 "${repodir}/src/libexec/iniutil.pl" \
+  install -Dm755 "${repodir}/src/libexec/iniutil.sh" \
     "${pkgdir}/opt/zextras/libexec/zminiutil"
   install -Dm755 "${repodir}/src/libexec/iostat.pl" \
     "${pkgdir}/opt/zextras/libexec/zmiostat"
-  install -Dm755 "${repodir}/src/libexec/iptool.pl" \
+  install -Dm755 "${repodir}/src/libexec/iptool.sh" \
     "${pkgdir}/opt/zextras/libexec/zmiptool"
   install -Dm755 "${repodir}/src/libexec/javawatch.pl" \
     "${pkgdir}/opt/zextras/libexec/zmjavawatch"
@@ -560,9 +560,9 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmslapindex"
   install -Dm755 "${repodir}/src/libexec/ldapapplyldif.pl" \
     "${pkgdir}/opt/zextras/libexec/zmldapapplyldif"
-  install -Dm755 "${repodir}/src/libexec/ldapenable-mmr.pl" \
+  install -Dm755 "${repodir}/src/libexec/ldapenable-mmr.sh" \
     "${pkgdir}/opt/zextras/libexec/zmldapenable-mmr"
-  install -Dm755 "${repodir}/src/libexec/ldapenablereplica.pl" \
+  install -Dm755 "${repodir}/src/libexec/ldapenablereplica.sh" \
     "${pkgdir}/opt/zextras/libexec/zmldapenablereplica"
   install -Dm755 "${repodir}/src/libexec/ldapmmrtool.pl" \
     "${pkgdir}/opt/zextras/libexec/zmldapmmrtool"
@@ -574,7 +574,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmldapreplicatool"
   install -Dm755 "${repodir}/src/libexec/ldapschema.sh" \
     "${pkgdir}/opt/zextras/libexec/zmldapschema"
-  install -Dm755 "${repodir}/src/libexec/ldapupdateldif.pl" \
+  install -Dm755 "${repodir}/src/libexec/ldapupdateldif.sh" \
     "${pkgdir}/opt/zextras/libexec/zmldapupdateldif"
   install -Dm755 "${repodir}/src/libexec/ldapattributeupdate.pl" \
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
