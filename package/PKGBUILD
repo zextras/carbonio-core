@@ -483,7 +483,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmpostfixpolicyd"
   install -Dm755 "${repodir}/src/libexec/proxyconfgen.sh" \
     "${pkgdir}/opt/zextras/libexec/zmproxyconfgen"
-  install -Dm755 "${repodir}/src/libexec/proxyconfig.pl" \
+  install -Dm755 "${repodir}/src/libexec/proxyconfig.sh" \
     "${pkgdir}/opt/zextras/libexec/zmproxyconfig"
   install -Dm755 "${repodir}/src/libexec/proxypurge.sh" \
     "${pkgdir}/opt/zextras/libexec/zmproxypurge"
@@ -535,7 +535,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmstat-proc"
   install -Dm755 "${repodir}/src/libexec/stat-vm.pl" \
     "${pkgdir}/opt/zextras/libexec/zmstat-vm"
-  install -Dm755 "${repodir}/src/libexec/syslogsetup.pl" \
+  install -Dm755 "${repodir}/src/libexec/syslogsetup.sh" \
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
   install -Dm755 "${repodir}/src/libexec/threadcpu.pl" \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"

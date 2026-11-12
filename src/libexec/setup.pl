@@ -38,6 +38,10 @@ progress("Operations logged to $logfile\n");
 our $ZMPROV = "/opt/zextras/bin/zmprov -r -m -l";
 our $SU     = "su - zextras -c ";
 
+# carbonio-configd's setup binary: setup.pl calls its commands for the steps
+# ported to Go.
+our $setupBin = "/opt/zextras/libexec/setup";
+
 my $filename = "/opt/zextras/conf/localconfig.xml";
 my $uid      = ( stat $filename )[4];
 my $user     = ( getpwuid $uid )[0];
@@ -5734,8 +5738,9 @@ sub configCreateDefaultDomainGALSyncAcct {
         progress("Creating galsync account for default domain...");
         my $_server  = getLocalConfig("zimbra_server_hostname");
         my $default_domain = ( ($newinstall) ? "$config{CREATEDOMAIN}" : "$config{zimbraDefaultDomainName}" );
-        my $galsyncacct    = "galsync." . lc( genRandomPass() ) . '@' . $default_domain;
-        my $rc             = runAsZextras("/opt/zextras/bin/zmgsautil createAccount -a $galsyncacct -n InternalGAL --domain $default_domain -s $_server -t zimbra -f _InternalGAL -p 1d");
+        # carbonio-configd's setup creates galsync.<random>@<domain> through the
+        # admin SOAP API, without zmgsautil's JVM.
+        my $rc = runAsRoot("$setupBin gal-sync-account --domain $default_domain --server $_server");
         progress( ( $rc == 0 ) ? "done.\n" : "failed.\n" );
         configLog("configCreateDefaultDomainGALSyncAcct") if ( $rc == 0 );
     }
@@ -5885,16 +5890,16 @@ sub applyConfig {
     # Generating dhparam key
     if ($newinstall) {
         progress("Generating dhparam key...");
-        my $rc = runAsZextras("/opt/zextras/common/bin/openssl dhparam -out /opt/zextras/conf/dhparam.pem.crb 2048 > /dev/null 2>&1");
+        # carbonio-configd's setup installs the RFC 7919 ffdhe2048 group (instead
+        # of generating one in 15-30 seconds) and records it in zimbraSSLDHParam
+        # (bug 103803: a file path, not the PEM, see bug 104244).
+        my $rc = runAsRoot("$setupBin dhparam");
         if ( $rc != 0 ) {
             progress("\nfailed to generate dhparam key");
             progress("\nCarbonio bootstrap process exited cause one of the subprocess failed.\n");
             exit();
         }
         else {
-            # Added the following for bug 103803. Could not just add the cert as a globalConfigValue
-            # for zimbraSSldHParam.  See bug 104244.
-            setLdapGlobalConfig( "zimbraSSLDHParam", "/opt/zextras/conf/dhparam.pem.crb" );
             progress("done.\n");
         }
     }
@@ -6008,13 +6013,10 @@ sub applyConfig {
 
     setupCrontab();
 
-    if ($newinstall) {
-        runAsZextras("/opt/zextras/bin/zmsshkeygen");
-        runAsZextras("/opt/zextras/bin/zmupdateauthkeys");
-    }
-    else {
-        runAsZextras("/opt/zextras/bin/zmupdateauthkeys");
-    }
+    # carbonio-configd's setup replaces zmsshkeygen and zmupdateauthkeys: the
+    # key is generated in process and the keys come from one LDAP search.
+    runAsRoot("$setupBin ssh-keygen") if ($newinstall);
+    runAsRoot("$setupBin update-authkeys");
 
     configLog("END");
 
