@@ -511,29 +511,29 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/setup.pl"
   install -Dm755 "${repodir}/src/libexec/spamextract.sh" \
     "${pkgdir}/opt/zextras/libexec/zmspamextract"
-  install -Dm755 "${repodir}/src/libexec/stat-allprocs.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-allprocs.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-allprocs"
   install -Dm755 "${repodir}/src/libexec/stat-cleanup.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-cleanup"
-  install -Dm755 "${repodir}/src/libexec/stat-cpu.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-cpu.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-cpu"
-  install -Dm755 "${repodir}/src/libexec/stat-df.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-df.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-df"
-  install -Dm755 "${repodir}/src/libexec/stat-fd.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-fd.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-fd"
-  install -Dm755 "${repodir}/src/libexec/stat-io.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-io.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-io"
-  install -Dm755 "${repodir}/src/libexec/stat-mtaqueue.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-mtaqueue.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-mtaqueue"
   install -Dm755 "${repodir}/src/libexec/postfix-prometheus.pl" \
     "${pkgdir}/opt/zextras/libexec/postfix-prometheus"
-  install -Dm755 "${repodir}/src/libexec/stat-mysql.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-mysql.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-mysql"
-  install -Dm755 "${repodir}/src/libexec/stat-nginx.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-nginx.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-nginx"
-  install -Dm755 "${repodir}/src/libexec/stat-proc.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-proc.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-proc"
-  install -Dm755 "${repodir}/src/libexec/stat-vm.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-vm.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-vm"
   install -Dm755 "${repodir}/src/libexec/syslogsetup.sh" \
     "${pkgdir}/opt/zextras/libexec/zmsyslogsetup"
@@ -544,7 +544,7 @@ _package() {
   # ldap scripts
   install -Dm755 "${repodir}/src/libexec/ldapinit.pm" \
     "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
-  install -Dm755 "${repodir}/src/libexec/stat-ldap.pl" \
+  install -Dm755 "${repodir}/src/libexec/stat-ldap.sh" \
     "${pkgdir}/opt/zextras/libexec/zmstat-ldap"
   install -Dm755 "${repodir}/src/libexec/ldapanon.pl" \
     "${pkgdir}/opt/zextras/libexec/zmldapanon"
