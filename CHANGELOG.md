@@ -1,3 +1,9 @@
+## [4.7.5](https://github.com/zextras/carbonio-core/compare/v4.7.4...v4.7.5) (2026-11-12)
+
+### Bug Fixes
+
+* **setup:** call setup dhparam install explicitly ([#232](https://github.com/zextras/carbonio-core/issues/232)) ([638fea1](https://github.com/zextras/carbonio-core/commit/638fea185b149c11d119c3cd8cb9ea482b5ea6c1))
+
 ## [4.7.4](https://github.com/zextras/carbonio-core/compare/v4.7.3...v4.7.4) (2026-11-12)
 
 ## [4.7.3](https://github.com/zextras/carbonio-core/compare/v4.7.2...v4.7.3) (2026-11-12)
