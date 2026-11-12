@@ -5890,16 +5890,16 @@ sub applyConfig {
     # Generating dhparam key
     if ($newinstall) {
         progress("Generating dhparam key...");
-        my $rc = runAsZextras("/opt/zextras/common/bin/openssl dhparam -out /opt/zextras/conf/dhparam.pem.crb 2048 > /dev/null 2>&1");
+        # carbonio-configd's setup installs the RFC 7919 ffdhe2048 group (instead
+        # of generating one in 15-30 seconds) and records it in zimbraSSLDHParam
+        # (bug 103803: a file path, not the PEM, see bug 104244).
+        my $rc = runAsRoot("$setupBin dhparam");
         if ( $rc != 0 ) {
             progress("\nfailed to generate dhparam key");
             progress("\nCarbonio bootstrap process exited cause one of the subprocess failed.\n");
             exit();
         }
         else {
-            # Added the following for bug 103803. Could not just add the cert as a globalConfigValue
-            # for zimbraSSldHParam.  See bug 104244.
-            setLdapGlobalConfig( "zimbraSSLDHParam", "/opt/zextras/conf/dhparam.pem.crb" );
             progress("done.\n");
         }
     }
