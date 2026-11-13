@@ -67,7 +67,7 @@ initCBPolicyd() {
   fi
 
   echo -n "Adding Domains..."
-  for dom in $(zmprov gad); do sqlite3 /opt/zextras/data/cbpolicyd/db/cbpolicyd.sqlitedb "INSERT INTO policy_group_members (PolicyGroupID,Member) VALUES ('2','@$dom');"; done
+  for dom in $(/opt/zextras/libexec/setup prov gad); do sqlite3 /opt/zextras/data/cbpolicyd/db/cbpolicyd.sqlitedb "INSERT INTO policy_group_members (PolicyGroupID,Member) VALUES ('2','@$dom');"; done
   rc=$?
   if [ $rc -ne 0 ]; then
     echo "failed."
@@ -77,7 +77,7 @@ initCBPolicyd() {
   fi
 
   echo -n "Adding subnets from Mynetworks global..."
-  globalSubnet=$(zmprov gacf | grep zimbraMtaMyNetworks | sed 's/127.0.0.0\/8 //g' | awk '{ print $NF }')
+  globalSubnet=$(/opt/zextras/libexec/setup prov gacf | grep zimbraMtaMyNetworks | sed 's/127.0.0.0\/8 //g' | awk '{ print $NF }')
   sqlite3 /opt/zextras/data/cbpolicyd/db/cbpolicyd.sqlitedb "INSERT INTO policy_group_members (PolicyGroupID,Member) VALUES (1,'$globalSubnet');"
   rc=$?
   if [ $rc -ne 0 ]; then
@@ -88,7 +88,7 @@ initCBPolicyd() {
   fi
 
   echo -n "Adding subnets from Mynetworks server..."
-  serverSubnet=$(zmprov gs "$(zmhostname)" | grep zimbraMtaMyNetworks | sed 's/127.0.0.0\/8 //g' | awk '{ print $NF }')
+  serverSubnet=$(/opt/zextras/libexec/setup prov gs "$(zmhostname)" | grep zimbraMtaMyNetworks | sed 's/127.0.0.0\/8 //g' | awk '{ print $NF }')
   sqlite3 /opt/zextras/data/cbpolicyd/db/cbpolicyd.sqlitedb "INSERT INTO policy_group_members (PolicyGroupID,Member) VALUES (1,'$serverSubnet');"
   rc=$?
   if [ $rc -ne 0 ]; then

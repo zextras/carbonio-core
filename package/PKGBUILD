@@ -495,7 +495,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmqueuelog"
   install -Dm755 "${repodir}/src/libexec/rc.sh" \
     "${pkgdir}/opt/zextras/libexec/zmrc"
-  install -Dm755 "${repodir}/src/libexec/rcd.pl" \
+  install -Dm755 "${repodir}/src/libexec/rcd.sh" \
     "${pkgdir}/opt/zextras/libexec/zmrcd"
   install -Dm755 "${repodir}/src/libexec/resetmysqlpassword.sh" \
     "${pkgdir}/opt/zextras/libexec/zmresetmysqlpassword"
