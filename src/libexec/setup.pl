@@ -35,12 +35,15 @@ $| = 1;
 
 progress("Operations logged to $logfile\n");
 
-our $ZMPROV = "/opt/zextras/bin/zmprov -r -m -l";
-our $SU     = "su - zextras -c ";
+our $SU = "su - zextras -c ";
 
 # carbonio-configd's setup binary: setup.pl calls its commands for the steps
 # ported to Go.
 our $setupBin = "/opt/zextras/libexec/setup";
+
+# zmprov commands run natively (no JVM): "setup prov" takes the options and the
+# verbs of zmprov.
+our $ZMPROV = "$setupBin prov -r -m -l";
 
 my $filename = "/opt/zextras/conf/localconfig.xml";
 my $uid      = ( stat $filename )[4];
@@ -633,7 +636,7 @@ sub isInstalled {
 }
 
 sub genRandomPass {
-    open RP, "/opt/zextras/bin/zmjava com.zimbra.common.util.RandomPassword -l 8 10|"
+    open RP, "$setupBin random-password -l 8 10|"
       or die "Can't generate random password: $!\n";
     my $rp = <RP>;
     close RP;
@@ -4067,7 +4070,7 @@ sub checkLdapReplicationEnabled() {
 
 sub runAsRoot {
     my $cmd = shift;
-    if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /zmprov -r -m -l ca/ ) {
+    if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /setup prov -r -m -l ca / ) {
 
         # Suppress passwords in log file
         my $c = ( split ' ', $cmd )[0];
@@ -4104,7 +4107,7 @@ sub stopStrayConfigd {
 
 sub runAsZextras {
     my $cmd = shift;
-    if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /zmprov -r -m -l ca/ ) {
+    if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /setup prov -r -m -l ca / ) {
 
         # Suppress passwords in log file
         my $c = ( split ' ', $cmd )[0];
@@ -4136,7 +4139,7 @@ sub setLdapPassword {
 
 sub runAsZextrasWithOutput {
     my $cmd = shift;
-    if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /zmprov -r -m -l ca/ ) {
+    if ( $cmd =~ /ldappass/ || $cmd =~ /init/ || $cmd =~ /setup prov -r -m -l ca / ) {
 
         # Suppress passwords in log file
         my $c = ( split ' ', $cmd )[0];

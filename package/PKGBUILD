@@ -503,7 +503,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmsacompile"
   install -Dm755 "${repodir}/src/libexec/saupdate.pl" \
     "${pkgdir}/opt/zextras/libexec/zmsaupdate"
-  install -Dm755 "${repodir}/src/libexec/serverips.pl" \
+  install -Dm755 "${repodir}/src/libexec/serverips.sh" \
     "${pkgdir}/opt/zextras/libexec/zmserverips"
   install -Dm755 "${repodir}/src/libexec/setservername.pl" \
     "${pkgdir}/opt/zextras/libexec/zmsetservername"
