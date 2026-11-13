@@ -8,12 +8,8 @@ PartOf=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.t
 
 [Service]
 User=zextras
-# configd starts one process that runs all the collectors ("configd stat run ..."),
-# detached, and returns; the process writes /run/carbonio/stats/stats.pid. Every
-# collector runs as zextras without sudo, so NoNewPrivileges below does not
-# keep any of them from working.
 Type=forking
-PIDFile=/run/carbonio/stats/stats.pid
+PIDFile=/run/carbonio/stats/allprocs.pid
 ExecStart=/opt/zextras/bin/zmstatctl start-systemd
 ExecStop=/opt/zextras/bin/zmstatctl stop-systemd
 RestartSec=3s
