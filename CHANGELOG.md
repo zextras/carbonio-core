@@ -1,3 +1,9 @@
+## [4.8.0](https://github.com/zextras/carbonio-core/compare/v4.7.6...v4.8.0) (2026-11-13)
+
+### Features
+
+* **setup:** run zmprov, RandomPassword and zmserverips natively through carbonio-configd's setup ([#235](https://github.com/zextras/carbonio-core/issues/235)) ([9a09147](https://github.com/zextras/carbonio-core/commit/9a091474ee8b87a73b017fecb36248c5962f25b7))
+
 ## [4.7.6](https://github.com/zextras/carbonio-core/compare/v4.7.5...v4.7.6) (2026-11-13)
 
 ## [4.7.5](https://github.com/zextras/carbonio-core/compare/v4.7.4...v4.7.5) (2026-11-12)
