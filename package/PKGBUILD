@@ -493,7 +493,7 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmqstat"
   install -Dm755 "${repodir}/src/libexec/queuelog.pl" \
     "${pkgdir}/opt/zextras/libexec/zmqueuelog"
-  install -Dm755 "${repodir}/src/libexec/rc.pl" \
+  install -Dm755 "${repodir}/src/libexec/rc.sh" \
     "${pkgdir}/opt/zextras/libexec/zmrc"
   install -Dm755 "${repodir}/src/libexec/rcd.pl" \
     "${pkgdir}/opt/zextras/libexec/zmrcd"
