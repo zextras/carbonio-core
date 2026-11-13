@@ -1,3 +1,5 @@
+## [4.7.6](https://github.com/zextras/carbonio-core/compare/v4.7.5...v4.7.6) (2026-11-13)
+
 ## [4.7.5](https://github.com/zextras/carbonio-core/compare/v4.7.4...v4.7.5) (2026-11-12)
 
 ### Bug Fixes
