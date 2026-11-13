@@ -6,4 +6,4 @@
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-exec /opt/zextras/bin/zmjava com.zimbra.cs.util.GalSyncAccountUtil "$@"
+exec /opt/zextras/libexec/setup gsautil "$@"

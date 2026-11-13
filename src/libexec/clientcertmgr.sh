@@ -23,12 +23,12 @@ saveConfigKey() {
   local content
   content=$(cat "$file")
   if [ "$location" = "global" ]; then
-    local zmprov_opts="mcf"
+    local -a zmprov_opts=(mcf)
   elif [ "$location" = "server" ]; then
-    local zmprov_opts="ms ${zimbra_server_hostname}"
+    local -a zmprov_opts=(ms "${zimbra_server_hostname}")
   elif [ "$location" = "domain" ]; then
     local domain=$4
-    local zmprov_opts="md $domain"
+    local -a zmprov_opts=(md "$domain")
   else
     echo "Unknown config section $location"
     return
@@ -36,7 +36,7 @@ saveConfigKey() {
 
   echo -n "** Saving $location config key $key..."
 
-  if /opt/zextras/bin/zmprov -m -l "${zmprov_opts}" "$key" "$content" 2>/dev/null; then
+  if /opt/zextras/libexec/setup prov -m -l "${zmprov_opts[@]}" "$key" "$content" 2>/dev/null; then
     echo "done."
   else
     echo "failed."
@@ -47,19 +47,19 @@ cleanConfigKey() {
   local key=$1
   local location=$2
   if [ "$location" = "global" ]; then
-    local zmprov_opts="mcf"
+    local -a zmprov_opts=(mcf)
   elif [ "$location" = "server" ]; then
-    local zmprov_opts="ms ${zimbra_server_hostname}"
+    local -a zmprov_opts=(ms "${zimbra_server_hostname}")
   elif [ "$location" = "domain" ]; then
     local domain=$3
-    local zmprov_opts="md $domain"
+    local -a zmprov_opts=(md "$domain")
   else
     echo "Unknown config section $location"
     return
   fi
 
   echo -n "** Clean $location config key $key..."
-  /opt/zextras/bin/zmprov -m -l "${zmprov_opts}" "$key" "" 2>/dev/null
+  /opt/zextras/libexec/setup prov -m -l "${zmprov_opts[@]}" "$key" "" 2>/dev/null
   rc=$?
   if [ $rc -eq 0 ]; then
     echo "done."
