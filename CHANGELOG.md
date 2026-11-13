@@ -1,3 +1,5 @@
+## [4.8.1](https://github.com/zextras/carbonio-core/compare/v4.8.0...v4.8.1) (2026-11-13)
+
 ## [4.8.0](https://github.com/zextras/carbonio-core/compare/v4.7.6...v4.8.0) (2026-11-13)
 
 ### Features
