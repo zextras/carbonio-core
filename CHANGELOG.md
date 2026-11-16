@@ -1,3 +1,9 @@
+## [4.8.3](https://github.com/zextras/carbonio-core/compare/v4.8.2...v4.8.3) (2026-11-16)
+
+### Bug Fixes
+
+* **systemd-envscript:** write systemd.env atomically ([#241](https://github.com/zextras/carbonio-core/issues/241)) ([cf1cc6a](https://github.com/zextras/carbonio-core/commit/cf1cc6a7aa160427ed89226ef2e67020f0f0d6d1))
+
 ## [4.8.2](https://github.com/zextras/carbonio-core/compare/v4.8.1...v4.8.2) (2026-11-16)
 
 ## [4.8.1](https://github.com/zextras/carbonio-core/compare/v4.8.0...v4.8.1) (2026-11-13)
