@@ -47,7 +47,13 @@ fi
 url="${first_url#*//}"
 ldap_domain="${url%:*}"
 
-# Write environment file consumed by systemd units
+# Write environment file consumed by systemd units. Several units run this
+# script as ExecStartPre and systemd reads the file right before each exec, so
+# build it aside and rename it into place: a reader sees the old file or the
+# new one, never a truncated one.
+env_file=/opt/zextras/data/systemd.env
+tmp_file=$(mktemp "${env_file}.XXXXXX") || exit 1
+trap 'rm -f "$tmp_file"' EXIT
 {
   echo "antispam_enable_restarts=${antispam_enable_restarts}"
   echo "antispam_enable_rule_compilation=${antispam_enable_rule_compilation}"
@@ -67,4 +73,6 @@ ldap_domain="${url%:*}"
   echo "mailboxd_java_options=${mailboxd_java_options}"
   echo "mysql_errlogfile=${mysql_errlogfile}"
   echo "mysql_mycnf=${mysql_mycnf}"
-} >/opt/zextras/data/systemd.env
+} >"$tmp_file" || exit 1
+chmod 0644 "$tmp_file" || exit 1
+mv -f "$tmp_file" "$env_file"
