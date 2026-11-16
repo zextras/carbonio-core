@@ -21,6 +21,11 @@ usage() {
   printf '\tCommand in:\n'
   printf '\t\t%-20s%30s\n' restart "Restart services" shutdown "Shutdown services" \
     startup "Startup services" status "Display service status" stop "Stop services" start "Start services"
+  echo
+  echo "$0 start|stop|restart <module> [<service>]"
+  printf '\tStart, stop or restart one Carbonio Advanced module (or one of its services)\n'
+  printf '\tthrough the running mailbox. <service> defaults to the whole module.\n'
+  printf '\tmodule in: addressbook, admin, auth, backup, config, mailreplica, mobile, powerstore\n'
 }
 
 while [ $# -gt 0 ]; do
@@ -41,10 +46,14 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-case "$1" in
-  start | startup) exec "$CONFIGD" control start ;;
-  stop | shutdown) exec "$CONFIGD" control stop ;;
-  restart) exec "$CONFIGD" control restart ;;
+# start/stop/restart take an optional "<module> [<service>]": configd then acts
+# on that Carbonio Advanced module only, through the running mailboxd.
+cmd=$1
+shift
+case "$cmd" in
+  start | startup) exec "$CONFIGD" control start "$@" ;;
+  stop | shutdown) exec "$CONFIGD" control stop "$@" ;;
+  restart) exec "$CONFIGD" control restart "$@" ;;
   status) exec "$CONFIGD" control status ;;
   *)
     usage >&2
