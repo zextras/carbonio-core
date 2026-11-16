@@ -1,3 +1,9 @@
+## [4.8.4](https://github.com/zextras/carbonio-core/compare/v4.8.3...v4.8.4) (2026-11-16)
+
+### Bug Fixes
+
+* **logrotate:** signal systemd units instead of restarting configd ([#240](https://github.com/zextras/carbonio-core/issues/240)) ([f218798](https://github.com/zextras/carbonio-core/commit/f218798891c7cef0d432e5420356481524305949))
+
 ## [4.8.3](https://github.com/zextras/carbonio-core/compare/v4.8.2...v4.8.3) (2026-11-16)
 
 ### Bug Fixes
