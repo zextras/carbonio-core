@@ -1,3 +1,9 @@
+## [4.9.0](https://github.com/zextras/carbonio-core/compare/v4.8.4...v4.9.0) (2026-11-16)
+
+### Features
+
+* **zmcontrol:** [CO-3502] start/stop/restart a Carbonio Advanced module ([#242](https://github.com/zextras/carbonio-core/issues/242)) ([1f7ca6e](https://github.com/zextras/carbonio-core/commit/1f7ca6e183ee5e8d2017feba99f202f087987c3f))
+
 ## [4.8.4](https://github.com/zextras/carbonio-core/compare/v4.8.3...v4.8.4) (2026-11-16)
 
 ### Bug Fixes
