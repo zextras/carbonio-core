@@ -83,13 +83,6 @@ my @masters=split(/ /, $c{ldap_master_url});
 my $master_ref=\@masters;
 
 &startLdap if (lc($c{ldap_is_master}) eq "true");
-$c{zimbra_log_host} = getLdapGlobalConfig("zimbraLogHostname") if ($delete);
-
-if ($delete && $c{zimbra_log_host} eq "") {
-  print "Unabled to determine zimbra_log_host to delete.\n";
-  exit 1;
-}
-
 # ***** Main *****
 
 if (!$usersonly) {
@@ -134,21 +127,6 @@ if (!$usersonly) {
     print (($rc==0) ? "done.\n" : "failed.\n");
   }
 
-  #remap or delete logger data for the host
-  if (index($c{zimbraServiceEnabled}, "logger") != -1) {
-    if ($delete) {
-      runCommand("/opt/zextras/bin/zmloggerhostmap -d $oldServerName $oldServerName");
-    } else {
-      runCommand("/opt/zextras/bin/zmloggerhostmap $oldServerName $newServerName");
-    }
-  } else {
-    if ($delete) {
-      runCommand("/opt/zextras/libexec/zmrc $c{zimbra_log_host} HOST:$c{zimbra_log_host} zmloggerhostmap -d $oldServerName $oldServerName");
-    } else {
-      runCommand("/opt/zextras/libexec/zmrc $c{zimbra_log_host} HOST:$c{zimbra_log_host} zmloggerhostmap $oldServerName $newServerName");
-    }
-  }
-
   # Regenerate Self-signed certs
   if (!-f "/opt/zextras/ssl/carbonio/commercial/commercial.crt") {
     if(lc($c{ldap_is_master}) eq "true") {
@@ -176,8 +154,8 @@ sub usage {
   print "                                             Previous name for the server.  Defaults to LC zimbra_server_hostname.\n";
   print " -n <newServerName> | --newServerName <newServerName>\n";
   print "                                             New name for the server.\n";
-  print " -d | --deletelogger                         Delete the logger database for the old server.  Default is to remap\n";
-  print "                                             its data to the new hostname.\n";
+  print " -d | --deletelogger                         Ignored; there is no logger database to remap or delete.  Accepted for\n";
+  print "                                             compatibility with existing invocations.\n";
   print " -s | --skipusers                            Skips modifying the user database with the new server.\n"; 
   print " -u | --usersonly                            Only updates the user database.  This way, you can run once to do all\n";
   print "                                             the server updates, and then a second time to update the accounts.\n";
