@@ -627,13 +627,13 @@ _core_timers() {
     carbonio-antispam-bayes-expire.timer \
     carbonio-antispam-train-cleanup.timer \
     carbonio-antispam-train.timer \
+    carbonio-appserver-db-integrity-report.timer \
+    carbonio-appserver-log-cleanup.timer \
     carbonio-cert-expiry-check.timer \
-    carbonio-db-integrity-report.timer \
-    carbonio-ldap-monitor-db.timer \
     carbonio-log-cleanup.timer \
     carbonio-log-compress.timer \
-    carbonio-mailboxd-log-cleanup.timer \
     carbonio-mta-queue-log.timer \
+    carbonio-openldap-monitor-db.timer \
     carbonio-policyd-cleanup.timer \
     carbonio-stats-cleanup.timer \
     carbonio-tmp-cleanup.timer

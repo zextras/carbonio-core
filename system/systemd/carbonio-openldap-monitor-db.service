@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio Database Integrity Report
+Description=Carbonio OpenLDAP Database Size Monitor
 Documentation=https://docs.zextras.com/
-After=carbonio-appserver.target
+After=carbonio-directory-server.target
 
 [Service]
 Type=oneshot
@@ -14,4 +14,4 @@ Group=zextras
 # The environment the zextras login shell (.bashrc) gives the scripts
 Environment=PATH=/opt/zextras/bin:/opt/zextras/common/lib/jvm/java/bin:/opt/zextras/common/bin:/opt/zextras/common/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=PERL5LIB="/opt/zextras/common/lib/perl5/x86_64-linux-gnu-thread-multi:/opt/zextras/common/lib/perl5/x86_64-linux-thread-multi:/opt/zextras/common/lib/perl5"
-ExecStart=/opt/zextras/libexec/zmdbintegrityreport -m
+ExecStart=/opt/zextras/libexec/zmldapmonitordb

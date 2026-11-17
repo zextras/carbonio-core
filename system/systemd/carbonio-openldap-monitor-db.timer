@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio LDAP Database Size Monitor Every 30 Minutes
+Description=Carbonio OpenLDAP Database Size Monitor Every 30 Minutes
 Documentation=https://docs.zextras.com/
 PartOf=carbonio-directory-server.target
 
