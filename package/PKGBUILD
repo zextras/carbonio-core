@@ -618,7 +618,9 @@ _package_legacy() {
 }
 
 # The timers of system/systemd. Listed, not globbed: other packages ship
-# carbonio-*.timer units too (certbot, altermime, mailthreat).
+# carbonio-*.timer units too (certbot, altermime, mailthreat). yap copies
+# into a scriptlet only the functions its hook calls directly, so the hooks
+# call this and pass the list down.
 _core_timers() {
   echo carbonio-amavis-quarantine-cleanup.timer \
     carbonio-amavis-tmp-cleanup.timer \
@@ -732,7 +734,7 @@ _postinst_systemd() {
     # only when its role target does. Start the ones whose target already
     # runs, the others start with their target.
     local timer target
-    for timer in $(_core_timers); do
+    for timer in "$@"; do
       systemctl enable "${timer}" &>/dev/null || :
       target=$(sed -n 's/^WantedBy=//p' "/usr/lib/systemd/system/${timer}")
       if systemctl -q is-active "${target}"; then
@@ -759,7 +761,7 @@ _postinst_systemd() {
 _prerm_systemd() {
   if [ -d /run/systemd/system ]; then
     local timer
-    for timer in $(_core_timers); do
+    for timer in "$@"; do
       systemctl --no-reload disable --now "${timer}" &>/dev/null || :
     done
   fi
@@ -817,11 +819,13 @@ package__ubuntu_noble() {
 }
 
 prerm__rocky_9() {
-  _prerm_systemd
+  # shellcheck disable=SC2046
+  _prerm_systemd $(_core_timers)
 }
 
 prerm__ubuntu_noble() {
-  _prerm_systemd
+  # shellcheck disable=SC2046
+  _prerm_systemd $(_core_timers)
 }
 
 # The systemd distros have no crontab of ours to remove (the admin's own
@@ -861,7 +865,8 @@ postinst__rocky_8() {
 
 postinst__rocky_9() {
   _postinst
-  _postinst_systemd
+  # shellcheck disable=SC2046
+  _postinst_systemd $(_core_timers)
 
   # Remove old init scripts on upgrade
   rm -f /etc/init.d/carbonio
@@ -874,7 +879,8 @@ postinst__ubuntu_jammy() {
 
 postinst__ubuntu_noble() {
   _postinst
-  _postinst_systemd
+  # shellcheck disable=SC2046
+  _postinst_systemd $(_core_timers)
 
   # Remove old init scripts on upgrade
   rm -f /etc/init.d/carbonio
