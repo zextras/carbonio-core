@@ -588,11 +588,6 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/ldapattributeupdate"
   install -D "${repodir}/config/configd/configd.cf" \
     "${pkgdir}/opt/zextras/conf/zmconfigd.cf"
-  # systemd env script
-  # it generates /opt/zextras/data/systemd.env
-  install -Dm755 "${repodir}/src/bin/systemd-envscript.sh" \
-    "${pkgdir}/opt/zextras/bin/systemd-envscript"
-
   # amavis
   install -D "${repodir}/config/amavis/amavisd-custom.conf" \
     "${pkgdir}/opt/zextras/conf/amavisd-custom.conf"
