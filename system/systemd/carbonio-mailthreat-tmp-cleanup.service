@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio Amavis Temporary Files Cleanup
+Description=Carbonio Mail Threat Temporary Files Cleanup
 Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 

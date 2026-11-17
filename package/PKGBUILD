@@ -622,9 +622,7 @@ _package_legacy() {
 # into a scriptlet only the functions its hook calls directly, so the hooks
 # call this and pass the list down.
 _core_timers() {
-  echo carbonio-amavis-quarantine-cleanup.timer \
-    carbonio-amavis-tmp-cleanup.timer \
-    carbonio-antispam-bayes-expire.timer \
+  echo carbonio-antispam-bayes-expire.timer \
     carbonio-antispam-train-cleanup.timer \
     carbonio-antispam-train.timer \
     carbonio-appserver-db-integrity-report.timer \
@@ -632,6 +630,8 @@ _core_timers() {
     carbonio-cert-expiry-check.timer \
     carbonio-log-cleanup.timer \
     carbonio-log-compress.timer \
+    carbonio-mailthreat-quarantine-cleanup.timer \
+    carbonio-mailthreat-tmp-cleanup.timer \
     carbonio-mta-queue-log.timer \
     carbonio-openldap-monitor-db.timer \
     carbonio-policyd-cleanup.timer \
