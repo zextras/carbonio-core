@@ -5,6 +5,7 @@ use warnings;
 
 use Zextras::LocalConfig;
 use Net::LDAP;
+use Net::LDAP::Util qw(escape_filter_value);
 
 my $ERROR;
 my $TLSVERIFY = "require";               # "none"
@@ -257,7 +258,7 @@ Returns Net::LDAP::Entry for the passed mail address.
 sub mail {
     my $self = shift;
     my $mail = shift;
-    return $self->searchsingle( filter => "(mail=$mail)" );
+    return $self->searchsingle( filter => "(mail=" . escape_filter_value($mail) . ")" );
 }
 
 =head2 searchsingle
@@ -295,7 +296,7 @@ sub server {
     my $host = shift;
     return $self->searchsingle(
         base   => "cn=servers,cn=zimbra",
-        filter => "(cn=$host)"
+        filter => "(cn=" . escape_filter_value($host) . ")"
     );
 }
 

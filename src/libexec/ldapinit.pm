@@ -24,6 +24,7 @@ use Net::LDAP::LDIF;
 use Net::LDAP::Entry;
 use Crypt::SaltedHash;
 use MIME::Base64;
+use File::Temp;
 use File::Grep qw (fgrep);
 
 my $config_dir = "/opt/zextras/conf";
@@ -67,29 +68,31 @@ sub preLdapStart {
   # Update config database
   #
   $infile  = "$ldap_config_dir/olcDatabase\=\{0\}config.ldif";
-  $outfile = "$tmp_directory/olcDatabase\=\{0\}config.ldif.$$";
   my $mime_root_passwd = MIME::Base64::encode( $root_ssha_password, "" );
   chomp($mime_root_passwd);
-  open( IN,  "<$infile" );
-  open( OUT, ">$outfile" );
+
+  # Build the new file next to the destination (root-controlled directory,
+  # not the world-writable tmp directory) and rename it into place.
+  my ( $tmpfh, $tmpname ) = File::Temp::tempfile( "olcDatabase={0}config.ldif.XXXXXX", DIR => $ldap_config_dir );
+  open( IN, "<$infile" );
   while (<IN>) {
     if ( $_ =~ /^olcRootPW/ ) {
       $_ =~ s|^olcRootPW.*|olcRootPW:: $mime_root_passwd|;
-      print OUT $_;
-    } else {
-      print OUT $_;
     }
+    print $tmpfh $_;
   }
   close IN;
-  close OUT;
-  if ( -s $outfile ) {
-    my $rc = 0xffff & system("mv -f $outfile $infile");
-    if ( $rc != 0 ) {
+  my ( $uid, $gid ) = ( getpwnam($user) )[ 2, 3 ];
+  chown( $uid, $gid, $tmpfh ) if defined $uid;
+  chmod( 0600, $tmpfh );
+  close $tmpfh;
+  if ( -s $tmpname ) {
+    if ( !rename( $tmpname, $infile ) ) {
       print "Warning: failed to write $infile\n";
+      unlink($tmpname);
     }
-    qx(chown $user:$user $infile);
-    qx(chmod 600 $infile);
   } else {
+    unlink($tmpname);
     print "Warning: Failed to update root password.\n";
   }
 
@@ -182,7 +185,13 @@ sub setLocalConfig {
   }
   $main::saved{lc}{$key}  = $val;
   $main::loaded{lc}{$key} = $val;
-  qx(su - zextras -c '/opt/zextras/bin/zmlocalconfig -f -e ${key}=\'${val}\' 2> /dev/null');
+  # The string passes through two shells (qx's, then su's): single-quote the
+  # assignment for su's shell, then for qx's.
+  my $assign = "${key}=${val}";
+  $assign =~ s/'/'\\''/g;
+  my $inner = "/opt/zextras/bin/zmlocalconfig -f -e '$assign' 2> /dev/null";
+  $inner =~ s/'/'\\''/g;
+  qx(su - zextras -c '$inner');
 }
 
 sub getLocalConfig {

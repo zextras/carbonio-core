@@ -14,6 +14,7 @@ use Zextras::Util::Common;
 use Zextras::Util::Timezone;
 use Zextras::Util::Systemd;
 use FileHandle;
+use Fcntl;
 use Net::LDAP;
 use IPC::Open3;
 use Cwd;
@@ -25,7 +26,12 @@ our $platform = qx(grep -oP '(?<=^ID=).+' /etc/os-release);
 chomp $platform;
 my $logFileName = "zmsetup." . getDateStamp() . ".log";
 my $logfile     = "/tmp/" . $logFileName;
-open LOGFILE, ">$logfile" or die "Can't open $logfile: $!\n";
+{
+    # The log holds configuration values: create it 0600 from the start.
+    my $oldumask = umask(077);
+    open LOGFILE, ">$logfile" or die "Can't open $logfile: $!\n";
+    umask($oldumask);
+}
 unlink("/tmp/zmsetup.log") if ( -e "/tmp/zmsetup.log" );
 symlink( $logfile, "/tmp/zmsetup.log" );
 
@@ -228,8 +234,7 @@ close LOGFILE;
 chmod 0600, $logfile;
 if ( -d "/opt/zextras/log" ) {
     progress("Moving $logfile to /opt/zextras/log\n");
-    system("cp -f $logfile /opt/zextras/log/");
-    system("chown zextras:zextras /opt/zextras/log/$logFileName");
+    copyLogToZextras();
 }
 
 ################################################################
@@ -254,6 +259,46 @@ sub progress {
     my ( $sub, $line ) = ( caller(1) )[ 3, 2 ];
     $msg = "$sub:$line $msg" if $options{d};
     detail($msg);
+}
+
+# Single-quote $s for a POSIX shell.
+sub shq {
+    my $s = shift;
+    $s =~ s/'/'\\''/g;
+    return "'$s'";
+}
+
+# Quote $s for the command string handed to runAsZextras(): the string goes
+# through two shells (root's double quotes, then su's shell), so the
+# single-quoted value is also escaped for the outer double quotes.
+sub shqz {
+    my $s = shq(shift);
+    $s =~ s/([\\"\$`])/\\$1/g;
+    return $s;
+}
+
+# Copy the setup log into the zextras-owned log directory as root without
+# following a symlink planted there: replace the destination, create it
+# exclusively and chown the open handle.
+sub copyLogToZextras {
+    my $dest = "/opt/zextras/log/$logFileName";
+    my ( $uid, $gid ) = ( getpwnam("zextras") )[ 2, 3 ];
+    unlink($dest) if -e $dest || -l $dest;
+    my ( $in, $out );
+    unless ( open( $in, "<", $logfile ) ) {
+        detail("Unable to read $logfile: $!\n");
+        return;
+    }
+    unless ( sysopen( $out, $dest, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, 0600 ) ) {
+        detail("Unable to create $dest: $!\n");
+        close($in);
+        return;
+    }
+    my $buf;
+    print $out $buf while read( $in, $buf, 65536 );
+    chown( $uid, $gid, $out ) if defined $uid;
+    close($out);
+    close($in);
 }
 
 sub detail {
@@ -1314,20 +1359,38 @@ sub installLdapConfig {
     my $config_dest = "/opt/zextras/data/ldap/config";
     if ( -d "/opt/zextras/data/ldap/config" ) {
         progress("Installing LDAP configuration database...");
-        qx(mkdir -p $config_dest/cn\=config/olcDatabase\=\{2\}mdb);
-        system("cp -f $config_src/cn\=config.ldif $config_dest/cn\=config.ldif");
-        system("cp -f $config_src/cn\=config/cn\=module\{0\}.ldif $config_dest/cn\=config/cn\=module\{0\}.ldif");
-        system("cp -f $config_src/cn\=config/cn\=schema.ldif $config_dest/cn\=config/cn\=schema.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{-1\}frontend.ldif $config_dest/cn\=config/olcDatabase\=\{-1\}frontend.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{0\}config.ldif $config_dest/cn\=config/olcDatabase\=\{0\}config.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{1\}monitor.ldif $config_dest/cn\=config/olcDatabase\=\{1\}monitor.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{2\}mdb.ldif $config_dest/cn\=config/olcDatabase\=\{2\}mdb.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{2\}mdb/olcOverlay\=\{0\}dynlist.ldif $config_dest/cn\=config/olcDatabase\=\{2\}mdb/olcOverlay\=\{0\}dynlist.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{2\}mdb/olcOverlay\=\{1\}unique.ldif $config_dest/cn\=config/olcDatabase\=\{2\}mdb/olcOverlay\=\{1\}unique.ldif");
-        system("cp -f $config_src/cn\=config/olcDatabase\=\{2\}mdb/olcOverlay\=\{2\}noopsrch.ldif $config_dest/cn\=config/olcDatabase\=\{2\}mdb/olcOverlay\=\{2\}noopsrch.ldif");
-        qx(chmod 600 $config_dest/cn\=config.ldif);
-        qx(chmod 600 $config_dest/cn\=config/*.ldif);
-        qx(chown -R zextras:zextras $config_dest);
+        # The destination tree is writable by zextras: refuse symlinked
+        # directories and never write through a symlinked file.
+        my $mdbdir = "$config_dest/cn=config/olcDatabase={2}mdb";
+        qx(mkdir -p '$mdbdir');
+        for my $d ( "$config_dest/cn=config", $mdbdir ) {
+            if ( -l $d ) {
+                progress("failed.\n");
+                progress("$d is a symlink, refusing to install the LDAP configuration.\n");
+                exit 1;
+            }
+        }
+        my @files = (
+            "cn=config.ldif",
+            "cn=config/cn=module{0}.ldif",
+            "cn=config/cn=schema.ldif",
+            "cn=config/olcDatabase={-1}frontend.ldif",
+            "cn=config/olcDatabase={0}config.ldif",
+            "cn=config/olcDatabase={1}monitor.ldif",
+            "cn=config/olcDatabase={2}mdb.ldif",
+            "cn=config/olcDatabase={2}mdb/olcOverlay={0}dynlist.ldif",
+            "cn=config/olcDatabase={2}mdb/olcOverlay={1}unique.ldif",
+            "cn=config/olcDatabase={2}mdb/olcOverlay={2}noopsrch.ldif",
+        );
+        for my $f (@files) {
+            system( "cp", "-f", "--remove-destination", "$config_src/$f", "$config_dest/$f" );
+        }
+        # chmod 600 on the top-level files only (as the former globs did),
+        # skipping anything that is a symlink.
+        for my $f ( "$config_dest/cn=config.ldif", glob( "'$config_dest/cn=config/'*.ldif" ) ) {
+            chmod( 0600, $f ) unless -l $f;
+        }
+        qx(chown -R -h zextras:zextras '$config_dest');
         progress("done.\n");
     }
 }
@@ -4204,15 +4267,15 @@ sub setLocalConfig {
     my $key = shift;
     my $val = shift;
 
+    my $shown = ( $key =~ /pass/i ) ? "********" : $val;
     if ( exists $main::saved{lc}{$key} && $main::saved{lc}{$key} eq $val ) {
-        detail("Skipping update of unchanged value for $key=$val.");
+        detail("Skipping update of unchanged value for $key=$shown.");
         return;
     }
-    detail("Setting local config $key to $val");
+    detail("Setting local config $key to $shown");
     $main::saved{lc}{$key}  = $val;
     $main::loaded{lc}{$key} = $val;
-    $val =~ s/\$/\\\$/g;
-    runAsZextras("/opt/zextras/bin/zmlocalconfig -f -e ${key}=\'${val}\' 2> /dev/null");
+    runAsZextras( "/opt/zextras/bin/zmlocalconfig -f -e " . shqz("${key}=${val}") . " 2> /dev/null" );
 }
 
 sub updateKeyValue {
@@ -4921,9 +4984,15 @@ sub configCreateCert {
     if ( isInstalled("carbonio-appserver") ) {
         if ( !-f "$config{mailboxd_keystore}" && !-f "/opt/zextras/ssl/carbonio/server/server.crt" ) {
             if ( !-d "$config{mailboxd_directory}" ) {
-                qx(mkdir -p $config{mailboxd_directory}/etc);
-                qx(chown -R zextras:zextras $config{mailboxd_directory});
-                qx(chmod 744 $config{mailboxd_directory}/etc);
+                my $mbd = $config{mailboxd_directory};
+                if ( $mbd !~ m{^/[A-Za-z0-9_./+@%-]+$} || $mbd =~ m{(^|/)\.\.(/|$)} ) {
+                    progress("Invalid mailboxd_directory '$mbd': must be an absolute path without spaces or shell characters.\n");
+                    exit 1;
+                }
+                my $q = shq($mbd);
+                qx(mkdir -p $q/etc);
+                qx(chown -R -h zextras:zextras $q);
+                qx(chmod 744 $q/etc);
             }
             progress("Creating SSL carbonio-appserver certificate...");
             $rc = runAsZextras("/opt/zextras/bin/zmcertmgr createcrt $needNewCert");
@@ -5597,7 +5666,7 @@ sub configCreateDomain {
                 progress("already exists.\n");
             }
             else {
-                my $rc = runAsZextras( "$ZMPROV ca " . "$config{CREATEADMIN} \'$config{CREATEADMINPASS}\' " . "zimbraAdminConsoleUIComponents cartBlancheUI " . "description \'Administrative Account\' " . "displayName \'Carbonio Admin\' " . "zimbraIsAdminAccount TRUE" );
+                my $rc = runAsZextras( "$ZMPROV ca " . "$config{CREATEADMIN} " . shqz($config{CREATEADMINPASS}) . " " . "zimbraAdminConsoleUIComponents cartBlancheUI " . "description \'Administrative Account\' " . "displayName \'Carbonio Admin\' " . "zimbraIsAdminAccount TRUE" );
                 progress( ( $rc == 0 ) ? "done.\n" : "failed.\n" );
             }
 
@@ -5627,7 +5696,7 @@ sub configCreateDomain {
             }
             else {
                 my $pass = genRandomPass();
-                my $rc   = runAsZextras( "$ZMPROV ca " . "$config{TRAINSASPAM} \'$pass\' " . "amavisBypassSpamChecks TRUE " . "zimbraAttachmentsIndexingEnabled FALSE " . "zimbraIsSystemResource TRUE " . "zimbraIsSystemAccount TRUE " . "zimbraHideInGal TRUE " . "zimbraMailQuota 0 " . "description \'System account for spam training.\'" );
+                my $rc   = runAsZextras( "$ZMPROV ca " . "$config{TRAINSASPAM} " . shqz($pass) . " " . "amavisBypassSpamChecks TRUE " . "zimbraAttachmentsIndexingEnabled FALSE " . "zimbraIsSystemResource TRUE " . "zimbraIsSystemAccount TRUE " . "zimbraHideInGal TRUE " . "zimbraMailQuota 0 " . "description \'System account for spam training.\'" );
                 progress( ( $rc == 0 ) ? "done.\n" : "failed.\n" );
             }
 
@@ -5639,7 +5708,7 @@ sub configCreateDomain {
             }
             else {
                 my $pass = genRandomPass();
-                my $rc   = runAsZextras( "$ZMPROV ca " . "$config{TRAINSAHAM} \'$pass\' " . "amavisBypassSpamChecks TRUE " . "zimbraAttachmentsIndexingEnabled FALSE " . "zimbraIsSystemResource TRUE " . "zimbraIsSystemAccount TRUE " . "zimbraHideInGal TRUE " . "zimbraMailQuota 0 " . "description \'System account for Non-Spam (Ham) training.\'" );
+                my $rc   = runAsZextras( "$ZMPROV ca " . "$config{TRAINSAHAM} " . shqz($pass) . " " . "amavisBypassSpamChecks TRUE " . "zimbraAttachmentsIndexingEnabled FALSE " . "zimbraIsSystemResource TRUE " . "zimbraIsSystemAccount TRUE " . "zimbraHideInGal TRUE " . "zimbraMailQuota 0 " . "description \'System account for Non-Spam (Ham) training.\'" );
                 progress( ( $rc == 0 ) ? "done.\n" : "failed.\n" );
             }
 
@@ -5651,7 +5720,7 @@ sub configCreateDomain {
             }
             else {
                 my $pass = genRandomPass();
-                my $rc   = runAsZextras( "$ZMPROV ca " . "$config{VIRUSQUARANTINE} \'$pass\' " . "amavisBypassSpamChecks TRUE " . "zimbraAttachmentsIndexingEnabled FALSE " . "zimbraIsSystemResource TRUE " . "zimbraIsSystemAccount TRUE " . "zimbraHideInGal TRUE " . "zimbraMailMessageLifetime 30d " . "zimbraMailQuota 0 " . "description \'System account for Anti-virus quarantine.\'" );
+                my $rc   = runAsZextras( "$ZMPROV ca " . "$config{VIRUSQUARANTINE} " . shqz($pass) . " " . "amavisBypassSpamChecks TRUE " . "zimbraAttachmentsIndexingEnabled FALSE " . "zimbraIsSystemResource TRUE " . "zimbraIsSystemAccount TRUE " . "zimbraHideInGal TRUE " . "zimbraMailMessageLifetime 30d " . "zimbraMailQuota 0 " . "description \'System account for Anti-virus quarantine.\'" );
                 progress( ( $rc == 0 ) ? "done.\n" : "failed.\n" );
             }
 
@@ -5759,6 +5828,12 @@ sub configCreateDefaultDomainGALSyncAcct {
         my $default_domain = ( ($newinstall) ? "$config{CREATEDOMAIN}" : "$config{zimbraDefaultDomainName}" );
         # carbonio-configd's setup creates galsync.<random>@<domain> through the
         # admin SOAP API, without zmgsautil's JVM.
+        my $hostre = qr/^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$/;
+        if ( $default_domain !~ $hostre || $_server !~ $hostre ) {
+            progress("failed.\n");
+            progress("Invalid domain '$default_domain' or server '$_server' for the galsync account.\n");
+            return 1;
+        }
         my $rc = runAsRoot("$setupBin gal-sync-account --domain $default_domain --server $_server");
         progress( ( $rc == 0 ) ? "done.\n" : "failed.\n" );
         configLog("configCreateDefaultDomainGALSyncAcct") if ( $rc == 0 );
@@ -5995,7 +6070,7 @@ sub applyConfig {
 
     if ( $config{STARTSERVERS} eq "yes" ) {
         if ( isEnabled("carbonio-appserver") ) {
-            qx(chown zextras:zextras /opt/zextras/redolog/redo.log)
+            qx(chown -h zextras:zextras /opt/zextras/redolog/redo.log)
               if ( ( $platform =~ m/ubuntu/ ) && !$newinstall );
         }
         progress("Starting servers...\n");
@@ -6049,8 +6124,7 @@ sub applyConfig {
     chmod 0600, $logfile;
     if ( -d "/opt/zextras/log" ) {
         progress("Moving $logfile to /opt/zextras/log\n");
-        system("cp -f $logfile /opt/zextras/log/");
-        system("chown zextras:zextras /opt/zextras/log/$logFileName");
+        copyLogToZextras();
     }
     else {
         progress("Operations logged to $logfile\n");
@@ -6089,49 +6163,75 @@ sub setupSyslog {
     configLog("setupSyslog");
 }
 
+# True when this host uses systemd and the installed carbonio-core ships the
+# scheduled-job timers (as opposed to the legacy zextras crontab). Unlike
+# isSystemd() this does not depend on a role target being enabled yet.
+sub hostUsesTimers {
+    return ( -d "/run/systemd/system" && -e "/usr/lib/systemd/system/carbonio-log-cleanup.timer" ) ? 1 : 0;
+}
+
+sub slurpFile {
+    my $f = shift;
+    open( my $fh, "<", $f ) or do { detail("crontab: cannot read $f: $!"); return ""; };
+    local $/;
+    my $c = <$fh>;
+    close($fh);
+    return defined $c ? $c : "";
+}
+
 sub setupCrontab {
-    if ( isSystemd() ) {
+    if ( isSystemd() || hostUsesTimers() ) {
         removeCrontabBlock();
         return;
     }
     progress("Setting up zextras crontab...");
     detail("crontab: Taking a copy of zextras user crontab file.");
-    qx(crontab -u zextras -l > /tmp/crontab.zextras.orig 2> /dev/null);
+    my $orig = qx(crontab -u zextras -l 2> /dev/null);
     detail("crontab: Looking for ZEXTRAS-START in existing crontab entry.");
-    my $rc = 0xffff & system("grep ZEXTRAS-START /tmp/crontab.zextras.orig > /dev/null 2>&1");
-    if ($rc) {
+    if ( $orig !~ /ZEXTRAS-START/ ) {
         detail("crontab: ZEXTRAS-START not found truncating zextras crontab and starting fresh.");
-        qx(cp -f /dev/null /tmp/crontab.zextras.orig 2>> $logfile);
+        $orig = "";
     }
     detail("crontab: Looking for ZEXTRAS-END in existing crontab entry.");
-    $rc = 0xffff & system("grep ZEXTRAS-END /tmp/crontab.zextras.orig > /dev/null 2>&1");
-    if ($rc) {
+    if ( $orig !~ /ZEXTRAS-END/ ) {
         detail("crontab: ZEXTRAS-END not found truncating zextras crontab and starting fresh.");
-        qx(cp -f /dev/null /tmp/crontab.zextras.orig);
+        $orig = "";
     }
-    qx(cat /tmp/crontab.zextras.orig | sed -e '/# ZEXTRAS-START/,/# ZEXTRAS-END/d' > /tmp/crontab.zextras.proc);
+    my $proc = join( "", grep { !( /# ZEXTRAS-START/ .. /# ZEXTRAS-END/ ) } split( /^/m, $orig ) );
     detail("crontab: Adding carbonio-core specific crontab entries");
-    qx(cp -f /opt/zextras/conf/crontabs/crontab /tmp/crontab.zextras);
+    my $new = slurpFile("/opt/zextras/conf/crontabs/crontab");
 
     if ( isEnabled("carbonio-directory-server") ) {
         detail("crontab: Adding carbonio-directory-server specific crontab entries");
-        qx(cat /opt/zextras/conf/crontabs/crontab.ldap >> /tmp/crontab.zextras 2>> $logfile);
+        $new .= slurpFile("/opt/zextras/conf/crontabs/crontab.ldap");
     }
 
     if ( isEnabled("carbonio-appserver") ) {
         detail("crontab: Adding carbonio-appserver specific crontab entries");
-        qx(cat /opt/zextras/conf/crontabs/crontab.store >> /tmp/crontab.zextras 2>> $logfile);
+        $new .= slurpFile("/opt/zextras/conf/crontabs/crontab.store");
     }
 
     if ( isEnabled("carbonio-mta") ) {
         detail("crontab: Adding carbonio-mta specific crontab entries");
-        qx(cat /opt/zextras/conf/crontabs/crontab.mta >> /tmp/crontab.zextras 2>> $logfile);
+        $new .= slurpFile("/opt/zextras/conf/crontabs/crontab.mta");
     }
 
-    qx(echo "# ZEXTRAS-END -- DO NOT EDIT ANYTHING BETWEEN THIS LINE AND ZEXTRAS-START" >> /tmp/crontab.zextras);
-    qx(cat /tmp/crontab.zextras.proc >> /tmp/crontab.zextras);
+    $new .= "# ZEXTRAS-END -- DO NOT EDIT ANYTHING BETWEEN THIS LINE AND ZEXTRAS-START\n";
+    $new .= $proc;
     detail("crontab: installing new crontab");
-    qx(crontab -u zextras /tmp/crontab.zextras 2> /dev/null);
+    if ( open( my $fh, "|-", "crontab -u zextras - 2>> $logfile" ) ) {
+        print $fh $new;
+        if ( !close($fh) ) {
+            progress("failed.\n");
+            detail("crontab: installing the zextras crontab failed: status $?");
+            return;
+        }
+    }
+    else {
+        progress("failed.\n");
+        detail("crontab: unable to run crontab: $!");
+        return;
+    }
     progress("done.\n");
     configLog("setupCrontab");
 }
@@ -6152,10 +6252,19 @@ sub removeCrontabBlock {
     if ( grep { /\S/ && !/^\s*#/ } split( /\n/, $cur ) ) {
         open( my $fh, "|-", "crontab -u zextras -" ) or die "crontab: $!";
         print $fh $cur;
-        close($fh);
+        if ( !close($fh) ) {
+            progress("failed.\n");
+            detail("crontab: rewriting the zextras crontab failed: status $?");
+            return;
+        }
     }
     else {
-        qx(crontab -u zextras -r 2>> $logfile);
+        my $out = qx(crontab -u zextras -r 2>&1);
+        if ( $? != 0 ) {
+            progress("failed.\n");
+            detail("crontab: crontab -r failed: $out");
+            return;
+        }
     }
     progress("done.\n");
     configLog("setupCrontab");
