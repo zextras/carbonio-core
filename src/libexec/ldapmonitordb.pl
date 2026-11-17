@@ -319,14 +319,14 @@ if ($mdb_alarm) {
 $growth=0;
 if ($alog_alarm) {
   if ($ldap_monitor_alert_only eq "false") {
-    $growth =$alog_growth_size + $ldap_db_maxsize;
+    $growth =$alog_growth_size + $ldap_accesslog_maxsize;
 	if ($debug) {
 	  print "growth:$growth\n";
     }
 	my $subject="LDAP ACCESSLOG DATABASE GROWTH ALERT\n";
     my $msg="Growing accesslog MDB database size from $ldap_accesslog_maxsize to $growth.\n";
     if ($growth > 0) {
-      setLocalConfig("ldap_db_maxsize", "$growth");
+      setLocalConfig("ldap_accesslog_maxsize", "$growth");
     }
     push (@$report,$msg);
     sendEmailReport($subject, $report);

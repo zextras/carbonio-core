@@ -32,15 +32,18 @@ depends__apt=(
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
+  "carbonio-perl-date-calc"
   "carbonio-perl-date-manip"
   "carbonio-perl-dbi"
   "carbonio-perl-file-grep"
   "carbonio-perl-filesys-df"
   "carbonio-perl-io-compress"
   "carbonio-perl-json-pp"
+  "carbonio-perl-mailtools"
   "carbonio-perl-net-dns"
   "carbonio-perl-net-ldap"
   "carbonio-perl-netaddr-ip"
+  "carbonio-perl-timedate"
   "carbonio-perl-xml-simple"
   "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
@@ -86,18 +89,22 @@ depends__ubuntu_noble=(
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
+  "carbonio-perl-date-calc"
   "carbonio-perl-date-manip"
   "carbonio-perl-dbi"
   "carbonio-perl-file-grep"
   "carbonio-perl-filesys-df"
   "carbonio-perl-io-compress"
   "carbonio-perl-json-pp"
+  "carbonio-perl-mailtools"
   "carbonio-perl-net-dns"
   "carbonio-perl-net-ldap"
   "carbonio-perl-netaddr-ip"
+  "carbonio-perl-timedate"
   "carbonio-perl-xml-simple"
   "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
+  "cron"
   "coreutils"
   "diffutils"
   "file"
@@ -139,15 +146,18 @@ depends__yum=(
   "carbonio-perl-carp-clan"
   "carbonio-perl-crypt-saltedhash"
   "carbonio-perl-data-uuid"
+  "carbonio-perl-date-calc"
   "carbonio-perl-date-manip"
   "carbonio-perl-dbi"
   "carbonio-perl-file-grep"
   "carbonio-perl-filesys-df"
   "carbonio-perl-io-compress"
   "carbonio-perl-json-pp"
+  "carbonio-perl-mailtools"
   "carbonio-perl-net-dns"
   "carbonio-perl-net-ldap"
   "carbonio-perl-netaddr-ip"
+  "carbonio-perl-timedate"
   "carbonio-perl-xml-simple"
   "carbonio-prometheus-node-exporter"
   "carbonio-timezone-data"
@@ -178,6 +188,19 @@ depends__yum=(
   "sysstat"
   "systemd-udev"
   "unzip"
+)
+# Core 4.11 ships the timers the role packages used to ship (CO-2512). Role
+# releases older than the first one that ships them with Replaces would leave
+# their jobs unscheduled, so block that combination on the systemd distros.
+breaks__ubuntu_noble=(
+  "carbonio-mta (<< 4.3.0)"
+  "carbonio-appserver (<< 4.6.1)"
+  "carbonio-directory-server (<< 5.7.0)"
+)
+conflicts__rocky_9=(
+  "carbonio-mta<4.3.0"
+  "carbonio-appserver<4.6.1"
+  "carbonio-directory-server<5.7.0"
 )
 source=(
   "https://repo.zextras.tools/repository/maven-public/com/kohlschutter/junixsocket/junixsocket-native/2.4.0/junixsocket-native-2.4.0.nar"
@@ -721,6 +744,25 @@ _postinst_systemd() {
       fi
     done
   fi
+
+  # Timers the role packages used to ship (moved to core in CO-2512). When
+  # the role package no longer ships one, its enable links dangle and systemd
+  # lists the unit as not-found failed: remove them. Units a role package
+  # still ships are left alone.
+  local moved
+  for moved in carbonio-mta-queue-log carbonio-antispam-train \
+    carbonio-antispam-train-cleanup carbonio-antispam-bayes-expire \
+    carbonio-mailthreat-tmp-cleanup carbonio-mailthreat-quarantine-cleanup \
+    carbonio-policyd-cleanup carbonio-appserver-log-cleanup \
+    carbonio-appserver-db-integrity-report carbonio-openldap-monitor-db; do
+    if [ ! -e "/usr/lib/systemd/system/${moved}.timer" ] &&
+      [ ! -e "/lib/systemd/system/${moved}.timer" ]; then
+      rm -f "/etc/systemd/system/"*.wants/"${moved}.timer" || :
+      if [ -d /run/systemd/system ]; then
+        systemctl reset-failed "${moved}.timer" &>/dev/null || :
+      fi
+    fi
+  done
 
   # Upgrade from the crontab: drop the ZEXTRAS block, which the timers
   # replace, and keep the entries the admin added outside of it.
