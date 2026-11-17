@@ -1,3 +1,9 @@
+## [4.9.1](https://github.com/zextras/carbonio-core/compare/v4.9.0...v4.9.1) (2026-11-17)
+
+### Bug Fixes
+
+* **stats:** [CO-4634] allow AF_NETLINK so postqueue can run ([#244](https://github.com/zextras/carbonio-core/issues/244)) ([d0f2f54](https://github.com/zextras/carbonio-core/commit/d0f2f545a61bf56d227395f9981856ffc5d8c69f))
+
 ## [4.9.0](https://github.com/zextras/carbonio-core/compare/v4.8.4...v4.9.0) (2026-11-16)
 
 ### Features
