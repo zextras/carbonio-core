@@ -59,4 +59,11 @@ fi
 
 # sudoers only allows the bare verbs (start|stop|status|reload|flush|check);
 # the optional "norewrite" marker is not meant for postfix itself.
+if [ "$1" = "restart" ]; then
+  # sudoers does not allow "postfix restart"; do it as stop then start
+  echo "postfix restart: performing stop followed by start"
+  sudo /opt/zextras/common/sbin/postfix stop
+  sudo /opt/zextras/common/sbin/postfix start
+  exit $?
+fi
 sudo /opt/zextras/common/sbin/postfix "$1"

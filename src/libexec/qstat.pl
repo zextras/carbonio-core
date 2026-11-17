@@ -211,7 +211,11 @@ chomp $hash_queue_depth;
 
 my @queues = qw/incoming hold active deferred corrupt/;
 
-if ( $ARGV[0] ) {
+if ( defined $ARGV[0] && $ARGV[0] ne '' ) {
+    if ( $ARGV[0] !~ /\A(?:incoming|hold|active|deferred|corrupt)\z/ ) {
+        print STDERR "Usage: $0 [incoming|hold|active|deferred|corrupt]\n";
+        exit 1;
+    }
     @queues    = $ARGV[0];
     $readfiles = 1;
 }
