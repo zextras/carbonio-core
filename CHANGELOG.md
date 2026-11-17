@@ -1,3 +1,9 @@
+## [4.10.0](https://github.com/zextras/carbonio-core/compare/v4.9.1...v4.10.0) (2026-11-17)
+
+### Features
+
+* **systemd:** [CO-2512] run the scheduled jobs as systemd timers ([#245](https://github.com/zextras/carbonio-core/issues/245)) ([4288383](https://github.com/zextras/carbonio-core/commit/42883839b086bfae2baab5f26a80a4d56ec2921b))
+
 ## [4.9.1](https://github.com/zextras/carbonio-core/compare/v4.9.0...v4.9.1) (2026-11-17)
 
 ### Bug Fixes
