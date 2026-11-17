@@ -22,6 +22,7 @@ zmcontactbackup <-h|-m|-r|-p|-q|-d|-f|[-l]|[-a backup_schedule]> [mailbox_server
        -f|--flush          : flush all contact backup schedules
        -d|--default        : (re)set to the default (3am daily) backup schedule
        -l|--all            : run contact backup on all mailbox servers
+       --foreground        : with -r/-p, wait for the request to finish
        backup_schedule     : crontab style time specifier, QUOTED.  See crontab(5)
                 Fields are:
                         minute         0-59
@@ -63,6 +64,14 @@ Examples :
     $ zmcontactbackup -p -l
 
 =head1 DESCRIPTION
+
+On hosts that use systemd timers (Ubuntu 24.04, Rocky Linux 9) the
+schedules are systemd timers, one C<carbonio-contact-backup@N.timer> per
+schedule, and not entries of the zextras crontab. The options and their
+output are the same. See C<systemctl list-timers 'carbonio-contact-backup*'>.
+The crontab style specifier is converted to systemd OnCalendar expressions;
+when both day of month and day of week are restricted the job runs when
+either matches, as in cron.
 
 This utility is used to schedule contact backup for
 specified mailbox server(s).
@@ -151,6 +160,12 @@ schedule : crontab style time specifier, QUOTED.  See crontab(5)
                         day of week    0-7 (0 or 7 is Sun, or use names)
                 Example: Everyday at 1am  - "0 1 * * *"
 
+=item --foreground
+
+Only with --start/--stop: wait for the request to end, print its output
+and exit with its status. The systemd service of a schedule uses it, the
+default is to send the request in the background.
+
 =item --start [--all] [<mailbox.server.name>...]
 
 Start contact backup for current, specific or all mailbox stores.
@@ -174,8 +189,8 @@ use IO::Handle;
 ###### declaration part ######
 my %LC;
 my $Prog = basename($0);
-my ( $start, $stop, $help, $append, $query, $def, $flush, $man, $all ) =
-  ( 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+my ( $start, $stop, $help, $append, $query, $def, $flush, $man, $all, $fg ) =
+  ( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 GetOptions(
     'h|help'    => \$help,
     'r|start'   => \$start,
@@ -186,6 +201,7 @@ GetOptions(
     'f|flush'   => \$flush,
     'm|man'     => \$man,
     'l|all'     => \$all,
+    'foreground' => \$fg,
 );
 my $schedule;
 my @servers;
@@ -244,6 +260,12 @@ sub validateOptions() {
         && !$man )
     {
         $help = 1;    #defaulting to help
+    }
+    elsif ( $fg && !( $start || $stop ) ) {
+        pod2usage(
+            -message => "$Prog: foreground can only be used with start/stop\n",
+            -verbose => 0
+        );
     }
     elsif (
         $query
@@ -662,16 +684,81 @@ sub appendCron {
     exit(0);
 }
 
-sub startContactBackup {
+sub sendRequest {
+    if ($fg) {
+
+        # Wait for the answer, the systemd service of a schedule needs the
+        # request to finish before the service does.
+        my $rc = system($soap);
+        exit( $rc == 0 ? 0 : 1 );
+    }
     qx/($soap >\/opt\/zextras\/log\/contactbackup.out &)/;
     print "Check soap output at /opt/zextras/log/contactbackup.out\n";
     exit(0);
 }
 
+sub startContactBackup {
+    sendRequest();
+}
+
 sub stopContactBackup {
-    qx/($soap >\/opt\/zextras\/log\/contactbackup.out &)/;
-    print "Check soap output at /opt/zextras/log/contactbackup.out\n";
+    sendRequest();
+}
+
+############### systemd timers (Ubuntu 24.04, Rocky Linux 9) ##################
+# The schedules are instances of carbonio-contact-backup@.timer, managed by
+# the root helper below: zextras may run only it through sudo.
+my $Helper = '/opt/zextras/libexec/contactbackup-schedule';
+
+# Same test as hostUsesTimers() of setup.pl.
+sub hostUsesTimers {
+    return ( -d "/run/systemd/system"
+          && -e "/usr/lib/systemd/system/carbonio-log-cleanup.timer" ) ? 1 : 0;
+}
+
+sub runHelper {
+    my @args = @_;
+    my $rc = system( '/usr/bin/sudo', '-n', $Helper, @args );
+    if ( $rc != 0 ) {
+        print STDERR "$Prog: updating the contact backup timers failed\n";
+        exit(1);
+    }
+}
+
+sub displayTimerSchedule {
+    print "Current Schedule:\n\n";
+    open( my $fh, '-|', $Helper, 'list' )
+      or do { print STDERR "$Prog: unable to run $Helper: $!\n"; exit(1) };
+    while ( my $line = <$fh> ) {
+        chomp $line;
+        my ( $spec, $srv ) = split( /\t/, $line, 2 );
+        print "\t$spec start";
+        print " $srv" if defined $srv && $srv ne '';
+        print "\n\n";
+    }
+    close($fh)
+      or do { print STDERR "$Prog: listing the contact backup timers failed\n"; exit(1) };
     exit(0);
+}
+
+sub flushTimers {
+    runHelper('flush');
+    print "Schedule flushed\n\n";
+    exit(0);
+}
+
+sub defaultTimers {
+    runHelper( 'default', $cur );
+    print "Default schedule set\n\n";
+    displayTimerSchedule();
+}
+
+sub appendTimer {
+
+    # prepareSoap() put the current server in @servers unless -l or a list
+    runHelper( 'add', $schedule, ( $all ? ('-l') : @servers ) );
+    print "Schedule appended\n\n";
+    displayTimerSchedule();
 }
 ########################### Execution starts #################################
 ###### help and man #######
@@ -683,16 +770,28 @@ getLocalConfig( 'zimbra_user', 'zimbra_server_hostname',
 userCheck();
 ###### validate options #########
 validateOptions();
-###### load cron ########
-loadCron();
-$query && displayCurrentSchedule();
-$def   && defaultCron();
-$flush && flushCron();
+###### systemd timers host: no crontab involved ########
+my $timers = hostUsesTimers();
+if ($timers) {
+    $query && displayTimerSchedule();
+    $def   && defaultTimers();
+    $flush && flushTimers();
+}
+else {
+    ###### load cron ########
+    loadCron();
+    $query && displayCurrentSchedule();
+    $def   && defaultCron();
+    $flush && flushCron();
+}
 ###### start/stop contact backup ######
 prepareSoap();
 $start && startContactBackup();
 $stop  && stopContactBackup();
 ###### validate schedule, prepare comand and append it #########
+
+# the helper validates the schedule strictly
+$timers && $append && appendTimer();
 validateSchedule();
 prepareCmd();
 $append && appendCron();
