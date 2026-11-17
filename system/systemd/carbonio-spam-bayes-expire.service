@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio SpamAssassin Bayes Expiry (sa-learn)
+Description=Carbonio SpamAssassin Bayes Expiry
 Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 

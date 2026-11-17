@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio MTA Queue Logging (zmqueuelog)
+Description=Carbonio MTA Queue Logging
 Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 

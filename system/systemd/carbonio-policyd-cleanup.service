@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio Policyd Database Cleanup (zmcbpadmin --cleanup)
+Description=Carbonio Policyd Database Cleanup
 Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 # configd writes the file only where cbpolicyd is enabled; zmcbpadmin exits 1
