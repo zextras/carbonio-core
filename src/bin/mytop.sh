@@ -34,15 +34,50 @@ fi
 source /opt/zextras/bin/zmshutil || exit 1
 zmsetvars
 
-if [ -x "/opt/zextras/common/bin/mytop" ]; then
-  if [ "$1" = "-r" ]; then
-    shift
-    /opt/zextras/common/bin/mytop \
-      -u root -S /run/carbonio/mysql.sock -p "$mysql_root_password" "$@"
-  else
-    /opt/zextras/common/bin/mytop \
-      -u "$zimbra_mysql_user" \
-      -S /run/carbonio/mysql.sock \
-      -p "$zimbra_mysql_password" "$@"
-  fi
+if [ "$1" = "-r" ]; then
+  shift
+  db_user=root
+  db_password=$mysql_root_password
+else
+  db_user=$zimbra_mysql_user
+  db_password=$zimbra_mysql_password
 fi
+
+if [ -x "/opt/zextras/common/bin/mytop" ]; then
+  /opt/zextras/common/bin/mytop \
+    -u "$db_user" -S /run/carbonio/mysql.sock -p "$db_password" "$@"
+  exit $?
+fi
+
+# mytop is not shipped with the Carbonio MariaDB package: fall back to the
+# process list from mysqladmin, honouring --batch/-b and --delay (other mytop
+# display options are accepted and ignored).
+batch=false
+delay=5
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -b | --batch) batch=true ;;
+    --delay=*) delay=${1#--delay=} ;;
+    --delay | -s)
+      shift
+      delay=$1
+      ;;
+  esac
+  shift
+done
+
+case "$delay" in
+  '' | *[!0-9]*)
+    echo "Error: invalid delay: $delay" >&2
+    exit 1
+    ;;
+esac
+
+echo "Note: mytop is not installed, showing the MariaDB process list." >&2
+export MYSQL_PWD="$db_password"
+if [ "$batch" = true ]; then
+  exec /opt/zextras/common/bin/mysqladmin -u "$db_user" -S /run/carbonio/mysql.sock \
+    --verbose processlist
+fi
+exec /opt/zextras/common/bin/mysqladmin -u "$db_user" -S /run/carbonio/mysql.sock \
+  --verbose -i "$delay" processlist
