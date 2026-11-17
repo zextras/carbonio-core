@@ -1,3 +1,9 @@
+## [4.12.1](https://github.com/zextras/carbonio-core/compare/v4.12.0...v4.12.1) (2026-11-17)
+
+### Bug Fixes
+
+* [CO-3502] stop core timers with carbonio.target ([#254](https://github.com/zextras/carbonio-core/issues/254)) ([b6b8b66](https://github.com/zextras/carbonio-core/commit/b6b8b664164324cb200c6d4ad57eb606ffe2fdb9))
+
 ## [4.12.0](https://github.com/zextras/carbonio-core/compare/v4.11.1...v4.12.0) (2026-11-17)
 
 ### Features
