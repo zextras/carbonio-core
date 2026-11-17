@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio spam training cleanup
+Description=Carbonio Spam Training Cleanup (zmtrainsa --cleanup)
+Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 
 [Service]

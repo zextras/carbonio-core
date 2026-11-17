@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio zmstat data cleanup timer
+Description=Carbonio Statistics Cleanup Monthly
+Documentation=https://docs.zextras.com/
 
 [Timer]
 OnCalendar=*-*-05 02:20:00

@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio spam training timer
+Description=Carbonio Spam Training Daily
+Documentation=https://docs.zextras.com/
 PartOf=carbonio-mta.target
 
 [Timer]

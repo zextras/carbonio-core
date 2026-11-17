@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio database integrity report
+Description=Carbonio Database Integrity Report (zmdbintegrityreport)
+Documentation=https://docs.zextras.com/
 After=carbonio-appserver.target
 
 [Service]

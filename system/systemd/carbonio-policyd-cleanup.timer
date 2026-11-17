@@ -3,12 +3,14 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio temporary directory cleanup timer
+Description=Carbonio Policyd Database Cleanup Daily
+Documentation=https://docs.zextras.com/
+PartOf=carbonio-mta.target
 
 [Timer]
-OnCalendar=*-*-* 02:40:00
+OnCalendar=*-*-* 03:35:00
 Persistent=true
 RandomizedDelaySec=10min
 
 [Install]
-WantedBy=carbonio.target
+WantedBy=carbonio-mta.target

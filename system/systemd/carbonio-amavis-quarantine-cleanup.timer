@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio amavisd quarantine cleanup timer
+Description=Carbonio Amavis Quarantine Cleanup Daily
+Documentation=https://docs.zextras.com/
 PartOf=carbonio-mta.target
 
 [Timer]

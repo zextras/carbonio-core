@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio amavisd quarantine cleanup
+Description=Carbonio Amavis Quarantine Cleanup
+Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 
 [Service]

@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio mailboxd log and stacktrace cleanup
+Description=Carbonio Mailbox Log and Stack Trace Cleanup
+Documentation=https://docs.zextras.com/
 After=carbonio-appserver.target
 
 [Service]

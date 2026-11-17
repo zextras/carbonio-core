@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio LDAP MDB size monitor
+Description=Carbonio LDAP Database Size Monitor (zmldapmonitordb)
+Documentation=https://docs.zextras.com/
 After=carbonio-directory-server.target
 
 [Service]

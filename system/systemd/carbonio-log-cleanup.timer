@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio rotated log cleanup timer
+Description=Carbonio Rotated Log Cleanup Daily
+Documentation=https://docs.zextras.com/
 
 [Timer]
 OnCalendar=*-*-* 02:30:00

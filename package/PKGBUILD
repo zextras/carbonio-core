@@ -624,19 +624,19 @@ _package_legacy() {
 _core_timers() {
   echo carbonio-amavis-quarantine-cleanup.timer \
     carbonio-amavis-tmp-cleanup.timer \
-    carbonio-cbpolicyd-cleanup.timer \
-    carbonio-check-expired-certs.timer \
-    carbonio-clean-tmp.timer \
-    carbonio-compress-logs.timer \
+    carbonio-cert-expiry-check.timer \
     carbonio-db-integrity-report.timer \
     carbonio-ldap-monitor-db.timer \
     carbonio-log-cleanup.timer \
+    carbonio-log-compress.timer \
     carbonio-mailboxd-log-cleanup.timer \
-    carbonio-queue-log.timer \
+    carbonio-mta-queue-log.timer \
+    carbonio-policyd-cleanup.timer \
     carbonio-spam-bayes-expire.timer \
     carbonio-spam-train-cleanup.timer \
     carbonio-spam-train.timer \
-    carbonio-stats-cleanup.timer
+    carbonio-stats-cleanup.timer \
+    carbonio-tmp-cleanup.timer
 }
 
 _package_systemd() {

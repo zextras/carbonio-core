@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio MTA queue logging timer
-PartOf=carbonio-mta.target
+Description=Carbonio Certificate Expiration Check Monthly
+Documentation=https://docs.zextras.com/
 
 [Timer]
-OnCalendar=*:00/10
+OnCalendar=*-*-01 00:00:00
 Persistent=true
 
 [Install]
-WantedBy=carbonio-mta.target
+WantedBy=carbonio.target
