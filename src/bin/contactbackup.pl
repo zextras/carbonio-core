@@ -789,11 +789,9 @@ prepareSoap();
 $start && startContactBackup();
 $stop  && stopContactBackup();
 ###### validate schedule, prepare comand and append it #########
-if ($timers) {
 
-    # the helper validates the schedule strictly
-    appendTimer();
-}
+# the helper validates the schedule strictly
+$timers && $append && appendTimer();
 validateSchedule();
 prepareCmd();
 $append && appendCron();
