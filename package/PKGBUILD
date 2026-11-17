@@ -691,17 +691,12 @@ _postinst() {
 
   sed -i -e 's/# session    required   pam_limits.so/session    required   pam_limits.so/' /etc/pam.d/su
   if [ -f /etc/pam.d/common-session ]; then
-    pamtmp=$(mktemp -t zpamtmp.XXXXXX 2>/dev/null) || {
-      echo "Failed to create tmpfile"
-      exit 1
-    }
-    {
-      grep -E -v -e '^session[[:space:]]+required[[:space:]]+pam_limits.so' /etc/pam.d/common-session >"$pamtmp"
-      echo "session	required	pam_limits.so"
-    } >>"$pamtmp"
-    chmod --reference=/etc/pam.d/common-session "$pamtmp"
-    chown --reference=/etc/pam.d/common-session "$pamtmp"
-    mv -f "$pamtmp" /etc/pam.d/common-session
+    if ! grep -Eq '^session[[:space:]]+required[[:space:]]+pam_limits\.so' /etc/pam.d/common-session; then
+      printf 'session\trequired\tpam_limits.so\n' >>/etc/pam.d/common-session
+    fi
+    # standard mode; also repairs 0600 left by earlier package versions
+    chmod 0644 /etc/pam.d/common-session
+    chown root:root /etc/pam.d/common-session
   fi
 
   rm -f /etc/rc*.d/S01carbonio
