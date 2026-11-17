@@ -30,7 +30,8 @@ fi
 if [ ! -d "$dbdir" ]; then
   mkdir -p "$dbdir"
   rc=$?
-  if [ $rc -eq 0 ]; then
+  if [ $rc -ne 0 ]; then
+    echo "Error: unable to create directory $dbdir"
     exit 1
   fi
 fi
