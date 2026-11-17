@@ -13,7 +13,6 @@ use strict;
 use lib "/opt/zextras/common/lib/perl5";
 use lib "/opt/zextras/common/lib/perl5/Zextras/SOAP";
 use lib "/opt/zextras/common/lib/perl5/Zextras/Mon";
-use lib "/opt/zextras/common/lib/perl5/Zextras/DB";
 foreach my $type (qw(linux-thread-multi linux-gnu-thread-multi linux thread-multi thread-multi-2level)) {
   my $dir = "/opt/zextras/common/lib/perl5/x86_64-${type}";
   unshift(@INC, "$dir") 

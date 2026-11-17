@@ -10,6 +10,7 @@ use lib "/opt/zextras/common/lib/perl5";
 use Zextras::Util::Common;
 use File::Grep qw (fgrep);
 use File::Path;
+use File::Temp;
 use Net::LDAP;
 use Net::LDAP::LDIF;
 use Net::LDAP::Entry;
@@ -44,30 +45,31 @@ my $zimbra_ssha_password = $ctx->generate;
 
 # Update cn=config
 my $infile="$ldap_config_dir/olcDatabase\=\{0\}config.ldif";
-my $outfile="$zimbra_tmp_directory/olcDatabase\=\{0\}config.ldif.$$";
 my $mime_root_passwd=MIME::Base64::encode($root_ssha_password,"");
 chomp ($mime_root_passwd);
 
+# Build the new file next to the destination, not in the world-writable tmp
+# directory, and rename it into place.
+my ($tmpfh, $outfile) = File::Temp::tempfile("olcDatabase={0}config.ldif.XXXXXX", DIR => $ldap_config_dir);
 open(IN,"<$infile");
-open(OUT,">$outfile");
 while (<IN>) {
   if ($_ =~ /^olcRootPW/) {
     $_ =~ s|^olcRootPW.*|olcRootPW:: $mime_root_passwd|;
-    print OUT $_;
-  } else {
-    print OUT $_;
   }
+  print $tmpfh $_;
 }
 close IN;
-close OUT;
+my ($uid, $gid) = (getpwnam($zimbra_user))[2,3];
+chown($uid, $gid, $tmpfh) if defined $uid;
+chmod(0600, $tmpfh);
+close $tmpfh;
 if ( -s $outfile ) {
-  my $rc=0xffff & system("/bin/mv -f $outfile $infile");
-  if ($rc != 0) {
+  if (!rename($outfile, $infile)) {
     print "Warning: failed to write $infile\n";
+    unlink($outfile);
   }
-  qx(chown $zimbra_user:$zimbra_user $infile); 
-  qx(chmod 600 $infile);
 } else {
+  unlink($outfile);
   print "Warning: Failed to update root password.\n";
 }
 
