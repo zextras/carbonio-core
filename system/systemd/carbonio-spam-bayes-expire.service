@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio SpamAssassin Bayes expiry
+After=carbonio-mta.target
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+ExecStart=/opt/zextras/common/bin/sa-learn --dbpath /opt/zextras/data/amavisd/.spamassassin --force-expire --sync

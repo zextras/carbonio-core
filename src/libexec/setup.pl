@@ -6090,6 +6090,10 @@ sub setupSyslog {
 }
 
 sub setupCrontab {
+    if ( isSystemd() ) {
+        removeCrontabBlock();
+        return;
+    }
     progress("Setting up zextras crontab...");
     detail("crontab: Taking a copy of zextras user crontab file.");
     qx(crontab -u zextras -l > /tmp/crontab.zextras.orig 2> /dev/null);
@@ -6128,6 +6132,31 @@ sub setupCrontab {
     qx(cat /tmp/crontab.zextras.proc >> /tmp/crontab.zextras);
     detail("crontab: installing new crontab");
     qx(crontab -u zextras /tmp/crontab.zextras 2> /dev/null);
+    progress("done.\n");
+    configLog("setupCrontab");
+}
+
+# On systemd the scheduled jobs are the carbonio-*.timer units of
+# carbonio-core: drop the ZEXTRAS block an older version installed and keep
+# the entries the admin added outside of it.
+sub removeCrontabBlock {
+    progress("Removing Carbonio jobs from the zextras crontab...");
+    my $cur = qx(crontab -u zextras -l 2> /dev/null);
+    if ( $cur !~ /^# ZEXTRAS-START/m ) {
+        progress("done.\n");
+        configLog("setupCrontab");
+        return;
+    }
+    $cur =~ s/^# ZEXTRAS-START.*?^# ZEXTRAS-END[^\n]*\n?//ms;
+    # Comments only (the SPDX header of the old fragment) count as empty.
+    if ( grep { /\S/ && !/^\s*#/ } split( /\n/, $cur ) ) {
+        open( my $fh, "|-", "crontab -u zextras -" ) or die "crontab: $!";
+        print $fh $cur;
+        close($fh);
+    }
+    else {
+        qx(crontab -u zextras -r 2>> $logfile);
+    }
     progress("done.\n");
     configLog("setupCrontab");
 }

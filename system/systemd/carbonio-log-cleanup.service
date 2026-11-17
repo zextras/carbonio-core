@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio rotated log cleanup
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+ExecStart=/usr/bin/find /opt/zextras/log/ ! -name 'zmsetup*.log' -type f -name '*.log?*' -mtime +8 -delete
+ExecStart=/usr/bin/find /opt/zextras/log/ -type f -name '*.out.????????????' -mtime +8 -delete
+Nice=10
+IOSchedulingClass=idle

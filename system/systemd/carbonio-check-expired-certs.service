@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio certificate expiration check
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+ExecStart=/opt/zextras/libexec/zmcheckexpiredcerts -days 30 -email

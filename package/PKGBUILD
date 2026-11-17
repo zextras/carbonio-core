@@ -211,14 +211,6 @@ _package() {
     "${pkgdir}/opt/zextras/.viminfo"
   install -D "${repodir}/config/carbonio/zmssl.cnf.in" \
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
-  install -D "${repodir}/config/cron/crontab" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab"
-  install -D "${repodir}/config/cron/crontab.ldap" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.ldap"
-  install -D "${repodir}/config/cron/crontab.logger" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.logger"
-  install -D "${repodir}/config/cron/crontab.store" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.store"
 
   # mta
   install -D "${repodir}/config/mta/cbpolicyd.conf.in" \
@@ -617,15 +609,28 @@ _package() {
     "${pkgdir}/etc/needrestart/conf.d/${pkgname}.conf"
 }
 
-_package_systemd() {
-  install -D "${repodir}/config/cron/crontab.systemd.mta" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
+_package_legacy() {
+  local f
+  for f in crontab crontab.ldap crontab.logger crontab.mta crontab.store; do
+    install -D "${repodir}/config/cron/${f}" \
+      "${pkgdir}/opt/zextras/conf/crontabs/${f}"
+  done
+}
 
+_package_systemd() {
   # systemd units
   install -Dm644 "${repodir}/system/systemd/carbonio.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target"
   install -Dm644 "${repodir}/system/systemd/carbonio-stats.service" \
     "${pkgdir}/usr/lib/systemd/system/carbonio-stats.service"
+
+  # Scheduled jobs (CO-2512): a <job>.timer + <job>.service pair per former
+  # crontab entry, the timer WantedBy= the target of the role that needs it.
+  local timer
+  for timer in "${repodir}"/system/systemd/*.timer; do
+    install -Dm644 "${timer}" "${timer%.timer}.service" \
+      -t "${pkgdir}/usr/lib/systemd/system"
+  done
 }
 
 _postinst() {
@@ -702,6 +707,43 @@ _postinst_systemd() {
     systemctl enable carbonio.target &>/dev/null || :
     systemctl enable carbonio-configd.service &>/dev/null || :
     systemctl enable carbonio-stats.service &>/dev/null || :
+
+    # The scheduled jobs are systemd timers: enable them all, each one runs
+    # only when its role target does. Start the ones whose target already
+    # runs, the others start with their target.
+    local timer target
+    for timer in /usr/lib/systemd/system/carbonio-*.timer; do
+      [ -e "${timer}" ] || continue
+      systemctl enable "${timer##*/}" &>/dev/null || :
+      target=$(sed -n 's/^WantedBy=//p' "${timer}")
+      if systemctl -q is-active "${target}"; then
+        systemctl start "${timer##*/}" &>/dev/null || :
+      fi
+    done
+  fi
+
+  # Upgrade from the crontab: drop the ZEXTRAS block, which the timers
+  # replace, and keep the entries the admin added outside of it.
+  local crontab
+  if crontab=$(crontab -l -u zextras 2>/dev/null) &&
+    printf '%s\n' "${crontab}" | grep -q '^# ZEXTRAS-START'; then
+    crontab=$(printf '%s\n' "${crontab}" | sed -e '/^# ZEXTRAS-START/,/^# ZEXTRAS-END/d')
+    # Comments only (the SPDX header of the old fragment) count as empty.
+    if printf '%s\n' "${crontab}" | grep -qv -e '^[[:space:]]*#' -e '^[[:space:]]*$'; then
+      printf '%s\n' "${crontab}" | crontab -u zextras - || :
+    else
+      crontab -r -u zextras || :
+    fi
+  fi
+}
+
+_prerm_systemd() {
+  if [ -d /run/systemd/system ]; then
+    local timer
+    for timer in /usr/lib/systemd/system/carbonio-*.timer; do
+      [ -e "${timer}" ] || continue
+      systemctl --no-reload disable --now "${timer##*/}" &>/dev/null || :
+    done
   fi
 }
 
@@ -738,9 +780,7 @@ package() {
 
 package__rocky_8() {
   _package
-
-  install -D "${repodir}/config/cron/crontab.mta" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
+  _package_legacy
 }
 
 package__rocky_9() {
@@ -750,14 +790,36 @@ package__rocky_9() {
 
 package__ubuntu_jammy() {
   _package
-
-  install -D "${repodir}/config/cron/crontab.mta" \
-    "${pkgdir}/opt/zextras/conf/crontabs/crontab.mta"
+  _package_legacy
 }
 
 package__ubuntu_noble() {
   _package
   _package_systemd
+}
+
+prerm__rocky_9() {
+  _prerm_systemd
+}
+
+prerm__ubuntu_noble() {
+  _prerm_systemd
+}
+
+# The systemd distros have no crontab of ours to remove (the admin's own
+# entries stay): reload systemd after the timers are gone.
+_postrm_systemd() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload &>/dev/null || :
+  fi
+}
+
+postrm__rocky_9() {
+  _postrm_systemd
+}
+
+postrm__ubuntu_noble() {
+  _postrm_systemd
 }
 
 postrm__apt() {

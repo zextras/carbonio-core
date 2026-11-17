@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio spam training
+After=carbonio-mta.target
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+ExecStart=/opt/zextras/bin/zmtrainsa
+StandardOutput=append:/opt/zextras/log/spamtrain.log
+StandardError=append:/opt/zextras/log/spamtrain.log

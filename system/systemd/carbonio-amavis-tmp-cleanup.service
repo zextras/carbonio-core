@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio amavisd temporary directory cleanup
+After=carbonio-mta.target
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+ExecStart=/usr/bin/find /opt/zextras/data/amavisd/tmp -mindepth 1 -maxdepth 1 -type d -name 'amavis-*' -mtime +1 -exec rm -rf {} +
+Nice=10
+IOSchedulingClass=idle

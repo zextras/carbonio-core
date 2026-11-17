@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio policyd database cleanup
+After=carbonio-mta.target
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+ExecStart=/opt/zextras/bin/zmcbpadmin --cleanup
+Nice=10
+IOSchedulingClass=idle
