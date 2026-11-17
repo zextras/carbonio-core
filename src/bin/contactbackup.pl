@@ -486,7 +486,18 @@ sub validateSchedule {
 }
 
 sub loadCron {
-    @cron      = `crontab -l` or die "Unable to invoke crontab -l";
+    # "no crontab for <user>" (exit 1, empty stdout) is an empty crontab
+    my $cronerr = File::Temp->new( UNLINK => 1 )
+      or die "Can not open temp file";
+    @cron = `crontab -l 2>$cronerr`;
+    if ( $? != 0 && !@cron ) {
+        open( my $efh, '<', $cronerr->filename )
+          or die "Unable to invoke crontab -l";
+        my $err = do { local $/; <$efh> };
+        close $efh;
+        die "Unable to invoke crontab -l"
+          if $? == -1 || ( $err // '' ) !~ /no crontab/i;
+    }
     $cronstart = -1;
     $cronstop  = -1;
     my $comments_good = 0;
