@@ -193,9 +193,9 @@ depends__yum=(
 # releases older than the first one that ships them with Replaces would leave
 # their jobs unscheduled, so block that combination on the systemd distros.
 breaks__ubuntu_noble=(
-  "carbonio-mta<4.3.0"
-  "carbonio-appserver<4.6.1"
-  "carbonio-directory-server<5.7.0"
+  "carbonio-mta (<< 4.3.0)"
+  "carbonio-appserver (<< 4.6.1)"
+  "carbonio-directory-server (<< 5.7.0)"
 )
 conflicts__rocky_9=(
   "carbonio-mta<4.3.0"
