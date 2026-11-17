@@ -33,7 +33,7 @@ RestrictSUIDSGID=yes
 LockPersonality=yes
 ProtectHostname=yes
 ProtectClock=yes
-RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-directory-server.target carbonio-mta.target carbonio-proxy.target
