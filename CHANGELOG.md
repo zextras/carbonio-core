@@ -1,3 +1,12 @@
+## [4.11.1](https://github.com/zextras/carbonio-core/compare/v4.11.0...v4.11.1) (2026-11-17)
+
+### Bug Fixes
+
+* CO-2512 timers follow-up (deps, log cleanup, ldapmonitordb, contactbackup) ([#248](https://github.com/zextras/carbonio-core/issues/248)) ([5197b62](https://github.com/zextras/carbonio-core/commit/5197b622fe9c7566f95525e14c86d59d8752d847))
+* **libexec:** stop slapcat clobbering good backup, fix domaincertmgr/cbpolicyd/altermime/antispam bugs ([#249](https://github.com/zextras/carbonio-core/issues/249)) ([0b658ce](https://github.com/zextras/carbonio-core/commit/0b658cecb0d243b1923bdd09ad75cc4666fa87ff))
+* **scripts:** hardening of logrotate install, diaglog, dkimkeyutil, qstat, mtainit, postfix restart ([#252](https://github.com/zextras/carbonio-core/issues/252)) ([8296971](https://github.com/zextras/carbonio-core/commit/8296971bd4adbeda965f0592e313b77e7ba8e100))
+* **setup:** harden setup.pl, ldapinit and LDAP helpers ([#250](https://github.com/zextras/carbonio-core/issues/250)) ([428d779](https://github.com/zextras/carbonio-core/commit/428d77907401b64fc4a42a9cf2aa68109052b1b4))
+
 ## [4.11.0](https://github.com/zextras/carbonio-core/compare/v4.10.0...v4.11.0) (2026-11-17)
 
 ### Features
