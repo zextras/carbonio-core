@@ -8,7 +8,8 @@
 use strict;
 use lib '/opt/zextras/common/lib/perl5';
 use Sys::Syslog qw(:DEFAULT setlogsock);
-use Net::LDAPapi;
+use Net::LDAP;
+use Net::LDAP::Util qw(escape_filter_value);
 use XML::Simple;
 
 #
@@ -38,65 +39,65 @@ chomp($ldap_url);
 @ldap_url = split / /, $ldap_url;
 
 sub smtpd_access_policy {
-  my($domain, $ldap, $mesg, $user, $daddr, @attrs, $result);
+  my($domain, $ldap, $mesg, $user, $daddr, $result, $entry);
   $daddr = lc $attr{recipient};
   ($user, $domain) = split /\@/, lc $attr{recipient};
   syslog $syslog_priority, "Recipient Domain: %s", $domain if $verbose;
   syslog $syslog_priority, "Recipient userid: %s", $user if $verbose;
+  my $bound = 0;
   foreach my $url (@ldap_url) {
-    $ldap=Net::LDAPapi->new(-url=>$url);
-    if ( $ldap_starttls_supported ) {
-      $mesg = $ldap->start_tls_s();
-	  if ($mesg != 0) {
-	    next;
-	  }
+    $ldap = Net::LDAP->new($url) or next;
+    if ( $ldap_starttls_supported && $url !~ /^ldaps/i ) {
+      $mesg = $ldap->start_tls(verify => 'none');
+      if ($mesg->code) {
+        next;
+      }
     }
-    $mesg = $ldap->bind_s("uid=zmpostfix,cn=appaccts,cn=zimbra",$postfix_pw);
-	if ($mesg != 0) {
-	  next;
-	} else {
-	  last;
-	}
+    $mesg = $ldap->bind("uid=zmpostfix,cn=appaccts,cn=zimbra", password => $postfix_pw);
+    if ($mesg->code) {
+      next;
+    } else {
+      $bound = 1;
+      last;
+    }
   }
-  if ($mesg != 0) {
+  if (!$bound) {
      syslog $syslog_priority, "Error: zmpostfixpolicyd unable to find working LDAP server";
-	 return "dunno";
+     return "dunno";
   }
-  @attrs=('zimbraDomainType', 'zimbraMailCatchAllForwardingAddress');
-  $mesg = $ldap->search_s(
-            "",
-            LDAP_SCOPE_SUBTREE,
-            "(&(zimbraDomainName=$domain)(objectClass=zimbraDomain))",
-            \@attrs,
-            0,
-            $result
+  my $edomain = escape_filter_value($domain);
+  $result = $ldap->search(
+            base => "",
+            scope => 'sub',
+            filter => "(&(zimbraDomainName=$edomain)(objectClass=zimbraDomain))",
+            attrs => ['zimbraDomainType', 'zimbraMailCatchAllForwardingAddress'],
           );
-  my $ent = $ldap->first_entry();
-  if ($ent != 0) {
-    if (lc(($ldap->get_values("zimbraDomainType"))[0]) eq "alias") {
-      my $robject = ($ldap->get_values("zimbraMailCatchAllForwardingAddress"))[0];
+  $entry = $result->entry(0);
+  if ($entry) {
+    if (lc($entry->get_value("zimbraDomainType") // "") eq "alias") {
+      my $robject = $entry->get_value("zimbraMailCatchAllForwardingAddress") // "";
       syslog $syslog_priority, "Real Domain: %s", $robject if $verbose;
-      @attrs=('1.1');
-      $mesg = $ldap->search_s(
-                "",
-                LDAP_SCOPE_SUBTREE,
-                "(&(|(zimbraMailDeliveryAddress=$user"."$robject)(zimbraMailDeliveryAddress=$daddr)(zimbraMailAlias=$user".
-                "$robject)(zimbraMailAlias=$daddr)(zimbraMailCatchAllAddress=$user"."$robject)(zimbraMailCatchAllAddress=$robject)".
-		"(zimbraMailCatchAllAddress=$daddr))(zimbraMailStatus=enabled))",
-                \@attrs,
-                0,
-                $result
+      my $euser = escape_filter_value($user);
+      my $erobject = escape_filter_value($robject);
+      my $edaddr = escape_filter_value($daddr);
+      $result = $ldap->search(
+                base => "",
+                scope => 'sub',
+                filter => "(&(|(zimbraMailDeliveryAddress=$euser"."$erobject)(zimbraMailDeliveryAddress=$edaddr)(zimbraMailAlias=$euser".
+                "$erobject)(zimbraMailAlias=$edaddr)(zimbraMailCatchAllAddress=$euser"."$erobject)(zimbraMailCatchAllAddress=$erobject)".
+                "(zimbraMailCatchAllAddress=$edaddr))(zimbraMailStatus=enabled))",
+                attrs => ['1.1'],
               );
-      $ent = $ldap->first_entry();
+      $entry = $result->entry(0);
       $ldap->unbind;
-      if ($ent != 0) {
+      if ($entry) {
         return "dunno";
-      } else { 
+      } else {
         return "reject 5.1.1 Mailbox unavailable";
       }
     } else {
       $ldap->unbind;
-      return "dunno"; 
+      return "dunno";
     }
   }
   $ldap->unbind;
