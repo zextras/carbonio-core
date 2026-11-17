@@ -1,3 +1,9 @@
+## [4.12.0](https://github.com/zextras/carbonio-core/compare/v4.11.1...v4.12.0) (2026-11-17)
+
+### Features
+
+* **contactbackup:** [CO-2512] schedule contact backup with systemd timers on noble and rocky 9 ([#253](https://github.com/zextras/carbonio-core/issues/253)) ([772ffcc](https://github.com/zextras/carbonio-core/commit/772ffccded1cfe0fd4828408e604041353a9666c))
+
 ## [4.11.1](https://github.com/zextras/carbonio-core/compare/v4.11.0...v4.11.1) (2026-11-17)
 
 ### Bug Fixes
