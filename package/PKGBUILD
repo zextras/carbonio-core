@@ -622,19 +622,9 @@ _package_legacy() {
 # into a scriptlet only the functions its hook calls directly, so the hooks
 # call this and pass the list down.
 _core_timers() {
-  echo carbonio-antispam-bayes-expire.timer \
-    carbonio-antispam-train-cleanup.timer \
-    carbonio-antispam-train.timer \
-    carbonio-appserver-db-integrity-report.timer \
-    carbonio-appserver-log-cleanup.timer \
-    carbonio-cert-expiry-check.timer \
+  echo carbonio-cert-expiry-check.timer \
     carbonio-log-cleanup.timer \
     carbonio-log-compress.timer \
-    carbonio-mailthreat-quarantine-cleanup.timer \
-    carbonio-mailthreat-tmp-cleanup.timer \
-    carbonio-mta-queue-log.timer \
-    carbonio-openldap-monitor-db.timer \
-    carbonio-policyd-cleanup.timer \
     carbonio-stats-cleanup.timer \
     carbonio-tmp-cleanup.timer
 }
@@ -646,8 +636,10 @@ _package_systemd() {
   install -Dm644 "${repodir}/system/systemd/carbonio-stats.service" \
     "${pkgdir}/usr/lib/systemd/system/carbonio-stats.service"
 
-  # Scheduled jobs (CO-2512): a <job>.timer + <job>.service pair per former
-  # crontab entry, the timer WantedBy= the target of the role that needs it.
+  # Scheduled jobs every node runs (CO-2512): a <job>.timer + <job>.service
+  # pair per former crontab entry, WantedBy=carbonio.target. The role jobs
+  # ship with the role packages (carbonio-mta, carbonio-appserver,
+  # carbonio-directory-server) and run the scripts installed here.
   local timer
   for timer in "${repodir}"/system/systemd/*.timer; do
     install -Dm644 "${timer}" "${timer%.timer}.service" \
