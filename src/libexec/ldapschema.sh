@@ -1,7 +1,6 @@
 #!/bin/bash
-# SPDX-FileCopyrightText: 2022 Synacor, Inc.
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
-# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-License-Identifier: AGPL-3.0-only
 
 # zmldapschema is carbonio-configd's "setup ldap-schema"; the name stays for its callers.
 exec /opt/zextras/libexec/setup ldap-schema "$@"

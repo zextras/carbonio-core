@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2022 Synacor, Inc.
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 #
-# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-License-Identifier: AGPL-3.0-only
 
 # CO-3682: aggregate quota computation has been removed from the mailbox
 # server. This command is kept as a no-op so that existing scripts and
