@@ -1,3 +1,9 @@
+## [4.12.2](https://github.com/zextras/carbonio-core/compare/v4.12.1...v4.12.2) (2026-11-17)
+
+### Bug Fixes
+
+* [CO-4772] remove systemd-envscript ([#255](https://github.com/zextras/carbonio-core/issues/255)) ([dffd93c](https://github.com/zextras/carbonio-core/commit/dffd93c27de4e2582de2c3558f06338036be05b3))
+
 ## [4.12.1](https://github.com/zextras/carbonio-core/compare/v4.12.0...v4.12.1) (2026-11-17)
 
 ### Bug Fixes
