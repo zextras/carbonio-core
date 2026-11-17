@@ -8,10 +8,12 @@
 use strict;
 use lib '/opt/zextras/common/lib/perl5';
 use Net::LDAP;
-use Net::LDAP::Util qw ( ldap_error_name );
+use Net::LDAP::Util qw ( ldap_error_name escape_filter_value );
+use File::Temp qw( tempdir );
 use XML::Simple;
 use Getopt::Long qw(:config no_ignore_case);
 use Data::UUID;
+use File::Path;
 
 if ( ! -x "/opt/zextras/common/sbin/opendkim" ) {
   print "ERROR: opendkim does not appear to be installed - exiting\n";
@@ -48,6 +50,17 @@ if ($help) {
   usage(0);
 }
 
+foreach my $v ($domain, $selector) {
+  if (defined($v) && $v !~ /\A[A-Za-z0-9._-]+\z/) {
+    print STDERR "Error: domain and selector may only contain letters, digits, '.', '_' and '-'.\n";
+    exit 1;
+  }
+}
+if (defined($bits) && $bits !~ /\A[0-9]+\z/) {
+  print STDERR "Error: bits must be a number.\n";
+  exit 1;
+}
+
 if (!($domain) && !($query)) {
   usage(0);
 }
@@ -71,6 +84,9 @@ my $zimbra_admin_password = $localxml->{key}->{zimbra_ldap_password}->{value};
 chomp($zimbra_admin_password);
 my $ldap_starttls_supported = $localxml->{key}->{ldap_starttls_supported}->{value};
 my $zimbra_require_interprocess_security = $localxml->{key}->{zimbra_require_interprocess_security}->{value};
+
+my $edomain = defined($domain) ? escape_filter_value($domain) : '';
+my $eselector = defined($selector) ? escape_filter_value($selector) : '';
 
 my $keygen = "/opt/zextras/common/sbin/opendkim-genkey";
 
@@ -97,7 +113,7 @@ $mesg->code && die "Bind: ". $mesg->error . "\n";
 if ($domain) {
   $mesg = $ldap ->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$domain))",
+      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$edomain))",
       scope=>"sub",
   );
   
@@ -111,7 +127,7 @@ if ($domain) {
 if($add) {
   $mesg = $ldap->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$domain)(DKIMSelector=*))",
+      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$edomain)(DKIMSelector=*))",
       scope=>"sub",
   );
   my $size = $mesg->count;
@@ -121,7 +137,7 @@ if($add) {
   }
   $mesg = $ldap->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$domain))",
+      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$edomain))",
       scope=>"sub",
   );
   my $entry = $mesg->entry($size-1);
@@ -134,25 +150,8 @@ if($add) {
   if ($subdomain) {
     $subflag="--nosubdomains";
   }
-  if ($bits < 2048) {
-   print "Bit size less than 2048 is not allowed, as it is insecure.\n";
-  } else {
-    qx($keygen $subflag -b $bits -s $selector -d $domain -D /opt/zextras/data/tmp);
-  }
-  my $privatekey = "/opt/zextras/data/tmp/${selector}.private";
-  my $publickey = "/opt/zextras/data/tmp/${selector}.txt";
-  if (-f $privatekey && -s $privatekey && -f $publickey && -s $publickey) {
-    my $private;
-    my $public;
-    {
-      local $/ = undef; # Slurp mode
-      open PRIVATEKEY, "$privatekey" or die "Cannot open $privatekey for read :$!";
-      $private = <PRIVATEKEY>;
-      close PRIVATEKEY;
-      open PUBLICKEY, "$publickey" or die "Cannot open $publickey for read :$!";
-      $public = <PUBLICKEY>;
-      close PUBLICKEY;
-    }
+  my ($private, $public) = generate_keys($subflag);
+  if (defined($private)) {
     $mesg = $ldap->modify( $dn,
       add => [
         objectClass   => 'DKIM',    # Add description attribute
@@ -174,8 +173,6 @@ if($add) {
     } else {
       print "DKIM Data added to LDAP for domain $domain with selector $selector\n";
     }
-    unlink($privatekey);
-    unlink($publickey);
     $ldap->unbind;
     print "Public signature to enter into DNS:\n";
     print "$public";
@@ -188,13 +185,13 @@ if($add) {
   if (!($selector)) {
     $mesg = $ldap->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$domain)(DKIMSelector=*))",
+      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$edomain)(DKIMSelector=*))",
       scope=>"sub",
     );
   } else {
     $mesg = $ldap->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(DKIMSelector=$selector))",
+      filter=>"(&(objectClass=zimbraDomain)(DKIMSelector=$eselector))",
       scope=>"sub",
     );
   }
@@ -227,7 +224,7 @@ if($add) {
 } elsif ($update) {
   $mesg = $ldap->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$domain)(DKIMSelector=*))",
+      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$edomain)(DKIMSelector=*))",
       scope=>"sub",
   );
   my $size = $mesg->count;
@@ -245,25 +242,8 @@ if($add) {
   if ($subdomain) {
     $subflag="--nosubdomains";
   }
-  if ($bits < 2048) {
-    print "Bit size less than 2048 is not allowed, as it is insecure.\n";
-  } else {
-    qx($keygen $subflag -b $bits -s $selector -d $domain -D /opt/zextras/data/tmp);
-  }
-  my $privatekey = "/opt/zextras/data/tmp/${selector}.private";
-  my $publickey = "/opt/zextras/data/tmp/${selector}.txt";
-  if (-f $privatekey && -s $privatekey && -f $publickey && -s $publickey) {
-    my $private;
-    my $public;
-    {
-      local $/ = undef; # Slurp mode
-      open PRIVATEKEY, "$privatekey" or die "Cannot open $privatekey for read :$!";
-      $private = <PRIVATEKEY>;
-      close PRIVATEKEY;
-      open PUBLICKEY, "$publickey" or die "Cannot open $publickey for read :$!";
-      $public = <PUBLICKEY>;
-      close PUBLICKEY;
-    }
+  my ($private, $public) = generate_keys($subflag);
+  if (defined($private)) {
     $mesg = $ldap->modify( $dn,
       replace => [
         DKIMSelector  => "$selector",
@@ -282,8 +262,6 @@ if($add) {
     } else {
       print "DKIM Data added to LDAP for domain $domain with selector $selector\n";
     }
-    unlink($privatekey);
-    unlink($publickey);
     $ldap->unbind;
     print "Public signature to enter into DNS:\n";
     print "$public";
@@ -296,7 +274,7 @@ if($add) {
 } elsif ($delete) {
   $mesg = $ldap->search(
       base=>"",
-      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$domain)(DKIMSelector=*))",
+      filter=>"(&(objectClass=zimbraDomain)(zimbraDomainName=$edomain)(DKIMSelector=*))",
       scope=>"sub",
   );
   my $size = $mesg->count;
@@ -333,6 +311,40 @@ if($add) {
 
 $ldap->unbind();
 exit;
+
+# Generate the key pair in a private (0700) directory under data/tmp and
+# return (private, public) contents, or an empty list on failure.
+sub generate_keys {
+  my ($subflag) = @_;
+  if ($bits < 2048) {
+    print "Bit size less than 2048 is not allowed, as it is insecure.\n";
+    return;
+  }
+  my $dir = tempdir("dkim.XXXXXXXX", DIR => "/opt/zextras/data/tmp", CLEANUP => 1);
+  my @cmd = ($keygen);
+  push @cmd, $subflag if $subflag ne "";
+  push @cmd, "-b", $bits, "-s", $selector, "-d", $domain, "-D", $dir;
+  {
+    open(my $olderr, ">&", \*STDERR);
+    open(STDERR, ">&", \*STDOUT);
+    system(@cmd);
+    open(STDERR, ">&", $olderr);
+  }
+  my $privatekey = "$dir/${selector}.private";
+  my $publickey = "$dir/${selector}.txt";
+  my ($private, $public);
+  if (-f $privatekey && -s $privatekey && -f $publickey && -s $publickey) {
+    local $/ = undef; # Slurp mode
+    open(my $pk, "<", $privatekey) or die "Cannot open $privatekey for read :$!";
+    $private = <$pk>;
+    close $pk;
+    open(my $pu, "<", $publickey) or die "Cannot open $publickey for read :$!";
+    $public = <$pu>;
+    close $pu;
+  }
+  File::Path::remove_tree($dir);
+  return defined($private) ? ($private, $public) : ();
+}
 
 sub usage() {
   print "Usage: $0 [-a [-b]] [-q] [-r] [-s selector] [-S] [-u [-b]] [-d domain]\n";
