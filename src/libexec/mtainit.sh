@@ -42,6 +42,9 @@ postfix_owner=postfix
 confdir=/opt/zextras/conf
 mkdir -p ${confdir}
 
+# ldap-*.cf contain bind_pw: never create them world-readable
+umask 027
+
 cat <<EOF >${confdir}/ldap-vmm.cf
 server_host = ${ldap_url}
 server_port = ${ldap_port}
@@ -166,3 +169,4 @@ timeout = 30
 EOF
 
 chgrp ${postfix_owner} ${confdir}/ldap-*.cf
+chmod 0640 ${confdir}/ldap-*.cf

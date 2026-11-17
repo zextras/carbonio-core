@@ -13,6 +13,7 @@ use Getopt::Long;
 use POSIX qw(strftime);
 use File::Spec;
 use File::Path;
+use File::Basename qw(dirname);
 use File::Copy qw/cp/;
 use Zextras::Mon::Stat;
 use Digest::MD5;
@@ -273,9 +274,21 @@ sub run() {
     $destination = File::Spec->rel2abs($destination);
     my $timeout = $options{t};
 
-    if ( !-d $destination ) {
-        File::Path::mkpath("$destination");
+    # The collected data includes secrets (zmlocalconfig -x -s): keep
+    # everything private to root, and never reuse a pre-existing path.
+    umask(077);
+    my $parent = dirname($destination);
+    if ( !-d $parent ) {
+        my $old_umask = umask(022);
+        File::Path::mkpath($parent);
+        umask($old_umask);
     }
+    if ( -e $destination || -l $destination ) {
+        print STDERR "Error: $destination already exists; refusing to reuse it\n";
+        exit 1;
+    }
+    mkdir( $destination, 0700 )
+      or do { print STDERR "Error: cannot create $destination: $!\n"; exit 1; };
     my ( undef, undef, $uid, $gid ) = getpwnam('zextras');
 
     chown $uid, $gid, $destination;
@@ -533,10 +546,15 @@ sub run() {
         $timeout );
     exec_with_timeout( "$SU '/opt/zextras/bin/zmvolume -l' > zmvolume.txt 2>&1",
         $timeout );
-    exec_with_timeout( "/usr/bin/crontab -l > crontab-root.txt 2>&1",
-        $timeout );
-    exec_with_timeout(
-        "/usr/bin/crontab -u zextras -l > crontab-zimbra.txt 2>&1", $timeout );
+    if ( -x "/usr/bin/crontab" ) {
+        exec_with_timeout( "/usr/bin/crontab -l > crontab-root.txt 2>&1",
+            $timeout );
+        exec_with_timeout(
+            "/usr/bin/crontab -u zextras -l > crontab-zimbra.txt 2>&1", $timeout );
+    }
+    else {
+        logmsg "'crontab' is not installed, skipping crontab collection.\n";
+    }
     exec_with_timeout( "du -sh /opt/zextras/redolog > du-redolog.txt 2>&1",
         $timeout );
     exec_with_timeout( "df -hT > df-hT.txt 2>&1", $timeout );

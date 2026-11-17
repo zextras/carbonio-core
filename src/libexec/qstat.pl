@@ -211,7 +211,12 @@ chomp $hash_queue_depth;
 
 my @queues = qw/incoming hold active deferred corrupt/;
 
+# "" and "0" (false in Perl) have always meant all queues
 if ( $ARGV[0] ) {
+    if ( $ARGV[0] !~ /\A(?:incoming|hold|active|deferred|corrupt|maildrop)\z/ ) {
+        print STDERR "Usage: $0 [incoming|hold|active|deferred|corrupt|maildrop]\n";
+        exit 1;
+    }
     @queues    = $ARGV[0];
     $readfiles = 1;
 }
