@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio Temporary Files Cleanup Daily
+Documentation=https://docs.zextras.com/
+
+[Timer]
+OnCalendar=*-*-* 02:40:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=carbonio.target

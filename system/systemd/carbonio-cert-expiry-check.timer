@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio Certificate Expiration Check Monthly
+Documentation=https://docs.zextras.com/
+
+[Timer]
+OnCalendar=*-*-01 00:00:00
+Persistent=true
+
+[Install]
+WantedBy=carbonio.target
