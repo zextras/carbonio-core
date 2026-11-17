@@ -108,12 +108,14 @@ if (lc($enabled) eq "true") {
       writeFile("/opt/zextras/data/altermime/$domain.html", "$html");
       if ( -f "/opt/zextras/data/altermime/$domain.txt") {
         open(FILE, "/opt/zextras/data/altermime/$domain.txt");
-        my $buf;
+        my ($buf, $b64);
+        $b64 = "";
         while (read(FILE, $buf, 60*57)) {
-          my $b64 = MIME::Base64::encode_base64($buf);
-          writeFile("/opt/zextras/data/altermime/$domain.b64", "$b64");
+          $b64 .= MIME::Base64::encode_base64($buf);
         }
         close(FILE);
+        # writeFile truncates, so write the whole encoding in one call.
+        writeFile("/opt/zextras/data/altermime/$domain.b64", "$b64") if $b64 ne "";
       }
       $loop++;
     }

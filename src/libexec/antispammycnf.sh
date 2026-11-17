@@ -40,7 +40,7 @@ cat <<EOF
 basedir        = /opt/zextras/common
 datadir        = ${antispam_mysql_data_directory}
 socket         = /run/carbonio/antispam-mysql.sock
-bind-address   = 0.0.0.0
+bind-address   = ${antispam_mysql_bind_address:-${mysql_bind_address:-127.0.0.1}}
 port           = ${antispam_mysql_port}
 user           = ${antispam_mysql_user}
 tmpdir         = ${zimbra_tmp_directory}

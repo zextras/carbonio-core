@@ -63,5 +63,11 @@ else
   RC=$?
 fi
 
-cp -f "${DEST}/${FILE}" "${DEST}/${NFILE}"
+if [ $RC -eq 0 ] && [ -s "${DEST}/${FILE}" ]; then
+  cp -f "${DEST}/${FILE}" "${DEST}/${NFILE}"
+else
+  # Keep the last good ${NFILE}; drop the partial timestamped export.
+  rm -f "${DEST}/${FILE}"
+  [ $RC -eq 0 ] && RC=1
+fi
 exit $RC

@@ -97,21 +97,23 @@ loadConfigKey() {
 }
 
 deployCerts() {
-  if [ "$1" = "-force" ] && [ -d "${zimbra_domain_cert_directory}" ]; then
-    rm -rf "${zimbra_domain_cert_directory}" >/dev/null 2>&1
-  fi
-
-  DOMAINS=$(/opt/zextras/bin/zmprov -m -l garpd | awk '{print $1}')
+  local rpd
+  rpd=$(/opt/zextras/bin/zmprov -m -l garpd)
   rc=$?
   if [ $rc != 0 ]; then
     echo "$ERROR_PREFIX zmprov -m -l getAllReverseProxyDomains failed (rc=$rc)."
     exit 1
   fi
+  DOMAINS=$(echo "$rpd" | awk '{print $1}')
 
   if [ "$DOMAINS" = "" ]; then
     echo "No domains returned by zmprov getAllReverseProxyDomains."
     echo "Consider setting zimbraVirtualHostname."
     exit 1
+  fi
+
+  if [ "$1" = "-force" ] && [ -d "${zimbra_domain_cert_directory}" ]; then
+    rm -rf "${zimbra_domain_cert_directory}" >/dev/null 2>&1
   fi
 
   for i in $DOMAINS; do
