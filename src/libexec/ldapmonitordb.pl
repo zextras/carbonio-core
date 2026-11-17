@@ -65,11 +65,11 @@ if ($ldap_monitor_mdb eq "") {
   $ldap_monitor_mdb = "true";
 }
 
-if (isdigit($ldap_monitor_mdb) && $ldap_monitor_mdb == 1) {
+if ($ldap_monitor_mdb =~ /^\d+$/ && $ldap_monitor_mdb == 1) {
   $ldap_monitor_mdb = "true";
 }
 
-if (isdigit($ldap_monitor_mdb) && $ldap_monitor_mdb == 0) {
+if ($ldap_monitor_mdb =~ /^\d+$/ && $ldap_monitor_mdb == 0) {
   $ldap_monitor_mdb = "false";
 }
 
@@ -101,11 +101,11 @@ if ($ldap_monitor_growth eq "") {
   $ldap_monitor_growth = .25;
 }
 
-if (isdigit($ldap_monitor_alert_only) && $ldap_monitor_alert_only == 1) {
+if ($ldap_monitor_alert_only =~ /^\d+$/ && $ldap_monitor_alert_only == 1) {
   $ldap_monitor_alert_only = "true";
 }
 
-if (isdigit($ldap_monitor_alert_only) && $ldap_monitor_alert_only == 0) {
+if ($ldap_monitor_alert_only =~ /^\d+$/ && $ldap_monitor_alert_only == 0) {
   $ldap_monitor_alert_only = "false";
 }
 

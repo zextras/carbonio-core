@@ -5,6 +5,9 @@
 [Unit]
 Description=Carbonio policyd database cleanup
 After=carbonio-mta.target
+# configd writes the file only where cbpolicyd is enabled; zmcbpadmin exits 1
+# without it
+ConditionPathExists=/opt/zextras/conf/cbpolicyd.conf
 
 [Service]
 Type=oneshot
