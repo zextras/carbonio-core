@@ -5,6 +5,7 @@
 [Unit]
 Description=Carbonio Certificate Expiration Check Monthly
 Documentation=https://docs.zextras.com/
+PartOf=carbonio.target
 
 [Timer]
 OnCalendar=*-*-01 00:00:00

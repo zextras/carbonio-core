@@ -10,6 +10,7 @@
 [Unit]
 Description=Carbonio Contact Backup Schedule %i
 Documentation=https://docs.zextras.com/
+PartOf=carbonio.target
 
 [Timer]
 AccuracySec=1s

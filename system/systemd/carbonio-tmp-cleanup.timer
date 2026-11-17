@@ -5,6 +5,7 @@
 [Unit]
 Description=Carbonio Temporary Files Cleanup Daily
 Documentation=https://docs.zextras.com/
+PartOf=carbonio.target
 
 [Timer]
 OnCalendar=*-*-* 02:40:00
