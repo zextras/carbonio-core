@@ -624,6 +624,9 @@ _package_legacy() {
 _core_timers() {
   echo carbonio-amavis-quarantine-cleanup.timer \
     carbonio-amavis-tmp-cleanup.timer \
+    carbonio-antispam-bayes-expire.timer \
+    carbonio-antispam-train-cleanup.timer \
+    carbonio-antispam-train.timer \
     carbonio-cert-expiry-check.timer \
     carbonio-db-integrity-report.timer \
     carbonio-ldap-monitor-db.timer \
@@ -632,9 +635,6 @@ _core_timers() {
     carbonio-mailboxd-log-cleanup.timer \
     carbonio-mta-queue-log.timer \
     carbonio-policyd-cleanup.timer \
-    carbonio-spam-bayes-expire.timer \
-    carbonio-spam-train-cleanup.timer \
-    carbonio-spam-train.timer \
     carbonio-stats-cleanup.timer \
     carbonio-tmp-cleanup.timer
 }

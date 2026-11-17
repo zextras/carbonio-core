@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio Spam Training Daily
+Description=Carbonio Antispam Bayes Expiry Daily
 Documentation=https://docs.zextras.com/
 PartOf=carbonio-mta.target
 
 [Timer]
-OnCalendar=*-*-* 22:00:00
+OnCalendar=*-*-* 23:20:00
 Persistent=true
 
 [Install]

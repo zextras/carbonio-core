@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [Unit]
-Description=Carbonio Spam Training Cleanup
+Description=Carbonio Antispam Training
 Documentation=https://docs.zextras.com/
 After=carbonio-mta.target
 
@@ -14,6 +14,6 @@ Group=zextras
 # The environment the zextras login shell (.bashrc) gives the scripts
 Environment=PATH=/opt/zextras/bin:/opt/zextras/common/lib/jvm/java/bin:/opt/zextras/common/bin:/opt/zextras/common/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=PERL5LIB="/opt/zextras/common/lib/perl5/x86_64-linux-gnu-thread-multi:/opt/zextras/common/lib/perl5/x86_64-linux-thread-multi:/opt/zextras/common/lib/perl5"
-ExecStart=/opt/zextras/bin/zmtrainsa --cleanup
+ExecStart=/opt/zextras/bin/zmtrainsa
 StandardOutput=append:/opt/zextras/log/spamtrain.log
 StandardError=append:/opt/zextras/log/spamtrain.log
