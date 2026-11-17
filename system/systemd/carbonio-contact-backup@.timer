@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Template: one instance per contact backup schedule, created by
+# "zmcontactbackup -a". The libexec/contactbackup-schedule helper adds the
+# drop-in with the OnCalendar= expression(s) converted from the crontab
+# style specifier, like cron it does not catch up on missed runs.
+
+[Unit]
+Description=Carbonio Contact Backup Schedule %i
+Documentation=https://docs.zextras.com/
+
+[Timer]
+AccuracySec=1s
+
+[Install]
+WantedBy=carbonio.target
