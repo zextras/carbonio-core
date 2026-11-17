@@ -1,3 +1,9 @@
+## [4.11.0](https://github.com/zextras/carbonio-core/compare/v4.10.0...v4.11.0) (2026-11-17)
+
+### Features
+
+* **systemd:** [CO-2512] keep only the jobs every node runs in carbonio-core ([#246](https://github.com/zextras/carbonio-core/issues/246)) ([706057d](https://github.com/zextras/carbonio-core/commit/706057df60fa9002d990b64455f46cb575d5c145))
+
 ## [4.10.0](https://github.com/zextras/carbonio-core/compare/v4.9.1...v4.10.0) (2026-11-17)
 
 ### Features
