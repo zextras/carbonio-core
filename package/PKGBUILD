@@ -449,16 +449,10 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmiptool"
   install -Dm755 "${repodir}/src/libexec/javawatch.pl" \
     "${pkgdir}/opt/zextras/libexec/zmjavawatch"
-  install -Dm755 "${repodir}/src/libexec/jsprecompile.sh" \
-    "${pkgdir}/opt/zextras/libexec/zmjsprecompile"
-  install -Dm755 "${repodir}/src/libexec/600.sh" \
-    "${pkgdir}/opt/zextras/libexec/600.zimbra"
   install -Dm755 "${repodir}/src/libexec/configrewrite.sh" \
     "${pkgdir}/opt/zextras/libexec/configrewrite"
   install -Dm755 "${repodir}/src/libexec/icalmig.pl" \
     "${pkgdir}/opt/zextras/libexec/icalmig"
-  install -D "${repodir}/src/contrib/fetchercfg.pl" \
-    "${pkgdir}/opt/zextras/contrib/zmfetchercfg"
   install -Dm755 "${repodir}/src/libexec/logprocess.pl" \
     "${pkgdir}/opt/zextras/libexec/zmlogprocess"
   install -Dm755 "${repodir}/src/libexec/msgtrace.pl" \
