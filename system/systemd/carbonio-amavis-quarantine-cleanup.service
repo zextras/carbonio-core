@@ -10,6 +10,9 @@ After=carbonio-mta.target
 Type=oneshot
 User=zextras
 Group=zextras
+# The environment the zextras login shell (.bashrc) gives the scripts
+Environment=PATH=/opt/zextras/bin:/opt/zextras/common/lib/jvm/java/bin:/opt/zextras/common/bin:/opt/zextras/common/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PERL5LIB="/opt/zextras/common/lib/perl5/x86_64-linux-gnu-thread-multi:/opt/zextras/common/lib/perl5/x86_64-linux-thread-multi:/opt/zextras/common/lib/perl5"
 ExecStart=/usr/bin/find /opt/zextras/data/amavisd/quarantine -type f -mtime +7 -delete
 Nice=10
 IOSchedulingClass=idle

@@ -617,6 +617,26 @@ _package_legacy() {
   done
 }
 
+# The timers of system/systemd. Listed, not globbed: other packages ship
+# carbonio-*.timer units too (certbot, altermime, mailthreat).
+_core_timers() {
+  echo carbonio-amavis-quarantine-cleanup.timer \
+    carbonio-amavis-tmp-cleanup.timer \
+    carbonio-cbpolicyd-cleanup.timer \
+    carbonio-check-expired-certs.timer \
+    carbonio-clean-tmp.timer \
+    carbonio-compress-logs.timer \
+    carbonio-db-integrity-report.timer \
+    carbonio-ldap-monitor-db.timer \
+    carbonio-log-cleanup.timer \
+    carbonio-mailboxd-log-cleanup.timer \
+    carbonio-queue-log.timer \
+    carbonio-spam-bayes-expire.timer \
+    carbonio-spam-train-cleanup.timer \
+    carbonio-spam-train.timer \
+    carbonio-stats-cleanup.timer
+}
+
 _package_systemd() {
   # systemd units
   install -Dm644 "${repodir}/system/systemd/carbonio.target" \
@@ -712,12 +732,11 @@ _postinst_systemd() {
     # only when its role target does. Start the ones whose target already
     # runs, the others start with their target.
     local timer target
-    for timer in /usr/lib/systemd/system/carbonio-*.timer; do
-      [ -e "${timer}" ] || continue
-      systemctl enable "${timer##*/}" &>/dev/null || :
-      target=$(sed -n 's/^WantedBy=//p' "${timer}")
+    for timer in $(_core_timers); do
+      systemctl enable "${timer}" &>/dev/null || :
+      target=$(sed -n 's/^WantedBy=//p' "/usr/lib/systemd/system/${timer}")
       if systemctl -q is-active "${target}"; then
-        systemctl start "${timer##*/}" &>/dev/null || :
+        systemctl start "${timer}" &>/dev/null || :
       fi
     done
   fi
@@ -740,9 +759,8 @@ _postinst_systemd() {
 _prerm_systemd() {
   if [ -d /run/systemd/system ]; then
     local timer
-    for timer in /usr/lib/systemd/system/carbonio-*.timer; do
-      [ -e "${timer}" ] || continue
-      systemctl --no-reload disable --now "${timer##*/}" &>/dev/null || :
+    for timer in $(_core_timers); do
+      systemctl --no-reload disable --now "${timer}" &>/dev/null || :
     done
   fi
 }
