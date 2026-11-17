@@ -9,11 +9,8 @@
 source /opt/zextras/bin/zmshutil || exit 1
 zmsetvars -f
 
-if [ -d "${zimbra_java_home}/jre" ]; then
-  JRE_EXT_DIR=${zimbra_java_home}/jre/lib/ext
-else
-  JRE_EXT_DIR=${zimbra_java_home}/lib/ext
-fi
+# Use the Carbonio-bundled JVM directly (same as zmjava).
+JAVA_BIN=/opt/zextras/common/lib/jvm/java/bin/java
 
 ZIMBRA_EXTENSIONS="backup clamscanner network carbonio-license zimbrahsm zimbrasync"
 ZIMBRA_EXT_DIR="/opt/zextras/lib/ext-common"
@@ -25,13 +22,22 @@ done
 
 java_options="-XX:ErrorFile=/opt/zextras/log"
 
+# JDK 9+ rejects -Djava.ext.dirs, so the extension directories are put on the
+# classpath instead (every jar in each directory, as java.ext.dirs did).
 if [ "${zimbra_zmjava_java_ext_dirs}" = "" ]; then
-  zimbra_zmjava_java_ext_dirs=${JRE_EXT_DIR}:/opt/zextras/mailbox/jars:${ZIMBRA_EXT_DIR}
+  zimbra_zmjava_java_ext_dirs=/opt/zextras/mailbox/jars:${ZIMBRA_EXT_DIR}
 fi
 
+ext_classpath=""
+IFS=: read -r -a ext_dirs <<<"${zimbra_zmjava_java_ext_dirs}"
+for d in "${ext_dirs[@]}"; do
+  [ -n "$d" ] || continue
+  ext_classpath="${ext_classpath:+${ext_classpath}:}${d%/}/*"
+done
+
 # shellcheck disable=SC2086
-exec "${zimbra_java_home}/bin/java" ${java_options} \
+exec "${JAVA_BIN}" ${java_options} \
   -client ${zimbra_zmjava_options} \
   -Dzimbra.home=/opt/zextras \
-  -Djava.ext.dirs=${zimbra_zmjava_java_ext_dirs} \
+  -classpath "${ext_classpath}" \
   "$@"
