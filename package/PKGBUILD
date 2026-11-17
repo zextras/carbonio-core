@@ -532,7 +532,7 @@ _package() {
   install -Dm755 "${repodir}/src/libexec/threadcpu.pl" \
     "${pkgdir}/opt/zextras/libexec/zmthreadcpu"
   install -Dm644 "${repodir}/config/logrotate/zmlogrotate" \
-    "${pkgdir}/opt/zextras/conf/zmlogrotate"
+    "${pkgdir}/etc/logrotate.d/carbonio"
   # ldap scripts
   install -Dm755 "${repodir}/src/libexec/ldapinit.pm" \
     "${pkgdir}/opt/zextras/libexec/ldapinit.pm"
@@ -699,11 +699,9 @@ _postinst() {
       grep -E -v -e '^session[[:space:]]+required[[:space:]]+pam_limits.so' /etc/pam.d/common-session >"$pamtmp"
       echo "session	required	pam_limits.so"
     } >>"$pamtmp"
+    chmod --reference=/etc/pam.d/common-session "$pamtmp"
+    chown --reference=/etc/pam.d/common-session "$pamtmp"
     mv -f "$pamtmp" /etc/pam.d/common-session
-  fi
-
-  if [ -d /etc/logrotate.d ]; then
-    cp -f /opt/zextras/conf/zmlogrotate /etc/logrotate.d/carbonio
   fi
 
   rm -f /etc/rc*.d/S01carbonio

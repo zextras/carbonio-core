@@ -2,7 +2,7 @@
     daily
     missingok
     notifempty
-    create 0644 syslog adm
+    create 0640 syslog adm
     dateext
     postrotate
       systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
@@ -15,7 +15,7 @@
     daily
     missingok
     notifempty
-    create 0644 syslog adm
+    create 0640 syslog adm
     dateext
     postrotate
       systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
