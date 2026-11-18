@@ -80,8 +80,8 @@ SECTION mta DEPENDS amavis
 	VAR zimbraMtaMyOrigin
 	VAR zimbraMtaMyHostname
 	VAR zimbraMilterServerEnabled
-	VAR zimbraMilterServerBindAddress
-	VAR zimbraMilterServerBindPort
+	VAR zimbraMilterBindAddress
+	VAR zimbraMilterBindPort
 	VAR zimbraMtaSmtpdMilters
 	VAR zimbraMtaNonSmtpdMilters
 	LOCAL zimbra_server_hostname
@@ -439,6 +439,9 @@ SECTION cbpolicyd
 	VAR zimbraCBPolicydCheckSPFEnabled
 	VAR zimbraCBPolicydQuotasEnabled
 	VAR zimbraCBPolicydAccountingEnabled
+	VAR zimbraCBPolicydTimeoutIdle
+	VAR zimbraCBPolicydTimeoutBusy
+	VAR zimbraCBPolicydLogLevel
 	if SERVICE cbpolicyd
 		POSTCONF smtpd_end_of_data_restrictions FILE zmconfigd/smtpd_end_of_data_restrictions.cf
 	fi
@@ -446,8 +449,8 @@ SECTION cbpolicyd
 
 SECTION milter
 	REWRITE conf/gopp-milter.cfg.in conf/gopp-milter.cfg
-	VAR zimbraMilterServerBindAddress
-	VAR zimbraMilterServerBindPort
+	VAR zimbraMilterBindAddress
+	VAR zimbraMilterBindPort
 	RESTART milter
 
 SECTION stats
