@@ -1,3 +1,9 @@
+## [4.12.3](https://github.com/zextras/carbonio-core/compare/v4.12.2...v4.12.3) (2026-11-18)
+
+### Bug Fixes
+
+* drop deprecated smartmatch in ldapattributeupdate ([#256](https://github.com/zextras/carbonio-core/issues/256)) ([253129e](https://github.com/zextras/carbonio-core/commit/253129ea2347cb4ded19705232286b36dada1a73))
+
 ## [4.12.2](https://github.com/zextras/carbonio-core/compare/v4.12.1...v4.12.2) (2026-11-17)
 
 ### Bug Fixes
