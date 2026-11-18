@@ -1,0 +1,3 @@
+# gopolicyd (gopp -role milter) configuration, rendered by configd.
+milter_listen_ip=%%zimbraMilterServerBindAddress%%
+milter_listen_port=%%zimbraMilterServerBindPort%%
