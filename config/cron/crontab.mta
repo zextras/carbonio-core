@@ -32,5 +32,5 @@
 #
 #
 #
-35 3 * * * /opt/zextras/bin/zmcbpadmin --cleanup >/dev/null 2>&1
+35 3 * * * /opt/zextras/common/bin/gopp -carbonio cleanup -c /opt/zextras/conf/gopp-policyd.cfg >/dev/null 2>&1
 

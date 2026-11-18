@@ -235,8 +235,12 @@ _package() {
     "${pkgdir}/opt/zextras/conf/zmssl.cnf.in"
 
   # mta
-  install -D "${repodir}/config/mta/cbpolicyd.conf.in" \
-    "${pkgdir}/opt/zextras/conf/cbpolicyd.conf.in"
+  install -D "${repodir}/config/mta/gopp-policyd.cfg.in" \
+    "${pkgdir}/opt/zextras/conf/gopp-policyd.cfg.in"
+  install -D "${repodir}/config/mta/gopp-milter.cfg.in" \
+    "${pkgdir}/opt/zextras/conf/gopp-milter.cfg.in"
+  install -D "${repodir}/config/mta/mta_milter_options.in" \
+    "${pkgdir}/opt/zextras/conf/mta_milter_options.in"
   install -D "${repodir}/config/mta/clamd.conf.in" \
     "${pkgdir}/opt/zextras/conf/clamd.conf.in"
   install -D "${repodir}/config/mta/opendkim-localnets.conf.in" \
@@ -301,8 +305,6 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmblobchk"
   install -D "${repodir}/src/bin/caldebug.pl" \
     "${pkgdir}/opt/zextras/bin/zmcaldebug"
-  install -D "${repodir}/src/bin/cbpadmin.pl" \
-    "${pkgdir}/opt/zextras/bin/zmcbpadmin"
   install -D "${repodir}/src/bin/cbpolicydctl.sh" \
     "${pkgdir}/opt/zextras/bin/zmcbpolicydctl"
   install -D "${repodir}/src/bin/certmgr.sh" \
@@ -427,8 +429,6 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmantispamdbinit"
   install -Dm755 "${repodir}/src/libexec/antispammycnf.sh" \
     "${pkgdir}/opt/zextras/libexec/zmantispammycnf"
-  install -Dm755 "${repodir}/src/libexec/cbpolicydinit.sh" \
-    "${pkgdir}/opt/zextras/libexec/zmcbpolicydinit"
   install -Dm755 "${repodir}/src/libexec/checkexpiredcerts.pl" \
     "${pkgdir}/opt/zextras/libexec/zmcheckexpiredcerts"
   install -Dm755 "${repodir}/src/libexec/cleantmp.sh" \
@@ -487,8 +487,6 @@ _package() {
     "${pkgdir}/opt/zextras/libexec/zmmycnf"
   install -Dm755 "${repodir}/src/libexec/myinit.sh" \
     "${pkgdir}/opt/zextras/libexec/zmmyinit"
-  install -Dm755 "${repodir}/src/libexec/postfixpolicyd.pl" \
-    "${pkgdir}/opt/zextras/libexec/zmpostfixpolicyd"
   install -Dm755 "${repodir}/src/libexec/proxyconfgen.sh" \
     "${pkgdir}/opt/zextras/libexec/zmproxyconfgen"
   install -Dm755 "${repodir}/src/libexec/proxyconfig.sh" \

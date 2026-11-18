@@ -1,0 +1,25 @@
+# gopolicyd (gopp -role cbpolicyd) configuration, rendered by configd.
+policyd_listen_port=%%zimbraCBPolicydBindPort%%
+
+log_file=@@cbpolicyd_log_file@@
+
+database_driver=sqlite
+sqlite_path=@@cbpolicyd_db_file@@
+
+# What to do on database failure: tempfail | pass
+bypass_mode=%%zimbraCBPolicydBypassMode%%
+bypass_timeout=%%zimbraCBPolicydBypassTimeout%%
+policyd_timeout_idle=%%zimbraCBPolicydTimeoutIdle%%
+policyd_timeout_busy=%%zimbraCBPolicydTimeoutBusy%%
+log_level=%%zimbraCBPolicydLogLevel%%
+
+access_control=%%binary VAR:zimbraCBPolicydAccessControlEnabled%%
+quotas=%%binary VAR:zimbraCBPolicydQuotasEnabled%%
+greylisting=%%binary VAR:zimbraCBPolicydGreylistingEnabled%%
+checkhelo=%%binary VAR:zimbraCBPolicydCheckHeloEnabled%%
+checkspf=%%binary VAR:zimbraCBPolicydCheckSPFEnabled%%
+accounting=%%binary VAR:zimbraCBPolicydAccountingEnabled%%
+
+greylisting_training_mode=%%binary VAR:zimbraCBPolicydGreylistingTrainingEnabled%%
+greylisting_defer_message=%%zimbraCBPolicydGreylistingDeferMsg%%
+greylisting_blacklist_message=%%zimbraCBPolicydGreylistingBlacklistMsg%%
