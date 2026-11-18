@@ -449,6 +449,7 @@ SECTION cbpolicyd
 
 SECTION milter
 	REWRITE conf/gopp-milter.cfg.in conf/gopp-milter.cfg
+	LOCAL zimbra_log_directory
 	VAR zimbraMilterBindAddress
 	VAR zimbraMilterBindPort
 	RESTART milter
