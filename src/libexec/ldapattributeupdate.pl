@@ -216,11 +216,12 @@ sub prepare_update_file(){
 
 
 =begin apply_update
-    apply_update($timestamp_from_file<string>, $entry_name<string>, @attributes<array>);
+    apply_update($timestamp_from_file<string>, $entry_name<string>, $attributes<arrayref>);
 Updates the attributes in the entry.
 =cut
 sub apply_update {
-    my ($timestamp_from_file, $entry_name, @attributes) = @_;
+    my ($timestamp_from_file, $entry_name, $attributes) = @_;
+    my %to_update = map { $_ => 1 } @$attributes;
     my $infile = "$source_config_dir/zimbra/$entry_name.ldif";
     if ($entry_name eq "mimehandlers") {
         if (-f "/opt/zextras/conf/ldap/$entry_name.ldif") {
@@ -239,7 +240,7 @@ sub apply_update {
             my $updated = 0;
             foreach my $attr ($entry->attributes()) {
                 my $ref = $entry->get_value($attr, asref => 1);
-                if ($attr ~~ @attributes) {
+                if ($to_update{$attr}) {
                     $updated++;
                     print "     Updating attribute:  $attr => @$ref\n";
                     $entry->replace($attr => [ @$ref ]);
