@@ -239,6 +239,8 @@ _package() {
     "${pkgdir}/opt/zextras/conf/gopp-policyd.cfg.in"
   install -D "${repodir}/config/mta/gopp-milter.cfg.in" \
     "${pkgdir}/opt/zextras/conf/gopp-milter.cfg.in"
+  install -D "${repodir}/config/mta/mta_milter_options.in" \
+    "${pkgdir}/opt/zextras/conf/mta_milter_options.in"
   install -D "${repodir}/config/mta/clamd.conf.in" \
     "${pkgdir}/opt/zextras/conf/clamd.conf.in"
   install -D "${repodir}/config/mta/opendkim-localnets.conf.in" \
