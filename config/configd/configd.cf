@@ -73,7 +73,6 @@ SECTION mta DEPENDS amavis
 	VAR zimbraIPMode
 	VAR zimbraMtaRestriction
 	VAR zimbraMtaFallbackRelayHost
-	VAR zimbraMtaAuthEnabled
 	VAR zimbraMtaBlockedExtension
 	VAR zimbraMtaRecipientDelimiter
 	VAR zimbraMtaMyNetworks
@@ -344,7 +343,6 @@ SECTION proxy
 	VAR zimbraReverseProxyImapSaslGssapiEnabled
 	VAR zimbraReverseProxyImapSaslPlainEnabled
 	VAR zimbraReverseProxyImapStartTlsMode
-	VAR zimbraReverseProxyInactivityTimeout
 	VAR zimbraReverseProxyIPLoginLimit
 	VAR zimbraReverseProxyIPLoginLimitTime
 	VAR zimbraReverseProxyIpThrottleMsg
@@ -381,10 +379,6 @@ SECTION proxy
 	VAR zimbraReverseProxySSLSessionTimeout
     VAR zimbraReverseProxySSLSessionCacheSize
 	VAR zimbraReverseProxyZmlookupCachingEnabled
-	VAR zimbraReverseProxyXmppBoshLocalHttpBindURL
-    VAR zimbraReverseProxyXmppBoshRemoteHttpBindURL
-    VAR zimbraReverseProxyXmppBoshHostname
-    VAR zimbraReverseProxyXmppBoshPort
     VAR zimbraReverseProxyResponseHeaders
 	PROXYGEN
 	RESTART proxy

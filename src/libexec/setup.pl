@@ -1155,8 +1155,6 @@ sub setLdapDefaults {
         $config{zimbraIPMode}          = getLdapServerValue("zimbraIPMode");
         $config{IMAPPORT}              = getLdapServerValue("zimbraImapBindPort");
         $config{IMAPSSLPORT}           = getLdapServerValue("zimbraImapSSLBindPort");
-        $config{REMOTEIMAPBINDPORT}    = getLdapServerValue("zimbraRemoteImapBindPort");
-        $config{REMOTEIMAPSSLBINDPORT} = getLdapServerValue("zimbraRemoteImapSSLBindPort");
         $config{POPPORT}               = getLdapServerValue("zimbraPop3BindPort");
         $config{POPSSLPORT}            = getLdapServerValue("zimbraPop3SSLBindPort");
 
@@ -1250,8 +1248,6 @@ sub setLdapDefaults {
     $config{HTTPSPORT}             = 443     if ( $config{HTTPSPORT} eq 0 );
     $config{MODE}                  = "https" if ( $config{MODE} eq "" );
     $config{PROXYMODE}             = "https" if ( $config{PROXYMODE} eq "" );
-    $config{REMOTEIMAPBINDPORT}    = 8143    if ( $config{REMOTEIMAPBINDPORT} eq 0 );
-    $config{REMOTEIMAPSSLBINDPORT} = 8993    if ( $config{REMOTEIMAPSSLBINDPORT} eq 0 );
 
     if ( isInstalled("carbonio-proxy") && isEnabled("carbonio-proxy") ) {
         if ( $config{MAILPROXY} eq "TRUE" ) {
@@ -2160,26 +2156,6 @@ sub setLdapBaseDN {
             $config{ldap_dit_base_dn_config} = $new;
         }
         return;
-    }
-}
-
-sub setNotebookAccount {
-    while (1) {
-        my $new = ask( "Global Documents account:", $config{NOTEBOOKACCOUNT} );
-        my ( $u,         $d )           = split( '@', $new );
-        my ( $adminUser, $adminDomain ) = split( '@', $config{CREATEADMIN} );
-        if ( $d ne $config{CREATEDOMAIN} && $d ne $adminDomain ) {
-            if ( $config{CREATEDOMAIN} eq $adminDomain ) {
-                progress("You must create the user under the domain $config{CREATEDOMAIN}\n");
-            }
-            else {
-                progress("You must create the user under the domain $config{CREATEDOMAIN} or $adminDomain\n");
-            }
-        }
-        else {
-            $config{NOTEBOOKACCOUNT} = $new;
-            last;
-        }
     }
 }
 
