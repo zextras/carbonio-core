@@ -272,20 +272,6 @@ sub modifyServerName($) {
         );
       print ($result->code() ? "failed.\n" : "done.\n");
     }
-    print("Updating zimbraDNSCheckHostname attribute\n") if ($verbose > 1);
-    $result = $ldap->search(base => $root_base,
-      scope =>'sub',
-      attrs => ['1.1'],
-      filter => "(&(|(objectClass=zimbraDomain)(objectClass=zimbraGlobalConfig))(zimbraDNSCheckHostname=$c{zimbra_server_hostname}))");
-    return $result if ($result->code());
-    foreach my $entry ($result->all_entries) {
-      print "Updating zimbraDNSCheckHostname for ", $entry->dn(), "...";
-      $result = $ldap->modify(
-        $entry->dn,
-        replace => {zimbraDNSCheckHostname => "$server"},
-        );
-      print ($result->code() ? "failed.\n" : "done.\n");
-    }
     print("Updating zimbraDataSourceHost attribute\n") if ($verbose > 1);
     $result = $ldap->search(base => $root_base,
       scope =>'sub',
