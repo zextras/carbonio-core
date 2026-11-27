@@ -311,8 +311,6 @@ _package() {
     "${pkgdir}/opt/zextras/bin/zmclamdctl"
   install -D "${repodir}/src/bin/configdctl.sh" \
     "${pkgdir}/opt/zextras/bin/zmconfigdctl"
-  install -D "${repodir}/src/bin/contactbackup.pl" \
-    "${pkgdir}/opt/zextras/bin/zmcontactbackup"
   install -D "${repodir}/src/bin/control.sh" \
     "${pkgdir}/opt/zextras/bin/zmcontrol"
   install -D "${repodir}/src/bin/dedupe.sh" \
@@ -651,16 +649,11 @@ _package_systemd() {
   # pair per former crontab entry, WantedBy=carbonio.target. The role jobs
   # ship with the role packages (carbonio-mta, carbonio-appserver,
   # carbonio-directory-server) and run the scripts installed here.
-  # carbonio-contact-backup@.timer/.service are templates, one instance per
-  # schedule of "zmcontactbackup -a" (nothing enables them here): the root
-  # helper below, which zextras runs through sudo, creates the instances.
   local timer
   for timer in "${repodir}"/system/systemd/*.timer; do
     install -Dm644 "${timer}" "${timer%.timer}.service" \
       -t "${pkgdir}/usr/lib/systemd/system"
   done
-  install -Dm755 "${repodir}/src/libexec/contactbackup-schedule.pl" \
-    "${pkgdir}/opt/zextras/libexec/contactbackup-schedule"
 }
 
 _postinst() {
@@ -763,14 +756,19 @@ _postinst_systemd() {
     fi
   done
 
-  # Upgrade from the crontab: the contact backup schedules of
-  # "zmcontactbackup" become timers and leave the CONTACT BACKUP block of
-  # the zextras crontab. An entry that cannot be converted stays there, the
-  # helper says so.
-  if [ -d /run/systemd/system ] &&
-    [ -x /opt/zextras/libexec/contactbackup-schedule ]; then
-    /opt/zextras/libexec/contactbackup-schedule migrate ||
-      echo "warning: the contact backup schedules were not moved from the zextras crontab to systemd timers" >&2
+  local backup
+  for backup in /etc/systemd/system/carbonio-contact-backup@*.timer.d; do
+    [ -d "${backup}" ] || continue
+    backup=${backup##*/}
+    if [ -d /run/systemd/system ]; then
+      systemctl --no-reload disable --now "${backup%.d}" &>/dev/null || :
+    fi
+  done
+  rm -rf /etc/systemd/system/carbonio-contact-backup@*.timer.d \
+    /etc/systemd/system/carbonio-contact-backup@*.service.d
+  rm -f /etc/systemd/system/*.wants/carbonio-contact-backup@*.timer
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload &>/dev/null || :
   fi
 
   # Upgrade from the crontab: drop the ZEXTRAS block, which the timers
@@ -794,11 +792,6 @@ _prerm_systemd() {
     for timer in "$@"; do
       systemctl --no-reload disable --now "${timer}" &>/dev/null || :
     done
-  fi
-
-  # The contact backup instances of "zmcontactbackup -a" and their drop-ins
-  if [ -x /opt/zextras/libexec/contactbackup-schedule ]; then
-    /opt/zextras/libexec/contactbackup-schedule flush || :
   fi
 }
 
