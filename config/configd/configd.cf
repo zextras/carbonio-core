@@ -79,8 +79,8 @@ SECTION mta DEPENDS amavis
 	VAR zimbraMtaMyOrigin
 	VAR zimbraMtaMyHostname
 	VAR zimbraMilterServerEnabled
-	VAR zimbraMilterServerBindAddress
-	VAR zimbraMilterServerBindPort
+	VAR zimbraMilterBindAddress
+	VAR zimbraMilterBindPort
 	VAR zimbraMtaSmtpdMilters
 	VAR zimbraMtaNonSmtpdMilters
 	LOCAL zimbra_server_hostname
@@ -418,12 +418,9 @@ SECTION ldap
 	LDAP ldap_overlay_accesslog_logpurge LOCAL ldap_overlay_accesslog_logpurge
 
 SECTION cbpolicyd
-	REWRITE conf/cbpolicyd.conf.in conf/cbpolicyd.conf
+	REWRITE conf/gopp-policyd.cfg.in conf/gopp-policyd.cfg
 	LOCAL cbpolicyd_log_file
 	LOCAL cbpolicyd_db_file
-	VAR zimbraCBPolicydLogLevel
-	LOCAL cbpolicyd_log_mail
-	LOCAL cbpolicyd_log_detail
 	VAR zimbraCBPolicydBindPort
 	VAR zimbraCBPolicydBypassMode
 	VAR zimbraCBPolicydBypassTimeout
@@ -435,19 +432,21 @@ SECTION cbpolicyd
 	VAR zimbraCBPolicydCheckHeloEnabled
 	VAR zimbraCBPolicydCheckSPFEnabled
 	VAR zimbraCBPolicydQuotasEnabled
-	VAR zimbraCBPolicydAmavisEnabled
 	VAR zimbraCBPolicydAccountingEnabled
-	VAR zimbraCBPolicydMinServers
-	VAR zimbraCBPolicydMinSpareServers
-	VAR zimbraCBPolicydMaxSpareServers
-	VAR zimbraCBPolicydMaxServers
-	VAR zimbraCBPolicydMaxRequests
 	VAR zimbraCBPolicydTimeoutIdle
 	VAR zimbraCBPolicydTimeoutBusy
+	VAR zimbraCBPolicydLogLevel
 	if SERVICE cbpolicyd
 		POSTCONF smtpd_end_of_data_restrictions FILE zmconfigd/smtpd_end_of_data_restrictions.cf
 	fi
 	RESTART cbpolicyd mta
+
+SECTION milter
+	REWRITE conf/gopp-milter.cfg.in conf/gopp-milter.cfg
+	LOCAL zimbra_log_directory
+	VAR zimbraMilterBindAddress
+	VAR zimbraMilterBindPort
+	RESTART milter
 
 SECTION stats
 	REWRITE conf/stats.conf.in conf/stats.conf

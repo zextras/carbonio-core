@@ -561,7 +561,7 @@ sub run() {
 
     mkdir("$destination/confs");
     my @conf_files = (
-        "/opt/zextras/conf/cbpolicyd.conf",
+        "/opt/zextras/conf/gopp-policyd.cfg",
         "/opt/zextras/conf/localconfig.xml",
         "/opt/zextras/conf/my.cnf",
         "/opt/zextras/common/conf/main.cf",
